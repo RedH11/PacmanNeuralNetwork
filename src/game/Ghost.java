@@ -14,7 +14,7 @@ public interface Ghost {
     void respawn();
     void setScared();
     void setNormal();
-    void move(int x, int y);
+    void move(int x, int y, int px, int py, boolean scared);
     boolean getScared();
 
     int getCurrentX();

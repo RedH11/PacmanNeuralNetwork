@@ -36,7 +36,44 @@ public class PinkyGhost implements Ghost {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(int x, int y, int px, int py, boolean scared) {
+
+        if(!scared) {
+            if (px > currentPosX) {
+                x = 0;
+                y = 1;
+            }
+            if (px < currentPosX) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = -1;
+                y = 0;
+            }
+        }
+        else{
+            if (px > currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = 1;
+            }
+        }
         //check grid object
         if(x != 0 && y == 0){
             if(x > 0){

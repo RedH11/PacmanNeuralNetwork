@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Random;
+
 public class InkyGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
@@ -36,7 +38,12 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(int x, int y, int px, int py, boolean scared) {
+        Random rand = new Random();//can evolve on this
+        x = rand.nextInt(11)-10;
+        if(x ==0){
+            y = rand.nextInt(10)-10;
+        }
         //check grid object
         if(x != 0 && y == 0){
             if(x > 0){

@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Random;
+
 public class ClydeGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
@@ -36,7 +38,68 @@ public class ClydeGhost implements Ghost {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(int x, int y, int px, int py, boolean scared) {
+        Random rand = new Random();//can evolve on this
+        if(!scared) {
+            if (px > currentPosX) {
+                x = 1;
+                y = 0;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+            if (px < currentPosX) {
+                x = -1;
+                y = 0;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = 1;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = -1;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+        }
+        else{
+            if (px > currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = 1;
+            }
+        }
         //check grid object
         if(x != 0 && y == 0){
             if(x > 0){
