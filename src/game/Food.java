@@ -3,25 +3,34 @@ package game;
 import java.awt.*;
 
 public class Food {
-    public int SIZE = 5;
-    public int POWER_SIZE = 15;
+    public double SIZE = 5;
+    public double POWER_SIZE = 15;
     public int SCORE = 100;
     public int x;
     public int y;
     public boolean isActive;
-    public int timer = 30000;
+    public double timer = 30000;
+    public double width;
+    public double length;
 
     java.awt.Color pelletColor = java.awt.Color.yellow;
 
-    public void Pellets(int x, int y, int SIZE) {
+    /**
+     * Use graphics context fillOval
+     * @param x x position
+     * @param y y position
+     */
+    public void Pellet(int x, int y) {
         this.x = x;
         this.y = y;
-        this.SIZE = SIZE;
+        this.width = SIZE;
+        this.length = SIZE;
     }
-    public void PowerPellets(int x, int y, int SIZE) {
+    public void PowerPellet(int x, int y) {
         this.x = x;
         this.y = y;
-        this.SIZE = SIZE;
+        this.width = POWER_SIZE;
+        this.length = POWER_SIZE;
     }
 
     public Color getColor() {
