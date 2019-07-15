@@ -37,7 +37,26 @@ public class InkyGhost implements Ghost {
 
     @Override
     public void move(int x, int y) {
-
+        //check grid object
+        if(x != 0 && y == 0){
+            if(x > 0){
+                currentPosX = currentPosX + speed;
+            }
+            else{
+                currentPosX = currentPosY - speed;
+            }
+        }
+        else if(y != 0 && x == 0){
+            if(y > 0){
+                currentPosY = currentPosY + speed;
+            }
+            else{
+                currentPosY = currentPosY - speed;
+            }
+        }
+        else{
+            throw new java.lang.IllegalArgumentException("Cannot move diagonal");
+        }
     }
 
     @Override
