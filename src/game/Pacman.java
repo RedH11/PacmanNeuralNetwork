@@ -37,4 +37,11 @@ public class Pacman {
         return isPowered;
     }
 
+    public int getCurrentPosX() {
+        return currentPosX;
+    }
+
+    public int getCurrentPosY() {
+        return currentPosY;
+    }
 }
