@@ -14,41 +14,62 @@ public class VisualMap {
     private Grid[][] gameMap;
 
     public VisualMap(Grid[][] gameMap, GraphicsContext gc, int generation, int fitness) {
+        this.gameMap = gameMap;
         this.gc = gc;
         this.generation = generation;
         this.fitness = fitness;
 
         drawGrid();
-        drawWalls();
+        updateGrid();
     }
 
     public void drawGrid() {
 
         int rectW = 20;
-        int gridW = 30;
+        int gridW = 33;
 
-        int startX = 20;
-        int startY = 20;
+        int startX = -10;
+        int startY = -10;
 
+        //int wallColor = 192;
+        int wallColor = 100;
+
+        gc.setStroke(Color.WHITE);
+
+        // Background color black
         gc.fillRect(0, 0, 640, 640);
 
         // Drawing the grid
         for (int r = 0; r < gridW; r++) {
             for (int c = 0; c < gridW; c++) {
-                gc.setFill(Color.BLACK);
-                gc.setStroke(Color.WHITE);
-                gc.strokeRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
-                gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
+                if (gameMap[r][c].isPellet()) {
+                    gc.setFill(Color.YELLOW);
+                    gc.fillOval(c * rectW + startX + 7, r * rectW + startY + 7, 5, 5);
+                } else if (gameMap[r][c].isWall()) {
+                    gc.setFill(Color.rgb(0, 0, 156));
+                    gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
+                } else if (gameMap[r][c].isPacman()) {
+                    gc.setFill(Color.YELLOW);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isPowerPellet()) {
+                    gc.setFill(Color.YELLOW);
+                    // Correct for difference in layout of upper and lower power pellets
+                    if (r > 16) {
+                        gc.fillOval(c * rectW + startX + 3, r * rectW + startY + 1, 10, 10);
+                        gc.strokeOval(c * rectW + startX + 3, r * rectW + startY + 1, 10, 10);
+                    } else {
+                        gc.fillOval(c * rectW + startX + 4, r * rectW + startY + 4, 10, 10);
+                        gc.strokeOval(c * rectW + startX + 4, r * rectW + startY + 4, 10, 10);
+                    }
+
+                }
             }
         }
     }
 
-    public void drawWalls() {
-
-        gc.setFill(Color.DARKBLUE);
-
-        // Top Border
-        gc.fillRect(0, 4, 640, 2);
-        gc.fillRect(0, 14, 640, 2);
+    public void updateGrid() {
+        gc.setFill(Color.WHITE);
+        gc.fillText("Fitness: " + fitness, 550, 15);
+        gc.fillText("Generation: " + fitness, 25, 15);
     }
 }
