@@ -9,6 +9,8 @@ public class Pacman {
     private int score = 0;
     private boolean isAlive = true;
 
+
+
     public void move(Grid[][] gameMap){
 
         // Up
@@ -32,6 +34,16 @@ public class Pacman {
         } else if (dir == 3) {
             if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
+
+        if (gameMap[currentPosX][currentPosY].isGhost()) {
+            isAlive = false;
+        }
+
+        if (gameMap[currentPosX][currentPosY].isPellet()) {
+            score += 100;
+            gameMap[currentPosX][currentPosY].setEmpty(true);
+
+        }
     }
 
     public void pacman() {
@@ -43,6 +55,7 @@ public class Pacman {
         this.isAlive = true;
         this.dir = -1;
     }
+
 
 
     public void setCurrentPosX(int x) {
@@ -75,5 +88,9 @@ public class Pacman {
 
     public int getCurrentPosY() {
         return currentPosY;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }
