@@ -112,38 +112,7 @@ public class BlinkyGhost implements Ghost{
             x=-1;
             y=0;
         }
-        if(map[currentPosY][currentPosX+2].isWall()){
-            x=0;
-            y=1;
-        }
-        if(map[currentPosY+2][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        if(map[currentPosY][currentPosX-2].isWall()){
-            x=0;
-            y=1;
-        }
-        if(map[currentPosY-2][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-2][currentPosX-2].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-2][currentPosX+2].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY+2][currentPosX-2].isWall()){
-            x=0;
-            y=-1;
-        }
-        else if(map[currentPosY +2 ][currentPosX +2].isWall()){
-            x=-1;
-            y=0;
-        }
+       
 
 
         if(x != 0 && y == 0){
