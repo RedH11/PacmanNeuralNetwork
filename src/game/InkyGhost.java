@@ -49,25 +49,27 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public void move(int x, int y, int px, int py, boolean scared) {
+    public void move(int px, int py, boolean scared) {
+        int x = 0;
+        int y = 0;
         Random rand = new Random();//can evolve on this
         x = rand.nextInt(11)-10;
         if(x ==0){
             y = rand.nextInt(10)-10;
         }
-        if(map[currentPosY][currentPosX+1].isWall()){
+        else if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
         }
-        if(map[currentPosY+1][currentPosX].isWall()){
+        else if(map[currentPosY-1][currentPosX].isWall()){
             x=1;
             y=0;
         }
-        if(map[currentPosY][currentPosX-1].isWall()){
+        else if(map[currentPosY][currentPosX+1].isWall()){
             x=0;
             y=1;
         }
-        if(map[currentPosY-1][currentPosX].isWall()){
+        else if(map[currentPosY+1][currentPosX].isWall()){
             x=1;
             y=0;
         }
@@ -105,9 +107,7 @@ public class InkyGhost implements Ghost {
                 currentPosY = currentPosY - speed;
             }
         }
-        else{
-            throw new java.lang.IllegalArgumentException("Cannot move diagonal");
-        }
+
     }
 
     @Override
