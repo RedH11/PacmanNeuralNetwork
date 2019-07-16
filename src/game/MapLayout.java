@@ -29,6 +29,12 @@ public class MapLayout {
         // Pacman Spawn
         mapLayout[center + 4][center].setPacman(true);
 
+        // Spawn ghosts in the center
+        mapLayout[center][center].setBlinky(true);
+        mapLayout[center][center].setInky(true);
+        mapLayout[center][center].setClyde(true);
+        mapLayout[center][center].setPinky(true);
+
         // Outside Walls
         makeBox(center, center, 32, 32, false);
 
