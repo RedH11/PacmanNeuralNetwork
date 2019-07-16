@@ -2,8 +2,8 @@ package game;
 
 public interface Ghost {
 
-    int STARTING_X = 0;
-    int STARTING_Y = 0;
+    int STARTING_X = 16;
+    int STARTING_Y = 16;
 
 
     int NORM_SPEED = 1;
@@ -14,7 +14,7 @@ public interface Ghost {
     void respawn();
     void setScared();
     void setNormal();
-    void move(int x, int y, int px, int py, boolean scared);
+    void move(int px, int py, boolean scared);
     boolean getScared();
 
     int getCurrentX();
