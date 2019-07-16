@@ -73,7 +73,7 @@ public class Grid {
 
     public void setPinky(boolean pinky) {
         this.pinky = pinky;
-        clearGrid(pinky);
+        if (pinky) empty = false;
     }
 
     public void settLWall(boolean tLWall) {
@@ -102,7 +102,7 @@ public class Grid {
 
     public void setClyde(boolean clyde) {
         this.clyde = clyde;
-        clearGrid(clyde);
+        if (clyde) empty = false;
     }
 
     public void setbRWall(boolean bRWall) {
@@ -119,18 +119,21 @@ public class Grid {
 
     public void setBlinky(boolean blinky) {
         this.blinky = blinky;
-        clearGrid(blinky);
+        if (blinky) empty = false;
     }
 
     public void setEmpty(boolean empty) {
         this.empty = empty;
-        if (empty) pellet = false;
+        if (empty) {
+            pellet = false;
+            pacman = false;
+        }
         clearWalls();
     }
 
     public void setInky(boolean inky) {
         this.inky = inky;
-        clearGrid(inky);
+        if (inky) empty = false;
     }
 
     public boolean isPellet() {
@@ -144,7 +147,6 @@ public class Grid {
     public boolean isEmpty() {
         return empty;
     }
-
 
     public boolean isvWall() {
         return vWall;
