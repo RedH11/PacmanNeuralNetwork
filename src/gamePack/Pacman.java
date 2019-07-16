@@ -6,6 +6,8 @@ public class Pacman {
     private int currentPosX = 16;
     private int currentPosY = 20;
     private int dir = -1;
+    private int score = 0;
+    private boolean isAlive = true;
 
     public void move(Grid[][] gameMap){
 
@@ -30,6 +32,25 @@ public class Pacman {
         } else if (dir == 3) {
             if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
+    }
+
+    public void pacman() {
+        setCurrentPosX(16);
+        setCurrentPosY(20);
+        this.score = 0;
+        this.speed = 1;
+        this.isPowered = false;
+        this.isAlive = true;
+        this.dir = -1;
+    }
+
+
+    public void setCurrentPosX(int x) {
+        currentPosX = x;
+    }
+
+    public void setCurrentPosY(int y) {
+        currentPosX = y;
     }
 
     public void setDir(int dir) {
