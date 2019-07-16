@@ -50,7 +50,9 @@ public class ClydeGhost implements Ghost {
     }
 
     @Override
-    public void move(int x, int y, int px, int py, boolean scared) {
+    public void move(int px, int py, boolean scared) {
+        int x = 0;
+        int y = 0;
         Random rand = new Random();//can evolve on this
         if(!scared) {
             if (px > currentPosX) {
@@ -112,19 +114,19 @@ public class ClydeGhost implements Ghost {
                 y = 1;
             }
         }
-        if(map[currentPosY][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        if(map[currentPosY+1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
         if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
         }
-        if(map[currentPosY-1][currentPosX].isWall()){
+        else if(map[currentPosY-1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY+1][currentPosX].isWall()){
             x=1;
             y=0;
         }
@@ -161,9 +163,7 @@ public class ClydeGhost implements Ghost {
                 currentPosY = currentPosY - speed;
             }
         }
-        else{
-            throw new java.lang.IllegalArgumentException("Cannot move diagonal");
-        }
+
     }
 
     @Override
