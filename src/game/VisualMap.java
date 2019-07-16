@@ -13,14 +13,15 @@ public class VisualMap {
 
     private Grid[][] gameMap;
 
-    public VisualMap(Grid[][] gameMap, GraphicsContext gc, int generation, int fitness) {
-        this.gameMap = gameMap;
+    public VisualMap(GameArray game, GraphicsContext gc, int generation, int fitness) {
+
+        gameMap = game.getLayout();
         this.gc = gc;
         this.generation = generation;
         this.fitness = fitness;
 
         drawGrid();
-        updateGrid();
+        //updateGrid();
     }
 
     public void drawGrid() {
@@ -36,13 +37,27 @@ public class VisualMap {
 
         gc.setStroke(Color.WHITE);
 
+        gc.setFill(Color.BLACK);
         // Background color black
         gc.fillRect(0, 0, 640, 640);
+
 
         // Drawing the grid
         for (int r = 0; r < gridW; r++) {
             for (int c = 0; c < gridW; c++) {
-                if (gameMap[r][c].isPellet()) {
+                if (gameMap[r][c].isPinky()) {
+                    gc.setFill(Color.PINK);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isBlinky()) {
+                    gc.setFill(Color.RED);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isInky()) {
+                    gc.setFill(Color.BLUE);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isClyde()) {
+                    gc.setFill(Color.ORANGE);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isPellet()) {
                     gc.setFill(Color.YELLOW);
                     gc.fillOval(c * rectW + startX + 7, r * rectW + startY + 7, 5, 5);
                 } else if (gameMap[r][c].isWall()) {
@@ -61,7 +76,6 @@ public class VisualMap {
                         gc.fillOval(c * rectW + startX + 4, r * rectW + startY + 4, 10, 10);
                         gc.strokeOval(c * rectW + startX + 4, r * rectW + startY + 4, 10, 10);
                     }
-
                 }
             }
         }
