@@ -47,7 +47,10 @@ public class BlinkyGhost implements Ghost{
     }
 
     @Override
-    public void move(int x, int y, int px, int py, boolean scared) {
+    public void move(int px, int py, boolean scared) {
+        int x = 0;
+        int y = 0;
+
         if(!scared) {
             if (px > currentPosX) {
                 x = 1;
@@ -87,19 +90,19 @@ public class BlinkyGhost implements Ghost{
 
         //check grid object
 
-        if(map[currentPosY][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        if(map[currentPosY+1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
         if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
         }
         if(map[currentPosY-1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        if(map[currentPosY][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        if(map[currentPosY+1][currentPosX].isWall()){
             x=1;
             y=0;
         }
@@ -137,9 +140,6 @@ public class BlinkyGhost implements Ghost{
             else{
                 currentPosY = currentPosY - speed;
             }
-        }
-        else{
-            throw new java.lang.IllegalArgumentException("Cannot move diagonal");
         }
     }
 
