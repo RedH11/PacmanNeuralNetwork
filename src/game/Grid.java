@@ -56,31 +56,81 @@ public class Grid {
     }
 
     public void setPellet(boolean pellet) {
+        clearWalls();
         this.pellet = pellet;
+        if (pellet) empty = false;
     }
 
     public void setPowerPellet(boolean powerPellet) {
+        clearGrid(powerPellet);
         this.powerPellet = powerPellet;
     }
 
     public void setPacman(boolean pacman) {
         this.pacman = pacman;
+        clearGrid(pacman);
     }
 
     public void setPinky(boolean pinky) {
         this.pinky = pinky;
+        clearGrid(pinky);
     }
 
     public void settLWall(boolean tLWall) {
+        clearWalls();
         this.tLWall = tLWall;
+        clearGrid(tLWall);
     }
 
     public void settRWall(boolean tRWall) {
+        clearWalls();
         this.tRWall = tRWall;
+        clearGrid(tRWall);
     }
 
     public void setvWall(boolean vWall) {
+        clearWalls();
         this.vWall = vWall;
+        clearGrid(vWall);
+    }
+
+    public void sethWall(boolean hWall) {
+        clearWalls();
+        this.hWall = hWall;
+        clearGrid(hWall);
+    }
+
+    public void setClyde(boolean clyde) {
+        this.clyde = clyde;
+        clearGrid(clyde);
+    }
+
+    public void setbRWall(boolean bRWall) {
+        clearWalls();
+        this.bRWall = bRWall;
+        clearGrid(bRWall);
+    }
+
+    public void setbLWall(boolean bLWall) {
+        clearWalls();
+        this.bLWall = bLWall;
+        clearGrid(bLWall);
+    }
+
+    public void setBlinky(boolean blinky) {
+        this.blinky = blinky;
+        clearGrid(blinky);
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+        if (empty) pellet = false;
+        clearWalls();
+    }
+
+    public void setInky(boolean inky) {
+        this.inky = inky;
+        clearGrid(inky);
     }
 
     public boolean isPellet() {
@@ -95,33 +145,6 @@ public class Grid {
         return empty;
     }
 
-    public void setInky(boolean inky) {
-        this.inky = inky;
-    }
-
-    public void sethWall(boolean hWall) {
-        this.hWall = hWall;
-    }
-
-    public void setClyde(boolean clyde) {
-        this.clyde = clyde;
-    }
-
-    public void setbRWall(boolean bRWall) {
-        this.bRWall = bRWall;
-    }
-
-    public void setbLWall(boolean bLWall) {
-        this.bLWall = bLWall;
-    }
-
-    public void setBlinky(boolean blinky) {
-        this.blinky = blinky;
-    }
-
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
 
     public boolean isvWall() {
         return vWall;
@@ -170,5 +193,22 @@ public class Grid {
 
     public boolean isBlinky() {
         return blinky;
+    }
+
+    public void clearGrid(boolean clear) {
+        if (clear) {
+            empty = false;
+            pellet = false;
+            powerPellet = false;
+        }
+    }
+
+    public void clearWalls() {
+        hWall = false;
+        vWall = false;
+        bRWall = false;
+        bLWall = false;
+        tRWall = false;
+        tLWall = false;
     }
 }
