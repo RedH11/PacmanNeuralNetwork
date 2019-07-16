@@ -3,15 +3,15 @@ package game;
 import java.awt.*;
 
 public class Food {
-    public double SIZE = 5;
-    public double POWER_SIZE = 15;
+    private double SIZE = 5;
+    private double POWER_SIZE = 15;
     public int SCORE = 100;
-    public int x;
-    public int y;
+    private int x;
+    private int y;
     public boolean isActive;
     public double timer = 30000;
-    public double width;
-    public double length;
+    private double width;
+    private double length;
 
     java.awt.Color pelletColor = java.awt.Color.yellow;
 
@@ -20,13 +20,13 @@ public class Food {
      * @param x x position
      * @param y y position
      */
-    public void Pellet(int x, int y) {
+    public void pellet(int x, int y) {
         this.x = x;
         this.y = y;
         this.width = SIZE;
         this.length = SIZE;
     }
-    public void PowerPellet(int x, int y) {
+    public void powerPellet(int x, int y) {
         this.x = x;
         this.y = y;
         this.width = POWER_SIZE;
