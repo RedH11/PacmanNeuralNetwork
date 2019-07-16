@@ -1,13 +1,16 @@
-package gamePack;
+package game;
 
-public class PinkyGhost implements Ghost {
+import java.util.Random;
+
+public class ClydeGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
+
     private Grid[][]map;
 
-    public PinkyGhost(Grid[][]maplayout){
+    public ClydeGhost(Grid[][]maplayout){
         map = maplayout;
     }
 
@@ -21,7 +24,7 @@ public class PinkyGhost implements Ghost {
         }
     }
 
-
+    @Override
     public void setCurrentPos(int x, int y) {
         currentPosX = x;
         currentPosY = y;
@@ -49,26 +52,50 @@ public class PinkyGhost implements Ghost {
     @Override
     public void move(int px, int py, boolean scared) {
         int dir = 0;
-    /*
+        Random rand = new Random();//can evolve on this
+        /*
         int x = 0;
         int y = 0;
-
         if(!scared) {
             if (px > currentPosX) {
-                x = 0;
-                y = 1;
-            }
-            if (px < currentPosX) {
-                x = 0;
-                y = -1;
-            }
-            if (px == currentPosX && py > currentPosY) {
                 x = 1;
                 y = 0;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
             }
-            if (px == currentPosX && py < currentPosY) {
+            if (px < currentPosX) {
                 x = -1;
                 y = 0;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = 1;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = -1;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    x = rand.nextInt(11) - 10;
+                    if (x == 0) {
+                        y = rand.nextInt(10) - 10;
+                    }
+                }
             }
         }
         else{
@@ -89,7 +116,6 @@ public class PinkyGhost implements Ghost {
                 y = 1;
             }
         }
-
         if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
@@ -122,7 +148,6 @@ public class PinkyGhost implements Ghost {
             x=-1;
             y=0;
         }
-
         //check grid object
         if(x != 0 && y == 0){
             if(x > 0){
@@ -140,19 +165,31 @@ public class PinkyGhost implements Ghost {
                 currentPosY = currentPosY - speed;
             }
         }
-        */
+    */
         if (px > currentPosX) {
-            dir = 0;
-        }
-        else if (py > currentPosY) {
             dir = 2;
-        }
-        else if (px < currentPosX) {
-            dir = 3;
-        }
+            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                dir= rand.nextInt(3) ;
 
-        else if ( py < currentPosY) {
+            }
+        }
+        if (px < currentPosX) {
             dir = 1;
+            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                dir= rand.nextInt(3) ;
+            }
+        }
+        if (px == currentPosX && py > currentPosY) {
+            dir = 0;
+            if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                dir= rand.nextInt(3) ;
+            }
+        }
+        if (px == currentPosX && py < currentPosY) {
+            dir = 3;
+            if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                dir= rand.nextInt(3) ;
+            }
         }
         if(!scared) {
             // Up

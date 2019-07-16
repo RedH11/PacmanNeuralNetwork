@@ -1,14 +1,14 @@
-package gamePack;
+package game;
 
-public class PinkyGhost implements Ghost {
+public class BlinkyGhost implements Ghost{
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
-    private Grid[][]map;
-
-    public PinkyGhost(Grid[][]maplayout){
+    private Grid[][] map;
+    public BlinkyGhost(Grid[][] maplayout){
         map = maplayout;
+
     }
 
     @Override
@@ -21,7 +21,7 @@ public class PinkyGhost implements Ghost {
         }
     }
 
-
+    @Override
     public void setCurrentPos(int x, int y) {
         currentPosX = x;
         currentPosY = y;
@@ -48,112 +48,28 @@ public class PinkyGhost implements Ghost {
 
     @Override
     public void move(int px, int py, boolean scared) {
+        int prevX = 0;
+        int prevY = 0;
+
         int dir = 0;
-    /*
-        int x = 0;
-        int y = 0;
 
-        if(!scared) {
-            if (px > currentPosX) {
-                x = 0;
-                y = 1;
-            }
-            if (px < currentPosX) {
-                x = 0;
-                y = -1;
-            }
-            if (px == currentPosX && py > currentPosY) {
-                x = 1;
-                y = 0;
-            }
-            if (px == currentPosX && py < currentPosY) {
-                x = -1;
-                y = 0;
-            }
-        }
-        else{
-            if (px > currentPosX) {
-                x = -1;
-                y = 0;
-            }
-            if (px < currentPosX) {
-                x = 1;
-                y = 0;
-            }
-            if (px == currentPosX && py > currentPosY) {
-                x = 0;
-                y = -1;
-            }
-            if (px == currentPosX && py < currentPosY) {
-                x = 0;
-                y = 1;
-            }
-        }
-
-        if(map[currentPosY][currentPosX-1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY-1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY+1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-1][currentPosX-1].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-1][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY+1][currentPosX-1].isWall()){
-            x=0;
-            y=-1;
-        }
-        else if(map[currentPosY +1 ][currentPosX +1].isWall()){
-            x=-1;
-            y=0;
-        }
-
-        //check grid object
-        if(x != 0 && y == 0){
-            if(x > 0){
-                currentPosX = currentPosX + speed;
-            }
-            else{
-                currentPosX = currentPosY - speed;
-            }
-        }
-        else if(y != 0 && x == 0){
-            if(y > 0){
-                currentPosY = currentPosY + speed;
-            }
-            else{
-                currentPosY = currentPosY - speed;
-            }
-        }
-        */
         if (px > currentPosX) {
-            dir = 0;
-        }
-        else if (py > currentPosY) {
             dir = 2;
         }
-        else if (px < currentPosX) {
+        if (px < currentPosX) {
+            dir = 1;
+        }
+        if (px == currentPosX && py > currentPosY) {
+            dir = 0;
+        }
+        if (px == currentPosX && py < currentPosY) {
             dir = 3;
         }
 
-        else if ( py < currentPosY) {
-            dir = 1;
-        }
+        prevX = currentPosX;
+        prevY = currentPosY;
+
+        // NEW LOGIC
         if(!scared) {
             // Up
             if (dir == 0) {
@@ -261,6 +177,7 @@ public class PinkyGhost implements Ghost {
             }
         }
     }
+
 
     @Override
     public boolean getScared() {
