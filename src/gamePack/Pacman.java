@@ -37,12 +37,18 @@ public class Pacman {
 
         if (gameMap[currentPosX][currentPosY].isGhost()) {
             isAlive = false;
+            gameMap[currentPosX][currentPosY].setEmpty(true);
         }
 
         if (gameMap[currentPosX][currentPosY].isPellet()) {
             score += 100;
-            gameMap[currentPosX][currentPosY].setEmpty(true);
+            gameMap[currentPosX][currentPosY].setPellet(false);
+        }
 
+        if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
+            score += 100;
+            gameMap[currentPosX][currentPosY].setPowerPellet(false);
+            isPowered = true;
         }
     }
 
