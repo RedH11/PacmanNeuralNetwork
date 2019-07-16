@@ -4,9 +4,9 @@
 //import gamePack.GameArray;
 //import gamePack.MapLayout;
 //import gamePack.VisualMap;
-import gamePack.GameArray;
-import gamePack.MapLayout;
-import gamePack.VisualMap;
+import game.GameArray;
+import game.MapLayout;
+import game.VisualMap;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -69,7 +69,8 @@ public class Main extends Application {
 
         Thread networkThread = new Thread(() -> {
             while (true) {
-            game.updateGrid();
+            game.updatePacman();
+            game.updateGhosts();
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ex) {}
