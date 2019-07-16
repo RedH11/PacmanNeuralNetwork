@@ -6,7 +6,7 @@ public interface Ghost {
     int STARTING_Y = 0;
 
 
-    int NORM_SPEED = 2;
+    int NORM_SPEED = 1;
     int SCARED_SPEED = 1;
     void setSpeed(boolean slow);
 
