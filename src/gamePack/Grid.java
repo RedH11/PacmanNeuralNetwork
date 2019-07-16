@@ -1,4 +1,4 @@
-package gamePack;
+package game;
 
 public class Grid {
     // Wall Types
@@ -190,6 +190,11 @@ public class Grid {
 
     public boolean isWall() {
         if (vWall || hWall || tLWall || bLWall || bRWall || tRWall) return true;
+        return false;
+    }
+    
+    public boolean isGhost() {
+        if (blinky || pinky || clyde || inky) return true;
         return false;
     }
 
