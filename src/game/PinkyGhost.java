@@ -5,6 +5,11 @@ public class PinkyGhost implements Ghost {
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
+    private Grid[][]map;
+
+    public PinkyGhost(Grid[][]maplayout){
+        map = maplayout;
+    }
 
     @Override
     public void setSpeed(boolean slow) {
@@ -73,6 +78,38 @@ public class PinkyGhost implements Ghost {
                 x = 0;
                 y = 1;
             }
+        }
+        if(map[currentPosY][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        if(map[currentPosY+1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        if(map[currentPosY][currentPosX-1].isWall()){
+            x=0;
+            y=1;
+        }
+        if(map[currentPosY-1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX-1].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY+1][currentPosX-1].isWall()){
+            x=0;
+            y=-1;
+        }
+        else if(map[currentPosY +1 ][currentPosX +1].isWall()){
+            x=-1;
+            y=0;
         }
         //check grid object
         if(x != 0 && y == 0){
