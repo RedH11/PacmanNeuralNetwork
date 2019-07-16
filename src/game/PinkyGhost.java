@@ -22,6 +22,12 @@ public class PinkyGhost implements Ghost {
     }
 
     @Override
+    public void setCurrentPos(int x, int y) {
+        currentPosX = x;
+        currentPosY = y;
+    }
+
+    @Override
     public void respawn() {
         setNormal();
         currentPosX = STARTING_X;

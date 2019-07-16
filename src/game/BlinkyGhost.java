@@ -10,6 +10,7 @@ public class BlinkyGhost implements Ghost{
         map = maplayout;
 
     }
+
     @Override
     public void setSpeed(boolean slow) {
         if(slow){
@@ -18,6 +19,12 @@ public class BlinkyGhost implements Ghost{
         else{
             speed = NORM_SPEED;
         }
+    }
+
+    @Override
+    public void setCurrentPos(int x, int y) {
+        currentPosX = x;
+        currentPosY = y;
     }
 
     @Override
@@ -112,7 +119,7 @@ public class BlinkyGhost implements Ghost{
             x=-1;
             y=0;
         }
-       
+
 
 
         if(x != 0 && y == 0){

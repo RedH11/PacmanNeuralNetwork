@@ -10,7 +10,7 @@ public interface Ghost {
     int SCARED_SPEED = 1;
     void setSpeed(boolean slow);
 
-
+    void setCurrentPos(int x, int y);
     void respawn();
     void setScared();
     void setNormal();
