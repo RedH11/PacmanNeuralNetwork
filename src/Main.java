@@ -1,13 +1,18 @@
-import game.GameArray;
-import game.MapLayout;
-import game.VisualMap;
+//import gamePack.GameArray;
+//import gamePack.MapLayout;
+//import gamePack.VisualMap;
+//import gamePack.GameArray;
+//import gamePack.MapLayout;
+//import gamePack.VisualMap;
+import gamePack.GameArray;
+import gamePack.MapLayout;
+import gamePack.VisualMap;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -30,7 +35,7 @@ public class Main extends Application {
         stage.setWidth(stageW - 20);
         stage.setHeight(stageW);
 
-        // The canvas for the pacman game
+        // The canvas for the pacman gamePack
         Canvas canvas = new Canvas(stageW, stageW);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 

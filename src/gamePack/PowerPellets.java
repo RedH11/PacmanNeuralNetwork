@@ -1,4 +1,4 @@
-package game;
+package gamePack;
 
 public class PowerPellets {
 }

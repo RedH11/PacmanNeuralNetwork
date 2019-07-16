@@ -1,14 +1,14 @@
-package game;
+package gamePack;
 
-public class PinkyGhost implements Ghost {
+public class BlinkyGhost implements Ghost{
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
-    private Grid[][]map;
-
-    public PinkyGhost(Grid[][]maplayout){
+    private Grid[][] map;
+    public BlinkyGhost(Grid[][] maplayout){
         map = maplayout;
+
     }
 
     @Override
@@ -21,7 +21,7 @@ public class PinkyGhost implements Ghost {
         }
     }
 
-
+    @Override
     public void setCurrentPos(int x, int y) {
         currentPosX = x;
         currentPosY = y;
@@ -48,26 +48,25 @@ public class PinkyGhost implements Ghost {
 
     @Override
     public void move(int px, int py, boolean scared) {
-
         int x = 0;
         int y = 0;
 
         if(!scared) {
             if (px > currentPosX) {
-                x = 0;
-                y = 1;
-            }
-            if (px < currentPosX) {
-                x = 0;
-                y = -1;
-            }
-            if (px == currentPosX && py > currentPosY) {
                 x = 1;
                 y = 0;
             }
-            if (px == currentPosX && py < currentPosY) {
+            if (px < currentPosX) {
                 x = -1;
                 y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = 1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = -1;
             }
         }
         else{
@@ -89,19 +88,21 @@ public class PinkyGhost implements Ghost {
             }
         }
 
+        //check grid object
+
         if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
         }
-        else if(map[currentPosY-1][currentPosX].isWall()){
+        if(map[currentPosY-1][currentPosX].isWall()){
             x=1;
             y=0;
         }
-        else if(map[currentPosY][currentPosX+1].isWall()){
+        if(map[currentPosY][currentPosX+1].isWall()){
             x=0;
             y=1;
         }
-        else if(map[currentPosY+1][currentPosX].isWall()){
+        if(map[currentPosY+1][currentPosX].isWall()){
             x=1;
             y=0;
         }
@@ -122,7 +123,8 @@ public class PinkyGhost implements Ghost {
             y=0;
         }
 
-        //check grid object
+
+
         if(x != 0 && y == 0){
             if(x > 0){
                 currentPosX = currentPosX + speed;
@@ -139,7 +141,6 @@ public class PinkyGhost implements Ghost {
                 currentPosY = currentPosY - speed;
             }
         }
-
     }
 
     @Override

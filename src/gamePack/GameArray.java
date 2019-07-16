@@ -1,10 +1,8 @@
-package game;
-
-import java.util.Random;
+package gamePack;
 
 public class GameArray {
 
-    // Make a 32x32 2D grid as the game
+    // Make a 32x32 2D grid as the gamePack
     Grid[][] gameMap;
 
     Pacman pacman;
@@ -16,7 +14,7 @@ public class GameArray {
 
     public GameArray(MapLayout map) {
         gameMap = map.getLayout();
-        // Make new pacman for the game
+        // Make new pacman for the gamePack
         pacman = new Pacman();
         pinkyGhost = new PinkyGhost(gameMap);
         inkyGhost = new InkyGhost(gameMap);

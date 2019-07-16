@@ -1,18 +1,16 @@
-package game;
+package gamePack;
 
-import java.util.Random;
-
-public class InkyGhost implements Ghost {
+public class PinkyGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
+    private Grid[][]map;
 
-    private Grid[][] map;
-
-    public InkyGhost(Grid[][]maplayout){
+    public PinkyGhost(Grid[][]maplayout){
         map = maplayout;
     }
+
     @Override
     public void setSpeed(boolean slow) {
         if(slow){
@@ -23,7 +21,7 @@ public class InkyGhost implements Ghost {
         }
     }
 
-    @Override
+
     public void setCurrentPos(int x, int y) {
         currentPosX = x;
         currentPosY = y;
@@ -50,14 +48,48 @@ public class InkyGhost implements Ghost {
 
     @Override
     public void move(int px, int py, boolean scared) {
+
         int x = 0;
         int y = 0;
-        Random rand = new Random();//can evolve on this
-        x = rand.nextInt(11)-10;
-        if(x ==0){
-            y = rand.nextInt(10)-10;
+
+        if(!scared) {
+            if (px > currentPosX) {
+                x = 0;
+                y = 1;
+            }
+            if (px < currentPosX) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = -1;
+                y = 0;
+            }
         }
-        else if(map[currentPosY][currentPosX-1].isWall()){
+        else{
+            if (px > currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = 1;
+            }
+        }
+
+        if(map[currentPosY][currentPosX-1].isWall()){
             x=0;
             y=1;
         }
