@@ -174,19 +174,20 @@ public class ClydeGhost implements Ghost {
 
             }
         }
-        if (px < currentPosX) {
-           dir = 1;
-            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
-                dir= rand.nextInt(3) ;
-            }
-        }
-        if (px == currentPosX && py > currentPosY) {
+        else if (py > currentPosY) {
             dir = 0;
             if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
                 dir= rand.nextInt(3) ;
             }
         }
-        if (px == currentPosX && py < currentPosY) {
+        else if (px < currentPosX) {
+           dir = 1;
+            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                dir= rand.nextInt(3) ;
+            }
+        }
+
+        else if (py < currentPosY) {
            dir = 3;
             if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
                 dir= rand.nextInt(3) ;

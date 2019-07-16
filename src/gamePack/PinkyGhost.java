@@ -144,13 +144,14 @@ public class PinkyGhost implements Ghost {
         if (px > currentPosX) {
             dir = 0;
         }
-        if (px < currentPosX) {
-            dir = 3;
-        }
-        if (px == currentPosX && py > currentPosY) {
+        else if (py > currentPosY) {
             dir = 2;
         }
-        if (px == currentPosX && py < currentPosY) {
+        else if (px < currentPosX) {
+            dir = 3;
+        }
+
+        else if ( py < currentPosY) {
             dir = 1;
         }
         if(!scared) {

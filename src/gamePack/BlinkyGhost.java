@@ -148,13 +148,14 @@ public class BlinkyGhost implements Ghost{
         if (px > currentPosX) {
             dir = 2;
         }
-        if (px < currentPosX) {
-            dir = 1;
-        }
-        if (px == currentPosX && py > currentPosY) {
+        else if (py > currentPosY) {
             dir = 0;
         }
-        if (px == currentPosX && py < currentPosY) {
+        else if (px < currentPosX) {
+            dir = 1;
+        }
+
+        else if ( py < currentPosY) {
             dir = 3;
         }
 
