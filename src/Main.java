@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -24,7 +25,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        int gameFPS = 16;
+        int gameFPS = 2;
 
         stage.setWidth(stageW - 20);
         stage.setHeight(stageW);
@@ -34,25 +35,44 @@ public class Main extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         MapLayout map = new MapLayout();
-        GameArray gameMap = new GameArray(map.getLayout());
-        VisualMap pacmanGame = new VisualMap(map.getLayout(), gc, 0, 0);
+        GameArray game = new GameArray(map);
+        VisualMap visualGame = new VisualMap(game, gc, 0, 0);
 
         Pane root = new Pane();
         root.getChildren().addAll(canvas);
         Scene scene = new Scene(root, stageW - 20, stageW);
+
+        scene.setOnKeyPressed(ev -> {
+            if (ev.getCode() == KeyCode.UP) game.setPacmanDir(0);
+            else if (ev.getCode() == KeyCode.LEFT) game.setPacmanDir(1);
+            else if (ev.getCode() == KeyCode.RIGHT) game.setPacmanDir(2);
+            else if (ev.getCode() == KeyCode.DOWN) game.setPacmanDir(3);
+        });
+
         stage.setScene(scene);
         stage.show();
 
         Thread gameThread = new Thread(() -> {
-            pacmanGame.updateGrid();
-            try {
-                Thread.sleep(1000/gameFPS);
-            } catch (InterruptedException ex) {}
+            while (true) {
+                visualGame.drawGrid();
+                System.out.println("\n\n");
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ex) {}
+            }
         });
 
         Thread networkThread = new Thread(() -> {
-
+            while (true) {
+            game.updateGrid();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {}
+            }
         });
+
+        gameThread.start();
+        networkThread.start();
     }
 
 }
