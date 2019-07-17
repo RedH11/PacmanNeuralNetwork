@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class NeuralNetwork {
@@ -10,7 +12,23 @@ public class NeuralNetwork {
      double[][][] weights;
     // Every neuron has one bias
      double[][] bias;
-     
+
+     private ArrayList<Double> firstLayer = new ArrayList<>();
+     private ArrayList<Double> secondLayer = new ArrayList<>();
+    private ArrayList<List<Double>> thirdLayer = new ArrayList<java.util.List<Double>>();
+    private List<Double>[] fourthArray;
+
+    public List<Double>[] crossOver() {
+        thirdLayer.add(firstLayer.subList(0,3));
+        thirdLayer.add(secondLayer.subList(4,6));
+        for (int i=0; i < thirdLayer.size(); i=0) {
+            fourthArray[i] = thirdLayer.get(i);
+        }
+        return fourthArray;
+    }
+
+
+
     public final int[] NETWORK_LAYER_SIZES;
     public final int INPUT_SIZE;
     public final int OUTPUT_SIZE;
