@@ -19,8 +19,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
-
+        GeneticAlgorithm ga = new GeneticAlgorithm(100, 1000, 0.01, stage);
+        ga.makeGenerations();
     }
 
 

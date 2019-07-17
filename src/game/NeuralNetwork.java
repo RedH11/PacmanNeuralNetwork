@@ -81,10 +81,15 @@ public class NeuralNetwork {
             // And each neuron in that layer
             for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
                 // Adding bias to the sum initially
-                if(rand.nextDouble()*100 < mutationChance) bias[layer][neuron] += rand.nextDouble();
+
+                if(rand.nextDouble()*100 < mutationChance){
+                    bias[layer][neuron] += rand.nextDouble();
+                    System.out.println("Bias Weights");}
                 // Adding to the sum the output of the last layer
                 for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
-                    if(rand.nextDouble()*100 < mutationChance)  weights[layer][neuron][prevNeuron] += rand.nextDouble();
+                    if(rand.nextDouble()*100 < mutationChance) {
+                        weights[layer][neuron][prevNeuron] += rand.nextDouble();
+                        System.out.println("Mutated Weights");}
                 }
 
                 // The output of this neuron is equal to the sigmoid of the sum
