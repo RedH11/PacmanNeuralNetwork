@@ -11,11 +11,11 @@ public class InkyGhost implements Ghost {
     NeuralNetwork brain;
     private Grid[][] map;
 
-    public InkyGhost(Grid[][]maplayout){
+    public InkyGhost(Grid[][] maplayout){
         map = maplayout;
         brain = new NeuralNetwork(7, 14, 4);
     }
-    public InkyGhost(Grid[][]maplayout, NeuralNetwork bigBrain){
+    public InkyGhost(Grid[][] maplayout, NeuralNetwork bigBrain){
         map = maplayout;
         brain = bigBrain;
     }
@@ -62,13 +62,13 @@ public class InkyGhost implements Ghost {
         //double up, down, left, right;
         int highestDir = 0;
 
-            for(int i = 1; i < outputs.length; i++){
-                if(outputs[highestDir]<outputs[i]){
-                    highestDir = i;
-                }
-
+        for(int i = 1; i < outputs.length; i++){
+            if(outputs[highestDir]<outputs[i]){
+                highestDir = i;
             }
-            return highestDir;
+
+        }
+        return highestDir;
 
 
 
