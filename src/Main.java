@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     int stageW = 660;
+    int currDir = 0;
 
     public static void main(String[] args) {
         launch(args);
@@ -19,8 +20,9 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        int gameFPS = 20;
-        int pacmanMPS = 5;
+        // Visual Effects
+        int gameFPS = 2;
+        int pacmanMPS = 2;
         int ghostsMPS = 2;
 
         stage.setWidth(stageW - 20);
@@ -38,13 +40,20 @@ public class Main extends Application {
         root.getChildren().addAll(canvas);
         Scene scene = new Scene(root, stageW - 20, stageW);
 
-        /* Manual Controls on Pacman
-        scene.setOnKeyPressed(ev -> {
-            if (ev.getCode() == KeyCode.UP) game.setPacmanDir(0);
-            else if (ev.getCode() == KeyCode.LEFT) game.setPacmanDir(1);
-            else if (ev.getCode() == KeyCode.RIGHT) game.setPacmanDir(2);
-            else if (ev.getCode() == KeyCode.DOWN) game.setPacmanDir(3);
+        // Manual Controls
+        /*scene.setOnKeyPressed(ev -> {
+            if (ev.getCode() == KeyCode.UP) game.setInkyDir(0);
+            else if (ev.getCode() == KeyCode.LEFT) game.setInkyDir(1);
+            else if (ev.getCode() == KeyCode.RIGHT) game.setInkyDir(2);
+            else if (ev.getCode() == KeyCode.DOWN) game.setInkyDir(3);
         });*/
+
+        scene.setOnKeyPressed(ev -> {
+            if (ev.getCode() == KeyCode.UP) setCurrDir(0);
+            else if (ev.getCode() == KeyCode.LEFT) setCurrDir(1);
+            else if (ev.getCode() == KeyCode.RIGHT) setCurrDir(2);
+            else if (ev.getCode() == KeyCode.DOWN) setCurrDir(3);
+        });
 
         stage.setScene(scene);
         stage.show();
@@ -59,27 +68,49 @@ public class Main extends Application {
         // Figure out how to stop garbage collection
 
         Thread gameThread = new Thread(() -> {
-            while (game.pacmanIsAlive()) {
-                //visualGame.drawGrid();
+            while (true) {
+                visualGame.drawGrid();
                 try {
-                    Thread.sleep(1000/gameFPS);
-                } catch (InterruptedException ex) {}
+                    Thread.sleep(1000 / gameFPS);
+                } catch (InterruptedException ex) {
+                }
             }
         });
 
-        Thread networkThread = new Thread(() -> {
+        Thread pacmanThread = new Thread(() -> {
             while (game.pacmanIsAlive()) {
-                visualGame.drawGrid();
                 game.updatePacman();
-                //game.updateInky();
                 try {
                     Thread.sleep(1000/pacmanMPS);
                 } catch (InterruptedException ex) {}
             }
         });
 
-        //gameThread.start();
-        networkThread.start();
+        Thread ghostThread = new Thread(() -> {
+            while (game.pacmanIsAlive()) {
+
+                if (game.isScraredMode()) {
+                    game.updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS + 200);
+                    } catch (InterruptedException ex) {}
+                } else {
+                    game.updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        });
+
+        gameThread.start();
+        pacmanThread.start();
+        ghostThread.start();
+
+    }
+
+    public void setCurrDir(int dir) {
+        currDir = dir;
     }
 
 }

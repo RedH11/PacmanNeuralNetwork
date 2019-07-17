@@ -12,7 +12,7 @@ public interface Ghost {
      */
     int STARTING_X = 16;
     int STARTING_Y = 12;
-    int score = 0;
+    double score = 0;
 
     int NORM_SPEED = 1;
     int SCARED_SPEED = 1;
@@ -21,11 +21,11 @@ public interface Ghost {
 
     void setCurrentPos(int x, int y);
 
-    void respawn();
+    void respawn(Grid[][] map);
 
     void setScared();
     void setNormal();
-    void move(int dir);
+    void move(int dir, Grid[][] map);
     boolean getScared();
 
     double distanceFromPac(int px, int py);
@@ -38,6 +38,6 @@ public interface Ghost {
     boolean wallDown();
     boolean wallRight();
     boolean wallLeft();
-    void addScore(int add);
-    int getScore();
+    void addScore(double add);
+    double getScore();
 }

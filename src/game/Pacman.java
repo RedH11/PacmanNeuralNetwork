@@ -45,18 +45,21 @@ public class Pacman {
             if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
 
-        if (gameMap[currentPosX][currentPosY].isGhost()) {
+        /*
+        // If he collides with a ghost
+        if (gameMap[currentPosX][currentPosY].isGhost() && !isPowered) {
             isAlive = false;
             gameMap[currentPosX][currentPosY].setEmpty(true);
-        }
+            System.out.println("DEAD");
+        }*/
 
         if (gameMap[currentPosX][currentPosY].isPellet()) {
-            score += 100;
+            score += 10;
             gameMap[currentPosX][currentPosY].setPellet(false);
         }
 
         if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
-            score += 100;
+            score += 50;
             gameMap[currentPosX][currentPosY].setPowerPellet(false);
             isPowered = true;
         }
@@ -119,8 +122,31 @@ public class Pacman {
             }
         }
 
+        if (gameMap[currentPosX][currentPosY].isGhost()) {
+            isAlive = false;
+            gameMap[currentPosX][currentPosY].setEmpty(true);
+        }
+
+        if (gameMap[currentPosX][currentPosY].isPellet()) {
+            //score += 100;
+            gameMap[currentPosX][currentPosY].setPellet(false);
+        }
+
+        if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
+            //score += 100;
+            gameMap[currentPosX][currentPosY].setPowerPellet(false);
+            isPowered = true;
+        }
+
     }
 
+    public void setPowered(boolean powered) {
+        isPowered = powered;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
 
     public void setCurrentPosX(int x) {
         currentPosX = x;
@@ -136,10 +162,6 @@ public class Pacman {
 
     public int getDir() {
         return dir;
-    }
-
-    public void setPowered(boolean powered) {
-        isPowered = powered;
     }
 
     public boolean isPowered() {
