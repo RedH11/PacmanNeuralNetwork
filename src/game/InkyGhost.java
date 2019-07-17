@@ -7,6 +7,7 @@ public class InkyGhost implements Ghost {
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
     private boolean scared = false;
+    private int score = 0;
 
     private Grid[][] map;
 
@@ -54,13 +55,13 @@ public class InkyGhost implements Ghost {
             setCurrentPos(currentPosX, currentPosY+speed);
         }
         if(dir == 1){
-            setCurrentPos(currentPosX - 1, currentPosY);
+            setCurrentPos(currentPosX - speed, currentPosY);
         }
         if(dir == 2){
             setCurrentPos(currentPosX+speed, currentPosY);
         }
         if(dir ==3){
-            setCurrentPos(currentPosX, currentPosY - 1);
+            setCurrentPos(currentPosX, currentPosY - speed);
         }
 
     }
@@ -107,4 +108,14 @@ public class InkyGhost implements Ghost {
     @Override
     public boolean wallLeft() {
         return map[currentPosY][currentPosX-1].isWall();    }
+
+    @Override
+    public void addScore(int add) {
+        score  = score + add;
+    }
+
+    @Override
+    public int getScore() {
+        return score;
+    }
 }

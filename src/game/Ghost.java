@@ -12,7 +12,7 @@ public interface Ghost {
      */
     int STARTING_X = 16;
     int STARTING_Y = 12;
-
+    int score = 0;
 
     int NORM_SPEED = 1;
     int SCARED_SPEED = 1;
@@ -38,4 +38,6 @@ public interface Ghost {
     boolean wallDown();
     boolean wallRight();
     boolean wallLeft();
+    void addScore(int add);
+    int getScore();
 }
