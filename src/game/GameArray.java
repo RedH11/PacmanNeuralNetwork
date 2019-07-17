@@ -8,39 +8,32 @@ public class GameArray {
     Grid[][] gameMap;
 
     Pacman pacman;
-    PinkyGhost pinkyGhost;
     InkyGhost inkyGhost;
-    BlinkyGhost blinkyGhost;
-    ClydeGhost clydeGhost;
 
 
     public GameArray(MapLayout map) {
         gameMap = map.getLayout();
         // Make new pacman for the game
         pacman = new Pacman();
-        pinkyGhost = new PinkyGhost(gameMap);
         inkyGhost = new InkyGhost(gameMap);
-        blinkyGhost = new BlinkyGhost(gameMap);
-        clydeGhost = new ClydeGhost(gameMap);
     }
 
     public void updatePacman() {
-
         // Deletes space behind pacman
         if (pacman.getDir() != -1) gameMap[pacman.getCurrentPosY()][pacman.getCurrentPosX()].setEmpty(true);
-        pacman.move(gameMap);
+        pacman.moveBot(gameMap);
         gameMap[pacman.getCurrentPosY()][pacman.getCurrentPosX()].setPacman(true);
 
     }
 
     public void updateGhosts() {
         // Spawn ghosts in the corner
-        gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(false);
+        /*gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(false);
         pinkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(true);
 
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(false);
-       // inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
+        inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
 
         gameMap[blinkyGhost.getCurrentY()][blinkyGhost.getCurrentX()].setBlinky(false);
@@ -49,7 +42,14 @@ public class GameArray {
 
         gameMap[clydeGhost.getCurrentY()][clydeGhost.getCurrentX()].setClyde(false);
         clydeGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
-        gameMap[clydeGhost.getCurrentY()][clydeGhost.getCurrentX()].setClyde(true);
+        gameMap[clydeGhost.getCurrentY()][clydeGhost.getCurrentX()].setClyde(true);*/
+
+    }
+
+    public void updateInky() {
+        gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(false);
+        //inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
+        gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
     }
 
     public void setPacmanDir(int dir) {

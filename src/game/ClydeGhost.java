@@ -1,9 +1,8 @@
 package game;
 
-
-
 import java.util.Random;
 
+/*
 public class ClydeGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
@@ -52,153 +51,62 @@ public class ClydeGhost implements Ghost {
     }
 
     @Override
-    public void move(int dir) {
-
-    }
-
     public void move(int px, int py, boolean scared) {
         int dir = 0;
         Random rand = new Random();//can evolve on this
-        /*
-        int x = 0;
-        int y = 0;
 
-        if(!scared) {
-            if (px > currentPosX) {
-                x = 1;
-                y = 0;
-                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
-                    x = rand.nextInt(11) - 10;
-                    if (x == 0) {
-                        y = rand.nextInt(10) - 10;
-                    }
-                }
-            }
-            if (px < currentPosX) {
-                x = -1;
-                y = 0;
-                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
-                    x = rand.nextInt(11) - 10;
-                    if (x == 0) {
-                        y = rand.nextInt(10) - 10;
-                    }
-                }
-            }
-            if (px == currentPosX && py > currentPosY) {
-                x = 0;
-                y = 1;
+        boolean verticalPriority = false;
+
+        verticalPriority = (py - currentPosY) < (px - currentPosX);
+
+        if (verticalPriority) {
+            if (py >= currentPosY) {
+                dir = 0;
                 if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
-                    x = rand.nextInt(11) - 10;
-                    if (x == 0) {
-                        y = rand.nextInt(10) - 10;
-                    }
+                    dir= rand.nextInt(3) ;
                 }
-            }
-            if (px == currentPosX && py < currentPosY) {
-                x = 0;
-                y = -1;
+            } else if (py < currentPosY) {
+                dir = 3;
                 if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
-                    x = rand.nextInt(11) - 10;
-                    if (x == 0) {
-                        y = rand.nextInt(10) - 10;
-                    }
+                    dir = rand.nextInt(3);
                 }
             }
-        }
-        else{
-            if (px > currentPosX) {
-                x = -1;
-                y = 0;
-            }
-            if (px < currentPosX) {
-                x = 1;
-                y = 0;
-            }
-            if (px == currentPosX && py > currentPosY) {
-                x = 0;
-                y = -1;
-            }
-            if (px == currentPosX && py < currentPosY) {
-                x = 0;
-                y = 1;
-            }
-        }
-        if(map[currentPosY][currentPosX-1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY-1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY+1][currentPosX].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-1][currentPosX-1].isWall()){
-            x=1;
-            y=0;
-        }
-        else if(map[currentPosY-1][currentPosX+1].isWall()){
-            x=0;
-            y=1;
-        }
-        else if(map[currentPosY+1][currentPosX-1].isWall()){
-            x=0;
-            y=-1;
-        }
-        else if(map[currentPosY +1 ][currentPosX +1].isWall()){
-            x=-1;
-            y=0;
-        }
-        //check grid object
-        if(x != 0 && y == 0){
-            if(x > 0){
-                currentPosX = currentPosX + speed;
-            }
-            else{
-                currentPosX = currentPosY - speed;
-            }
-        }
-        else if(y != 0 && x == 0){
-            if(y > 0){
-                currentPosY = currentPosY + speed;
-            }
-            else{
-                currentPosY = currentPosY - speed;
-            }
-        }
-    */
-        if (px > currentPosX) {
-            dir = 2;
-            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
-                 dir= rand.nextInt(3) ;
+            /*} else if (px >= currentPosX) {
+                dir = 2;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    dir= rand.nextInt(3) ;
 
-            }
-        }
-        else if (py > currentPosY) {
-            dir = 0;
-            if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
-                dir= rand.nextInt(3) ;
-            }
-        }
-        else if (px < currentPosX) {
-           dir = 1;
-            if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
-                dir= rand.nextInt(3) ;
-            }
-        }
+                }
+            } else if (px < currentPosX) {
+                dir = 1;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    dir = rand.nextInt(3);
+                }*/
+       /* } else {
+            if (px >= currentPosX) {
+                dir = 2;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    dir= rand.nextInt(3) ;
 
-        else if (py < currentPosY) {
-           dir = 3;
-            if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
-                dir= rand.nextInt(3) ;
-            }
-        }
+                }
+            } else if (px < currentPosX) {
+                dir = 1;
+                if ((px - 5 < currentPosX) || (px + 5 > currentPosX)) {
+                    dir= rand.nextInt(3) ;
+                }
+            } /*else if (py >= currentPosY) {
+                dir = 0;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    dir= rand.nextInt(3) ;
+                }
+            } else if (py < currentPosY) {
+                dir = 3;
+                if ((py - 5 < currentPosY) || (py + 5 > currentPosY)) {
+                    dir= rand.nextInt(3) ;
+                }
+            }*/
+        /*}
+
         if(!scared) {
             // Up
             if (dir == 0) {
@@ -313,16 +221,6 @@ public class ClydeGhost implements Ghost {
     }
 
     @Override
-    public double distanceFromPac(int px, int py) {
-        return 0;
-    }
-
-    @Override
-    public int closestDirToPac(int px, int py) {
-        return 0;
-    }
-
-    @Override
     public int getCurrentX() {
         return currentPosX;
     }
@@ -331,24 +229,4 @@ public class ClydeGhost implements Ghost {
     public int getCurrentY() {
         return currentPosY;
     }
-
-    @Override
-    public boolean wallUp() {
-        return false;
-    }
-
-    @Override
-    public boolean wallDown() {
-        return false;
-    }
-
-    @Override
-    public boolean wallRight() {
-        return false;
-    }
-
-    @Override
-    public boolean wallLeft() {
-        return false;
-    }
-}
+}*/

@@ -1,7 +1,5 @@
 package game;
 
-
-
 import java.util.Random;
 
 public class InkyGhost implements Ghost {
