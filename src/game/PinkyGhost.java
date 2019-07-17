@@ -47,19 +47,115 @@ public class PinkyGhost implements Ghost {
     }
 
     @Override
+    public void move(int dir) {
+
+    }
+
     public void move(int px, int py, boolean scared) {
         int dir = 0;
+    /*
+        int x = 0;
+        int y = 0;
 
+        if(!scared) {
+            if (px > currentPosX) {
+                x = 0;
+                y = 1;
+            }
+            if (px < currentPosX) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = -1;
+                y = 0;
+            }
+        }
+        else{
+            if (px > currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = 1;
+            }
+        }
+
+        if(map[currentPosY][currentPosX-1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY-1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY+1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX-1].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY+1][currentPosX-1].isWall()){
+            x=0;
+            y=-1;
+        }
+        else if(map[currentPosY +1 ][currentPosX +1].isWall()){
+            x=-1;
+            y=0;
+        }
+
+        //check grid object
+        if(x != 0 && y == 0){
+            if(x > 0){
+                currentPosX = currentPosX + speed;
+            }
+            else{
+                currentPosX = currentPosY - speed;
+            }
+        }
+        else if(y != 0 && x == 0){
+            if(y > 0){
+                currentPosY = currentPosY + speed;
+            }
+            else{
+                currentPosY = currentPosY - speed;
+            }
+        }
+        */
         if (px > currentPosX) {
             dir = 0;
         }
-        if (px < currentPosX) {
-            dir = 3;
-        }
-        if (px == currentPosX && py > currentPosY) {
+        else if (py > currentPosY) {
             dir = 2;
         }
-        if (px == currentPosX && py < currentPosY) {
+        else if (px < currentPosX) {
+            dir = 3;
+        }
+
+        else if ( py < currentPosY) {
             dir = 1;
         }
         if(!scared) {
@@ -176,6 +272,16 @@ public class PinkyGhost implements Ghost {
     }
 
     @Override
+    public double distanceFromPac(int px, int py) {
+        return 0;
+    }
+
+    @Override
+    public int closestDirToPac(int px, int py) {
+        return 0;
+    }
+
+    @Override
     public int getCurrentX() {
         return currentPosX;
     }
@@ -183,5 +289,25 @@ public class PinkyGhost implements Ghost {
     @Override
     public int getCurrentY() {
         return currentPosY;
+    }
+
+    @Override
+    public boolean wallUp() {
+        return false;
+    }
+
+    @Override
+    public boolean wallDown() {
+        return false;
+    }
+
+    @Override
+    public boolean wallRight() {
+        return false;
+    }
+
+    @Override
+    public boolean wallLeft() {
+        return false;
     }
 }

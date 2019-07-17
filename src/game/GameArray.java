@@ -40,7 +40,7 @@ public class GameArray {
         gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(true);
 
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(false);
-        inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
+       // inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
 
         gameMap[blinkyGhost.getCurrentY()][blinkyGhost.getCurrentX()].setBlinky(false);

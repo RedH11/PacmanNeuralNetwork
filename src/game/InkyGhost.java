@@ -51,13 +51,48 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public void move(int px, int py, boolean scared) {
+    public void move(int dir) {
+        if(dir == 0){
+            setCurrentPos(currentPosX, currentPosY+speed);
+        }
+        if(dir == 1){
+            setCurrentPos(currentPosX - 1, currentPosY);
+        }
+        if(dir == 2){
+            setCurrentPos(currentPosX+speed, currentPosY);
+        }
+        if(dir ==3){
+            setCurrentPos(currentPosX, currentPosY - 1);
+        }
 
     }
 
     @Override
     public boolean getScared() {
         return scared;
+    }
+
+    @Override
+    public double distanceFromPac(int px, int py) {
+        return Math.sqrt(Math.pow(px-currentPosX, 2)+ Math.pow(py-currentPosY, 2));
+    }
+
+    @Override
+    public int closestDirToPac(int px, int py) {
+        int distanceOnY = py - currentPosY;
+        int distanceOnX = px - currentPosX;
+        if(distanceOnX>distanceOnY){
+            if(distanceOnX > 0){
+                return 2;
+            }
+            else{return 1;}
+        }
+        else{
+            if(distanceOnY > 0){
+                return 0;
+            }
+            else {return 3;}
+        }
     }
 
     @Override
@@ -69,4 +104,22 @@ public class InkyGhost implements Ghost {
     public int getCurrentY() {
         return currentPosY;
     }
+
+    @Override
+    public boolean wallUp() {
+        return map[currentPosY+1][currentPosX].isWall();
+    }
+
+    @Override
+    public boolean wallDown() {
+        return map[currentPosY-1][currentPosX].isWall();    }
+
+    @Override
+    public boolean wallRight() {
+        return map[currentPosY][currentPosX+1].isWall();
+    }
+
+    @Override
+    public boolean wallLeft() {
+        return map[currentPosY][currentPosX-1].isWall();    }
 }

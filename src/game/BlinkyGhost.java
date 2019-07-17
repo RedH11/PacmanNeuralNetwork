@@ -1,6 +1,7 @@
 package game;
 
-public class BlinkyGhost implements Ghost{
+
+public class BlinkyGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
     private int speed = NORM_SPEED;
@@ -47,27 +48,122 @@ public class BlinkyGhost implements Ghost{
     }
 
     @Override
-    public void move(int px, int py, boolean scared) {
-        int prevX = 0;
-        int prevY = 0;
+    public void move(int dir) {
 
+    }
+
+    public void move(int px, int py, boolean scared) {
+        int x = 0;
+        int y = 0;
+        
         int dir = 0;
+        /*
+        if(!scared) {
+            if (px > currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = 1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = -1;
+            }
+        }
+        else{
+            if (px > currentPosX) {
+                x = -1;
+                y = 0;
+            }
+            if (px < currentPosX) {
+                x = 1;
+                y = 0;
+            }
+            if (px == currentPosX && py > currentPosY) {
+                x = 0;
+                y = -1;
+            }
+            if (px == currentPosX && py < currentPosY) {
+                x = 0;
+                y = 1;
+            }
+        }
+
+        //check grid object
+
+        if(map[currentPosY][currentPosX-1].isWall()){
+            x=0;
+            y=1;
+        }
+        if(map[currentPosY-1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        if(map[currentPosY][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        if(map[currentPosY+1][currentPosX].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX-1].isWall()){
+            x=1;
+            y=0;
+        }
+        else if(map[currentPosY-1][currentPosX+1].isWall()){
+            x=0;
+            y=1;
+        }
+        else if(map[currentPosY+1][currentPosX-1].isWall()){
+            x=0;
+            y=-1;
+        }
+        else if(map[currentPosY +1 ][currentPosX +1].isWall()){
+            x=-1;
+            y=0;
+        }
+
+
+
+        if(x != 0 && y == 0){
+            if(x > 0){
+                currentPosX = currentPosX + speed;
+            }
+            else{
+                currentPosX = currentPosY - speed;
+            }
+        }
+        else if(y != 0 && x == 0){
+            if(y > 0){
+                currentPosY = currentPosY + speed;
+            }
+            else{
+                currentPosY = currentPosY - speed;
+            }
+        }
+        */
 
         if (px > currentPosX) {
             dir = 2;
         }
-        if (px < currentPosX) {
-            dir = 1;
-        }
-        if (px == currentPosX && py > currentPosY) {
+        else if (py > currentPosY) {
             dir = 0;
         }
-        if (px == currentPosX && py < currentPosY) {
+        else if (px < currentPosX) {
+            dir = 1;
+        }
+
+        else if ( py < currentPosY) {
             dir = 3;
         }
 
-        prevX = currentPosX;
-        prevY = currentPosY;
 
         // NEW LOGIC
         if(!scared) {
@@ -177,11 +273,21 @@ public class BlinkyGhost implements Ghost{
             }
         }
     }
-
+    
 
     @Override
     public boolean getScared() {
         return scared;
+    }
+
+    @Override
+    public double distanceFromPac(int px, int py) {
+        return 0;
+    }
+
+    @Override
+    public int closestDirToPac(int px, int py) {
+        return 0;
     }
 
     @Override
@@ -192,5 +298,25 @@ public class BlinkyGhost implements Ghost{
     @Override
     public int getCurrentY() {
         return currentPosY;
+    }
+
+    @Override
+    public boolean wallUp() {
+        return false;
+    }
+
+    @Override
+    public boolean wallDown() {
+        return false;
+    }
+
+    @Override
+    public boolean wallRight() {
+        return false;
+    }
+
+    @Override
+    public boolean wallLeft() {
+        return false;
     }
 }
