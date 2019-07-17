@@ -8,6 +8,7 @@ public class Pacman {
     private int dir = -1;
     private int score = 0;
     private boolean isAlive = true;
+    private int fitness;
 
 
 
