@@ -1,5 +1,7 @@
 package gamePack;
 
+import game.Grid;
+
 public class Pacman {
     private int speed = 1;
     private boolean isPowered = false;
@@ -37,8 +39,14 @@ public class Pacman {
         }
 
         if (gameMap[currentPosX][currentPosY].isGhost()) {
+            /*if (isPowered == true) {
+                score += 200;
+
+            }*/
+
             isAlive = false;
             gameMap[currentPosX][currentPosY].setEmpty(true);
+
         }
 
         if (gameMap[currentPosX][currentPosY].isPellet()) {
