@@ -19,7 +19,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
+        
+/*
         // Visual Effects
         int gameFPS = 2;
         int pacmanMPS = 2;
@@ -46,7 +47,7 @@ public class Main extends Application {
             else if (ev.getCode() == KeyCode.LEFT) game.setInkyDir(1);
             else if (ev.getCode() == KeyCode.RIGHT) game.setInkyDir(2);
             else if (ev.getCode() == KeyCode.DOWN) game.setInkyDir(3);
-        });*/
+        });*//*
 
         scene.setOnKeyPressed(ev -> {
             if (ev.getCode() == KeyCode.UP) setCurrDir(0);
@@ -106,7 +107,7 @@ public class Main extends Application {
         gameThread.start();
         pacmanThread.start();
         ghostThread.start();
-
+*/
     }
 
     public void setCurrDir(int dir) {

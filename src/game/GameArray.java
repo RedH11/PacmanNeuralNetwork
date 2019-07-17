@@ -1,9 +1,20 @@
 package game;
 
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
 import java.util.Random;
 
 public class GameArray {
-
+    int stageW = 660;
+    int currDir = 0;
+    int gameFPS = 2;
+    int pacmanMPS = 2;
+    int ghostsMPS = 2;
     // Make a 32x32 2D grid as the game
     Grid[][] gameMap;
     Pacman pacman;
@@ -17,11 +28,148 @@ public class GameArray {
     int moves = 0;
 
 
-    public GameArray(MapLayout map) {
-        gameMap = map.getLayout();
+    public GameArray(InkyGhost inky) {
+      //  gameMap = map.getLayout();
         // Make new pacman for the game
         pacman = new Pacman();
-        inkyGhost = new InkyGhost(gameMap);
+        inkyGhost = inky;
+    }
+    public void runGame(){
+        MapLayout map = new MapLayout();
+        //GameArray game = new GameArray();
+       // VisualMap visualGame = new VisualMap(game, gc, 0, 0);
+        NeuralNetwork nn = new NeuralNetwork(3, 5, 4);
+        double[] outputs = nn.calculate(15, 2 , 3);
+
+        for (int i = 0; i < outputs.length; i++) {
+            System.out.println(outputs[i]);
+        }
+
+        // Figure out how to stop garbage collection
+
+        Thread gameThread = new Thread(() -> {
+            while (true) {
+                //visualGame.drawGrid();
+                try {
+                    Thread.sleep(1000 / gameFPS);
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+
+        Thread pacmanThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+                updatePacman();
+                try {
+                    Thread.sleep(1000/pacmanMPS);
+                } catch (InterruptedException ex) {}
+            }
+        });
+
+        Thread ghostThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+
+                if (isScraredMode()) {
+                    updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS + 200);
+                    } catch (InterruptedException ex) {}
+                } else {
+                    updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        });
+
+        gameThread.start();
+        pacmanThread.start();
+        ghostThread.start();
+
+
+    }
+    public void showGame(Stage stage){
+        stage.setWidth(stageW - 20);
+        stage.setHeight(stageW);
+
+        // The canvas for the pacman game
+        Canvas canvas = new Canvas(stageW, stageW);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        MapLayout map = new MapLayout();
+      //  GameArray game = new GameArray(map);
+        VisualMap visualGame = new VisualMap(this, gc, 0, 0);
+
+        Pane root = new Pane();
+        root.getChildren().addAll(canvas);
+        Scene scene = new Scene(root, stageW - 20, stageW);
+
+        // Manual Controls
+        /*scene.setOnKeyPressed(ev -> {
+            if (ev.getCode() == KeyCode.UP) game.setInkyDir(0);
+            else if (ev.getCode() == KeyCode.LEFT) game.setInkyDir(1);
+            else if (ev.getCode() == KeyCode.RIGHT) game.setInkyDir(2);
+            else if (ev.getCode() == KeyCode.DOWN) game.setInkyDir(3);
+        });*/
+
+        scene.setOnKeyPressed(ev -> {
+            if (ev.getCode() == KeyCode.UP) setCurrDir(0);
+            else if (ev.getCode() == KeyCode.LEFT) setCurrDir(1);
+            else if (ev.getCode() == KeyCode.RIGHT) setCurrDir(2);
+            else if (ev.getCode() == KeyCode.DOWN) setCurrDir(3);
+        });
+
+        stage.setScene(scene);
+        stage.show();
+
+        NeuralNetwork nn = new NeuralNetwork(3, 5, 4);
+        double[] outputs = nn.calculate(15, 2 , 3);
+
+        for (int i = 0; i < outputs.length; i++) {
+            System.out.println(outputs[i]);
+        }
+
+        // Figure out how to stop garbage collection
+
+        Thread gameThread = new Thread(() -> {
+            while (true) {
+                visualGame.drawGrid();
+                try {
+                    Thread.sleep(1000 / gameFPS);
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+
+        Thread pacmanThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+                updatePacman();
+                try {
+                    Thread.sleep(1000/pacmanMPS);
+                } catch (InterruptedException ex) {}
+            }
+        });
+
+        Thread ghostThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+
+                if (isScraredMode()) {
+                    updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS + 200);
+                    } catch (InterruptedException ex) {}
+                } else {
+                    updateInky(currDir);
+                    try {
+                        Thread.sleep(1000/pacmanMPS);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        });
+
+        gameThread.start();
+        pacmanThread.start();
+        ghostThread.start();
     }
 
     public void updatePacman() {
@@ -148,5 +296,8 @@ public class GameArray {
             }
             System.out.println();
         }
+    }
+    public void setCurrDir(int dir) {
+        currDir = dir;
     }
 }
