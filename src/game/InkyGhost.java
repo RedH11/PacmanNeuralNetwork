@@ -49,123 +49,35 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public void move(int px, int py, boolean scared) {
-        int dir = 0;
-        Random rand = new Random();//can evolve on this
-
-        dir = rand.nextInt(3);
-
-        if(!scared) {
-            // Up
-            if (dir == 0) {
-                // If there is a wall above the ghost, go right or left towards pacman
-                if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
-                    // Right
-                else if (!map[currentPosY][currentPosX + 1].isWall() && px >= currentPosX) currentPosX += speed;
-                    //Down (and pacman is lower)
-                else if (!map[currentPosY][currentPosX - 1].isWall() && py >= currentPosY) currentPosX -= speed;
-                    // Left
-                else if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY += speed;
-                // Left
-            } else if (dir == 1) {
-                // The try method is in case it goes through the tunnel
-                try {
-                    // Tries to go left
-                    if (!map[currentPosY][currentPosX - 1].isWall()) currentPosX -= speed;
-                        // If there is a wall and pacman is below go down
-                    else if (!map[currentPosY][currentPosX + 1].isWall() && py >= currentPosY) currentPosY += speed;
-                        //If there is a wall below / pacman is above go up
-                    else if (!map[currentPosY - 1][currentPosX].isWall() && py <= currentPosY) currentPosY -= speed;
-                        // Otherwise go right if there is no wall there
-                    else if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX += speed;
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    currentPosX = 31;
-                }
-                // Right
-            } else if (dir == 2) {
-                // The try method is in case it goes through the tunnel
-                try {
-                    // Tries to go right
-                    if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX += speed;
-                        // If there is a wall and pacman is below go down
-                    else if (!map[currentPosY][currentPosX + 1].isWall() && py >= currentPosY) currentPosY += speed;
-                        //If there is a wall below / pacman is above go up
-                    else if (!map[currentPosY - 1][currentPosX].isWall() && py <= currentPosY) currentPosY -= speed;
-                        // Otherwise go left if there is no wall there
-                    else if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX -= speed;
-                } catch (IndexOutOfBoundsException ex) {
-                    currentPosX = 0;
-                }
-                // Down
-            } else if (dir == 3) {
-                // Tries to go down
-                if (!map[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
-                    // If there is a wall and pacman is to the right try to go right
-                else if (!map[currentPosY][currentPosX + 1].isWall() && px >= currentPosX) currentPosX += speed;
-                    // If there is a wall to the right / pacman is to the left try to go left
-                else if (!map[currentPosY][currentPosX - 1].isWall() && py >= currentPosY) currentPosX -= speed;
-                    // Otherwise try to go up
-                else if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
-            }
+    public void move(int dir) {
+        if(dir == 0){
+            setCurrentPos(currentPosX, currentPosY+speed);
         }
-        else{
-            // Up
-            if (dir == 0) {
-                // If there is a wall above the ghost, go right or left towards pacman
-                if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
-                    // Right
-                else if (!map[currentPosY][currentPosX + 1].isWall() && px >= currentPosX) currentPosX += speed;
-                    //Down (and pacman is lower)
-                else if (!map[currentPosY][currentPosX - 1].isWall() && py >= currentPosY) currentPosX -= speed;
-                    // Left
-                else if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY += speed;
-                // Left
-            } else if (dir == 1) {
-                // The try method is in case it goes through the tunnel
-                try {
-                    // Tries to go left
-                    if (!map[currentPosY][currentPosX - 1].isWall()) currentPosX -= speed;
-                        // If there is a wall and pacman is below go down
-                    else if (!map[currentPosY][currentPosX + 1].isWall() && py >= currentPosY) currentPosY += speed;
-                        //If there is a wall below / pacman is above go up
-                    else if (!map[currentPosY - 1][currentPosX].isWall() && py <= currentPosY) currentPosY -= speed;
-                        // Otherwise go right if there is no wall there
-                    else if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX += speed;
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    currentPosX = 31;
-                }
-                // Right
-            } else if (dir == 2) {
-                // The try method is in case it goes through the tunnel
-                try {
-                    // Tries to go right
-                    if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX -= speed;
-                        // If there is a wall and pacman is below go down
-                    else if (!map[currentPosY][currentPosX + 1].isWall() && py >= currentPosY) currentPosY -= speed;
-                        //If there is a wall below / pacman is above go up
-                    else if (!map[currentPosY - 1][currentPosX].isWall() && py <= currentPosY) currentPosY += speed;
-                        // Otherwise go left if there is no wall there
-                    else if (!map[currentPosY][currentPosX + 1].isWall()) currentPosX += speed;
-                } catch (IndexOutOfBoundsException ex) {
-                    currentPosX = 0;
-                }
-                // Down
-            } else if (dir == 3) {
-                // Tries to go down
-                if (!map[currentPosY + 1][currentPosX].isWall()) currentPosY -= speed;
-                    // If there is a wall and pacman is to the right try to go right
-                else if (!map[currentPosY][currentPosX + 1].isWall() && px >= currentPosX) currentPosX -= speed;
-                    // If there is a wall to the right / pacman is to the left try to go left
-                else if (!map[currentPosY][currentPosX - 1].isWall() && py >= currentPosY) currentPosX += speed;
-                    // Otherwise try to go up
-                else if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY += speed;
-            }
+        if(dir == 1){
+            setCurrentPos(currentPosX - 1, currentPosY);
         }
+        if(dir == 2){
+            setCurrentPos(currentPosX+speed, currentPosY);
+        }
+        if(dir ==3){
+            setCurrentPos(currentPosX, currentPosY - 1);
+        }
+
     }
 
     @Override
     public boolean getScared() {
         return scared;
+    }
+
+    @Override
+    public double distanceFromPac(int px, int py) {
+        return Math.sqrt(Math.pow(px-currentPosX, 2)+ Math.pow(py-currentPosY, 2));
+    }
+
+    @Override
+    public double closestDirToPac(int px, int py) {
+        return (Math.sin(getCurrentY()/distanceFromPac(px, py))*distanceFromPac(px, py));
     }
 
     @Override
@@ -177,4 +89,22 @@ public class InkyGhost implements Ghost {
     public int getCurrentY() {
         return currentPosY;
     }
+
+    @Override
+    public boolean wallUp() {
+        return map[currentPosY+1][currentPosX].isWall();
+    }
+
+    @Override
+    public boolean wallDown() {
+        return map[currentPosY-1][currentPosX].isWall();    }
+
+    @Override
+    public boolean wallRight() {
+        return map[currentPosY][currentPosX+1].isWall();
+    }
+
+    @Override
+    public boolean wallLeft() {
+        return map[currentPosY][currentPosX-1].isWall();    }
 }

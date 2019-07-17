@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Random;
+
 public class Pacman {
     private int speed = 1;
     private boolean isPowered = false;
@@ -8,6 +10,16 @@ public class Pacman {
     private int dir = -1;
     private int score = 0;
     private boolean isAlive = true;
+
+    public Pacman() {
+        setCurrentPosX(16);
+        setCurrentPosY(20);
+        this.score = 0;
+        this.speed = 1;
+        this.isPowered = false;
+        this.isAlive = true;
+        this.dir = -1;
+    }
 
     public void move(Grid[][] gameMap) {
 
@@ -32,16 +44,81 @@ public class Pacman {
         } else if (dir == 3) {
             if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
+
+        if (gameMap[currentPosX][currentPosY].isGhost()) {
+            isAlive = false;
+            gameMap[currentPosX][currentPosY].setEmpty(true);
+        }
+
+        if (gameMap[currentPosX][currentPosY].isPellet()) {
+            score += 100;
+            gameMap[currentPosX][currentPosY].setPellet(false);
+        }
+
+        if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
+            score += 100;
+            gameMap[currentPosX][currentPosY].setPowerPellet(false);
+            isPowered = true;
+        }
     }
 
-    public void pacman() {
-        setCurrentPosX(16);
-        setCurrentPosY(20);
-        this.score = 0;
-        this.speed = 1;
-        this.isPowered = false;
-        this.isAlive = true;
-        this.dir = -1;
+    // Generates a random direction other than the current one
+    public int randDir(int prevNum) {
+        Random num = new Random();
+
+        int dir = num.nextInt(4);
+        while (dir == prevNum) {
+            dir = num.nextInt(4);
+        }
+
+        return dir;
+    }
+
+    // Bot that moves pacman in random directions
+    public void moveBot(Grid[][] gameMap) {
+        int prevNum;
+
+        if (dir == -1) dir = 2;
+
+        // Up
+        if (dir == 0) {
+            if (!gameMap[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
+            else {
+                prevNum = dir;
+                dir = randDir(prevNum);
+            }
+            // Left
+        } else if (dir == 1) {
+            try {
+                if (!gameMap[currentPosY][currentPosX-1].isWall()) currentPosX -= speed;
+                else {
+                    prevNum = dir;
+                    dir = randDir(prevNum);
+                }
+
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                currentPosX = 31;
+            }
+            // Right
+        } else if (dir == 2) {
+            try {
+                if (!gameMap[currentPosY][currentPosX+1].isWall()) currentPosX += speed;
+                else {
+                    prevNum = dir;
+                    dir = randDir(prevNum);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                currentPosX = 0;
+            }
+            // Down
+        } else if (dir == 3) {
+            if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
+            else {
+                prevNum = dir;
+                dir = randDir(prevNum);
+            }
+        }
+
     }
 
 

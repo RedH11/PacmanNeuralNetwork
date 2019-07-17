@@ -30,10 +30,7 @@ public class MapLayout {
         mapLayout[center + 4][center].setPacman(true);
 
         // Spawn ghosts in the center
-        mapLayout[center - 4][center].setBlinky(true);
         mapLayout[center - 4][center].setInky(true);
-        mapLayout[center - 4][center].setClyde(true);
-        mapLayout[center - 4][center].setPinky(true);
 
         // Outside Walls
         makeBox(center, center, 32, 32, false);

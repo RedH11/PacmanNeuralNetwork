@@ -1,5 +1,7 @@
 package game;
 
+/*
+
 public class PinkyGhost implements Ghost {
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
@@ -50,18 +52,32 @@ public class PinkyGhost implements Ghost {
     public void move(int px, int py, boolean scared) {
         int dir = 0;
 
-        if (px > currentPosX) {
-            dir = 0;
-        }
-        if (px < currentPosX) {
-            dir = 3;
-        }
-        if (px == currentPosX && py > currentPosY) {
-            dir = 2;
-        }
-        if (px == currentPosX && py < currentPosY) {
-            dir = 1;
-        }
+        boolean verticalPriority = false;
+
+        verticalPriority = (py - currentPosY) < (px - currentPosX);
+
+        if (verticalPriority) {
+            if (py >= currentPosY) {
+                dir = 2;
+            } else if ( py < currentPosY) {
+                dir = 1;
+            } /*else if (px > currentPosX) {
+                dir = 0;
+            } else if (px < currentPosX) {
+                dir = 3;
+            }*/
+        /*} else {
+            if (px >= currentPosX) {
+                dir = 0;
+            } else if (px < currentPosX) {
+                dir = 3;
+            } /*else if (py > currentPosY) {
+                dir = 2;
+            } else if ( py < currentPosY) {
+                dir = 1;
+            }*/
+        /*}
+
         if(!scared) {
             // Up
             if (dir == 0) {
@@ -184,4 +200,4 @@ public class PinkyGhost implements Ghost {
     public int getCurrentY() {
         return currentPosY;
     }
-}
+}*/

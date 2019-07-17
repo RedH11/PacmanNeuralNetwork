@@ -1,5 +1,6 @@
 package game;
 
+/*
 public class BlinkyGhost implements Ghost{
     private int currentPosX = STARTING_X;
     private int currentPosY = STARTING_Y;
@@ -48,26 +49,27 @@ public class BlinkyGhost implements Ghost{
 
     @Override
     public void move(int px, int py, boolean scared) {
-        int prevX = 0;
-        int prevY = 0;
 
         int dir = 0;
 
-        if (px > currentPosX) {
-            dir = 2;
-        }
-        if (px < currentPosX) {
-            dir = 1;
-        }
-        if (px == currentPosX && py > currentPosY) {
-            dir = 0;
-        }
-        if (px == currentPosX && py < currentPosY) {
-            dir = 3;
+        boolean verticalPriority = false;
+
+        verticalPriority = (py - currentPosY) < (px - currentPosX);
+
+        if (verticalPriority) {
+            if (px >= currentPosX) {
+                dir = 2;
+            } else if (px < currentPosX) {
+                dir = 1;
+            }
+        } else {
+            if (py >= currentPosY) {
+                dir = 0;
+            } else if (py < currentPosY) {
+                dir = 3;
+            }
         }
 
-        prevX = currentPosX;
-        prevY = currentPosY;
 
         // NEW LOGIC
         if(!scared) {
@@ -193,4 +195,4 @@ public class BlinkyGhost implements Ghost{
     public int getCurrentY() {
         return currentPosY;
     }
-}
+}*/
