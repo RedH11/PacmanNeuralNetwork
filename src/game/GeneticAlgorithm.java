@@ -16,13 +16,37 @@ public class GeneticAlgorithm {
     ArrayList<InkyGhost> babyInkys = new ArrayList<>();
 
     int popSize;
+    int totalGens;
     int generation;
 
-    public GeneticAlgorithm(int popSize, Stage stage) {
+    double mutationChance;
+
+    Random random = new Random();
+
+    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, Stage stage) {
         this.popSize = popSize;
         this.stage = stage;
+        this.totalGens = totalGens;
+        this.mutationChance = mutationChance;
 
         makePopulation();
+    }
+
+    public void makeGenerations() {
+
+        while (generation < totalGens) {
+            testInkys();
+            sortPopulation();
+            mutatePopulation();
+            breedPopulation();
+            generation++;
+        }
+    }
+
+    public void testInkys() {
+        for (GameArray game : pop) {
+            game.runGame();
+        }
     }
 
     // Make a fresh population
@@ -32,8 +56,12 @@ public class GeneticAlgorithm {
         }
     }
 
-    public void breedPopulation() {
+    public void mutatePopulation() {
+        System.out.println("Captain Mutato");
+    }
 
+    public void breedPopulation() {
+        int inkysNeeded = popSize - babyInkys.size();
     }
 
     public void makeChild(NeuralNetwork parent1, NeuralNetwork parent2) {
@@ -41,8 +69,9 @@ public class GeneticAlgorithm {
     }
 
     public void sortPopulation() {
+
         // Sort all inkys by fitness (left worst -> right best)
-       // Collections.sort(babyInkys, new IncomComparator());
+        // Collections.sort(babyInkys, new IncomComparator());
         babyInkys.sort(new IncomComparator());
 
 
@@ -63,6 +92,5 @@ public class GeneticAlgorithm {
         babyInkys.add(ranFive);
 
         babyInkys.sort(new IncomComparator());
-
     }
 }
