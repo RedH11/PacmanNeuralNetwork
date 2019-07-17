@@ -15,6 +15,7 @@ public class GameArray {
     int gameFPS = 2;
     int pacmanMPS = 2;
     int ghostsMPS = 2;
+
     // Make a 32x32 2D grid as the game
     Grid[][] gameMap;
     Pacman pacman;
@@ -27,35 +28,21 @@ public class GameArray {
     final int TOTAL_MOVES = 3600;
     int moves = 0;
 
-
-    public GameArray(InkyGhost inky) {
-      //  gameMap = map.getLayout();
-        // Make new pacman for the game
+    public GameArray() {
+        MapLayout mapDefault = new MapLayout();
+        gameMap = mapDefault.getLayout();
         pacman = new Pacman();
-        inkyGhost = inky;
+        inkyGhost = new InkyGhost(gameMap);
     }
-    public void runGame(){
-        MapLayout map = new MapLayout();
-        //GameArray game = new GameArray();
-       // VisualMap visualGame = new VisualMap(game, gc, 0, 0);
-        NeuralNetwork nn = new NeuralNetwork(3, 5, 4);
-        double[] outputs = nn.calculate(15, 2 , 3);
 
-        for (int i = 0; i < outputs.length; i++) {
-            System.out.println(outputs[i]);
-        }
+    public GameArray(NeuralNetwork brain) {
+        MapLayout mapDefault = new MapLayout();
+        gameMap = mapDefault.getLayout();
+        pacman = new Pacman();
+        inkyGhost = new InkyGhost(gameMap, brain);
+    }
 
-        // Figure out how to stop garbage collection
-
-        Thread gameThread = new Thread(() -> {
-            while (true) {
-                //visualGame.drawGrid();
-                try {
-                    Thread.sleep(1000 / gameFPS);
-                } catch (InterruptedException ex) {
-                }
-            }
-        });
+    public void runGame() {
 
         Thread pacmanThread = new Thread(() -> {
             while (pacmanIsAlive()) {
@@ -68,56 +55,39 @@ public class GameArray {
 
         Thread ghostThread = new Thread(() -> {
             while (pacmanIsAlive()) {
-
                 if (isScraredMode()) {
+                    ghostsMPS = 1;
                     updateInky(currDir);
                     try {
-                        Thread.sleep(1000/pacmanMPS + 200);
+                        Thread.sleep(1000/ghostsMPS);
                     } catch (InterruptedException ex) {}
                 } else {
+                    ghostsMPS = 2;
                     updateInky(currDir);
                     try {
-                        Thread.sleep(1000/pacmanMPS);
+                        Thread.sleep(1000/ghostsMPS);
                     } catch (InterruptedException ex) {}
                 }
             }
         });
 
-        gameThread.start();
         pacmanThread.start();
         ghostThread.start();
-
-
     }
+
     public void showGame(Stage stage){
+
         stage.setWidth(stageW - 20);
         stage.setHeight(stageW);
 
         // The canvas for the pacman game
         Canvas canvas = new Canvas(stageW, stageW);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        MapLayout map = new MapLayout();
-      //  GameArray game = new GameArray(map);
         VisualMap visualGame = new VisualMap(this, gc, 0, 0);
 
         Pane root = new Pane();
         root.getChildren().addAll(canvas);
         Scene scene = new Scene(root, stageW - 20, stageW);
-
-        // Manual Controls
-        /*scene.setOnKeyPressed(ev -> {
-            if (ev.getCode() == KeyCode.UP) game.setInkyDir(0);
-            else if (ev.getCode() == KeyCode.LEFT) game.setInkyDir(1);
-            else if (ev.getCode() == KeyCode.RIGHT) game.setInkyDir(2);
-            else if (ev.getCode() == KeyCode.DOWN) game.setInkyDir(3);
-        });*/
-
-        scene.setOnKeyPressed(ev -> {
-            if (ev.getCode() == KeyCode.UP) setCurrDir(0);
-            else if (ev.getCode() == KeyCode.LEFT) setCurrDir(1);
-            else if (ev.getCode() == KeyCode.RIGHT) setCurrDir(2);
-            else if (ev.getCode() == KeyCode.DOWN) setCurrDir(3);
-        });
 
         stage.setScene(scene);
         stage.show();
@@ -191,16 +161,15 @@ public class GameArray {
             if (!inkyGhost.getScared()) {
                 pacman.setAlive(false);
                 inkyGhost.addScore(200);
-                System.out.println("Fitness:" + inkyGhost.getScore());
             }
         }
     }
 
     public void eatGhost() {
-        System.out.println("NOMNOM GHOST");
         inkyGhost.respawn(gameMap);
         pacman.setPowered(false);
         //pacman.changeScore(200)
+        // Punish inky for being eaten
         inkyGhost.addScore(-100);
     }
 
@@ -209,15 +178,12 @@ public class GameArray {
         /*gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(false);
         pinkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[pinkyGhost.getCurrentY()][pinkyGhost.getCurrentX()].setPinky(true);
-
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(false);
         inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
-
         gameMap[blinkyGhost.getCurrentY()][blinkyGhost.getCurrentX()].setBlinky(false);
         blinkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[blinkyGhost.getCurrentY()][blinkyGhost.getCurrentX()].setBlinky(true);
-
         gameMap[clydeGhost.getCurrentY()][clydeGhost.getCurrentX()].setClyde(false);
         clydeGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
         gameMap[clydeGhost.getCurrentY()][clydeGhost.getCurrentX()].setClyde(true);*/
@@ -255,22 +221,12 @@ public class GameArray {
         pacman.setDir(dir);
     }
 
-    public void setScaredMode() {
-
-    }
-
     public boolean isScraredMode() {
-
-
         return pacman.isPowered();
     }
 
     public boolean pacmanIsAlive() {
         return pacman.isAlive();
-    }
-
-    public Grid[][] getLayout() {
-        return gameMap;
     }
 
     public void outputConsoleMap() {

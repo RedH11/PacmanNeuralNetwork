@@ -1,13 +1,15 @@
 package game;
 
+import java.util.Random;
+
 public class NeuralNetwork {
 
     // First is layer and second is neuron
     private double[][] output;
     // Three (1. Layer 2. Neuron 3. Neuron in prev. layer connected with this one)
-    private double[][][] weights;
+     double[][][] weights;
     // Every neuron has one bias
-    private double[][] bias;
+     double[][] bias;
      
     public final int[] NETWORK_LAYER_SIZES;
     public final int INPUT_SIZE;
@@ -69,6 +71,26 @@ public class NeuralNetwork {
         }
         // Last layer outputs
         return output[NETWORK_SIZE - 1];
+    }
+
+    public void mutate(double mutationChance) {
+
+        Random rand = new Random();
+
+        for (int layer = 1; layer < NETWORK_SIZE; layer++) {
+            // And each neuron in that layer
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+                // Adding bias to the sum initially
+                if(rand.nextDouble()*100 < mutationChance) bias[layer][neuron] += rand.nextDouble();
+                // Adding to the sum the output of the last layer
+                for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
+                    if(rand.nextDouble()*100 < mutationChance)  weights[layer][neuron][prevNeuron] += rand.nextDouble();
+                }
+
+                // The output of this neuron is equal to the sigmoid of the sum
+
+            }
+        }
     }
 
 

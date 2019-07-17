@@ -8,12 +8,23 @@ public class InkyGhost implements Ghost {
     private int speed = NORM_SPEED;
     private boolean scared = false;
     private double score = 0;
-
+    NeuralNetwork brain;
     private Grid[][] map;
 
-    public InkyGhost(Grid[][]maplayout){
+    public InkyGhost(Grid[][] maplayout){
         map = maplayout;
+        brain = new NeuralNetwork(7, 14, 4);
     }
+    public InkyGhost(Grid[][] maplayout, NeuralNetwork bigBrain){
+        map = maplayout;
+        brain = bigBrain;
+    }
+
+
+    public NeuralNetwork getBrain() {
+        return brain;
+    }
+
     @Override
     public void setSpeed(boolean slow) {
         if(slow){
@@ -50,6 +61,22 @@ public class InkyGhost implements Ghost {
         scared = false;
     }
 
+    public int think(double[]input){
+        double []outputs = brain.calculate(input);
+        //double up, down, left, right;
+        int highestDir = 0;
+
+        for(int i = 1; i < outputs.length; i++){
+            if(outputs[highestDir]<outputs[i]){
+                highestDir = i;
+            }
+
+        }
+        return highestDir;
+
+
+
+    }
     @Override
     public void move(int dir, Grid[][] map) {
         if(dir == 0){
