@@ -20,7 +20,6 @@ public class GeneticAlgorithm {
     int generation;
 
     double mutationChance;
-    Random rand = new Random();
 
     Random random = new Random();
 
@@ -36,9 +35,9 @@ public class GeneticAlgorithm {
     public void makeGenerations() {
 
         while (generation < totalGens) {
+            if (generation > 0) makePopulation();
             testInkys();
             sortPopulation();
-
             mutatePopulation();
             breedPopulation();
             generation++;
@@ -59,12 +58,7 @@ public class GeneticAlgorithm {
     }
 
     public void mutatePopulation() {
-        if(shouldMutate()) {
-            for (int i = 0; i < babyInkys.size(); i++) {
-                babyInkys.get(i).getBrain().mutate(mutationChance);
-                System.out.println("Captain Mutato");
-            }
-        }
+        System.out.println("Captain Mutato");
     }
 
     public void breedPopulation() {
@@ -72,6 +66,7 @@ public class GeneticAlgorithm {
     }
 
     public void makeChild(NeuralNetwork parent1, NeuralNetwork parent2) {
+
 
     }
 
@@ -99,16 +94,5 @@ public class GeneticAlgorithm {
         babyInkys.add(ranFive);
 
         babyInkys.sort(new IncomComparator());
-    }
-    private boolean shouldMutate(){
-
-        if(rand.nextInt(99)<mutationChance){
-            return true;
-        }
-        else{
-            return  false;
-        }
-
-
     }
 }
