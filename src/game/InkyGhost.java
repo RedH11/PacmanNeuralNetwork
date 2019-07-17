@@ -79,17 +79,26 @@ public class InkyGhost implements Ghost {
     }
     @Override
     public void move(int dir, Grid[][] map) {
-        if(dir == 0){
-            setCurrentPos(currentPosX, currentPosY-speed);
-        }
-        if(dir == 1){
-            setCurrentPos(currentPosX - speed, currentPosY);
-        }
-        if(dir == 2){
-            setCurrentPos(currentPosX + speed, currentPosY);
-        }
-        if(dir ==3){
-            setCurrentPos(currentPosX, currentPosY + speed);
+        // Up
+        if (dir == 0) {
+            if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
+            // Left
+        } else if (dir == 1) {
+            try {
+                if (!map[currentPosY][currentPosX-1].isWall()) currentPosX -= speed;
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                currentPosX = 31;
+            }
+            // Right
+        } else if (dir == 2) {
+            try {
+                if (!map[currentPosY][currentPosX+1].isWall()) currentPosX += speed;
+            } catch (IndexOutOfBoundsException ex) {
+                currentPosX = 0;
+            }
+            // Down
+        } else if (dir == 3) {
+            if (!map[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
 
     }
