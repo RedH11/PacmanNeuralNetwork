@@ -21,6 +21,10 @@ public class InkyGhost implements Ghost {
     }
 
 
+    public NeuralNetwork getBrain() {
+        return brain;
+    }
+
     @Override
     public void setSpeed(boolean slow) {
         if(slow){
