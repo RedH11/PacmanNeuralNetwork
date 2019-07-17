@@ -6,9 +6,15 @@ public class GameArray {
 
     // Make a 32x32 2D grid as the game
     Grid[][] gameMap;
-
     Pacman pacman;
     InkyGhost inkyGhost;
+
+    int scaredMoves = 0;
+    // 12 seconds of moves
+    final int totalScaredMoves = 240;
+
+    final int TOTAL_MOVES = 3600;
+    int moves = 0;
 
 
     public GameArray(MapLayout map) {
@@ -24,6 +30,30 @@ public class GameArray {
         pacman.moveBot(gameMap);
         gameMap[pacman.getCurrentPosY()][pacman.getCurrentPosX()].setPacman(true);
 
+        if (pacman.isPowered()) scaredMoves++;
+        if (pacman.isPowered() && !inkyGhost.getScared()) inkyGhost.setScared();
+
+        if (scaredMoves >= totalScaredMoves - 1) {
+            scaredMoves = 0;
+            pacman.setPowered(false);
+            inkyGhost.setNormal();
+        }
+
+        if (gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].isPacman()) {
+            if (!inkyGhost.getScared()) {
+                pacman.setAlive(false);
+                inkyGhost.addScore(200);
+                System.out.println("Fitness:" + inkyGhost.getScore());
+            }
+        }
+    }
+
+    public void eatGhost() {
+        System.out.println("NOMNOM GHOST");
+        inkyGhost.respawn(gameMap);
+        pacman.setPowered(false);
+        //pacman.changeScore(200)
+        inkyGhost.addScore(-100);
     }
 
     public void updateGhosts() {
@@ -46,14 +76,45 @@ public class GameArray {
 
     }
 
-    public void updateInky() {
+    public void updateInky(int currDir) {
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(false);
-        //inkyGhost.move(pacman.getCurrentPosX(), pacman.getCurrentPosY(), false);
+        inkyGhost.move(currDir, gameMap);
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
+
+        inkyGhost.addScore(Math.sqrt(Math.pow(
+                (inkyGhost.distanceFromPac(pacman.getCurrentPosX(), pacman.getCurrentPosY()) - 46), 2)) / 20);
+
+        System.out.println("Fitness:" + inkyGhost.getScore());
+
+        if (gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].isPacman()) {
+            if (inkyGhost.getScared()) {
+                inkyGhost.respawn(gameMap);
+                inkyGhost.addScore(-100);
+                System.out.println("Ghost got eaten");
+            } else {
+                inkyGhost.addScore(200);
+                System.out.println("Ate pacman");
+                pacman.setAlive(false);
+            }
+        }
+    }
+
+    public void setInkyDir(int dir) {
+        inkyGhost.move(dir, gameMap);
     }
 
     public void setPacmanDir(int dir) {
         pacman.setDir(dir);
+    }
+
+    public void setScaredMode() {
+
+    }
+
+    public boolean isScraredMode() {
+
+
+        return pacman.isPowered();
     }
 
     public boolean pacmanIsAlive() {
