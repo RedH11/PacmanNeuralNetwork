@@ -78,21 +78,8 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public int closestDirToPac(int px, int py) {
-        int distanceOnY = py - currentPosY;
-        int distanceOnX = px - currentPosX;
-        if(distanceOnX>distanceOnY){
-            if(distanceOnX > 0){
-                return 2;
-            }
-            else{return 1;}
-        }
-        else{
-            if(distanceOnY > 0){
-                return 0;
-            }
-            else {return 3;}
-        }
+    public double closestDirToPac(int px, int py) {
+        return (Math.sin(getCurrentY()/distanceFromPac(px, py))*distanceFromPac(px, py));
     }
 
     @Override

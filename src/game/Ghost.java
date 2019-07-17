@@ -7,6 +7,8 @@ public interface Ghost {
         -wall in all directions?
         -closest direction to pac man
         -scared?
+      -outputs
+        -weighted directions
      */
     int STARTING_X = 16;
     int STARTING_Y = 12;
@@ -27,7 +29,7 @@ public interface Ghost {
     boolean getScared();
 
     double distanceFromPac(int px, int py);
-    int closestDirToPac(int px, int py);
+    double closestDirToPac(int px, int py);
 
     int getCurrentX();
     int getCurrentY();
