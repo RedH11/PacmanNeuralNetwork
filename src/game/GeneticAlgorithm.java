@@ -42,6 +42,27 @@ public class GeneticAlgorithm {
 
     public void sortPopulation() {
         // Sort all inkys by fitness (left worst -> right best)
-        Collections.sort(babyInkys, new IncomComparator());
+       // Collections.sort(babyInkys, new IncomComparator());
+        babyInkys.sort(new IncomComparator());
+
+
+
+        Integer[] rand = NetworkTools.randomValues(0, 89, 5);
+        InkyGhost ranOne = babyInkys.get(rand[0]);
+        InkyGhost ranTwo = babyInkys.get(rand[1]);
+        InkyGhost ranThree = babyInkys.get(rand[2]);
+        InkyGhost ranFour = babyInkys.get(rand[3]);
+        InkyGhost ranFive = babyInkys.get(rand[4]);
+
+        babyInkys.subList(0,89).clear();
+
+        babyInkys.add(ranOne);
+        babyInkys.add(ranTwo);
+        babyInkys.add(ranThree);
+        babyInkys.add(ranFour);
+        babyInkys.add(ranFive);
+
+        babyInkys.sort(new IncomComparator());
+
     }
 }
