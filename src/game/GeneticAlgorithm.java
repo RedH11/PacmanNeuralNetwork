@@ -36,6 +36,7 @@ public class GeneticAlgorithm {
 
         while (generation < totalGens) {
             if (generation > 0) makePopulation();
+            else recreatePopulation();
             testInkys();
             sortPopulation();
             mutatePopulation();
@@ -54,6 +55,12 @@ public class GeneticAlgorithm {
     public void makePopulation() {
         for (int i = 0; i < popSize; i++) {
             pop.add(new GameArray());
+        }
+    }
+    public void recreatePopulation() {
+        pop.clear();
+        for (int i = 0; i < popSize; i++) {
+            pop.add(new GameArray(babyInkys.get(i).brain));
         }
     }
 
