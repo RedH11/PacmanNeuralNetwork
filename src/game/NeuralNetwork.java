@@ -1,7 +1,6 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class NeuralNetwork {
@@ -9,26 +8,10 @@ public class NeuralNetwork {
     // First is layer and second is neuron
     private double[][] output;
     // Three (1. Layer 2. Neuron 3. Neuron in prev. layer connected with this one)
-     double[][][] weights;
+    private double[][][] weights;
     // Every neuron has one bias
-     double[][] bias;
-
-     private ArrayList<Double> firstLayer = new ArrayList<>();
-     private ArrayList<Double> secondLayer = new ArrayList<>();
-    private ArrayList<List<Double>> thirdLayer = new ArrayList<java.util.List<Double>>();
-    private List<Double>[] fourthArray;
-
-    public List<Double>[] crossOver() {
-        thirdLayer.add(firstLayer.subList(0,3));
-        thirdLayer.add(secondLayer.subList(4,6));
-        for (int i=0; i < thirdLayer.size(); i=0) {
-            fourthArray[i] = thirdLayer.get(i);
-        }
-        return fourthArray;
-    }
-
-
-
+    private double[][] bias;
+     
     public final int[] NETWORK_LAYER_SIZES;
     public final int INPUT_SIZE;
     public final int OUTPUT_SIZE;
@@ -91,35 +74,128 @@ public class NeuralNetwork {
         return output[NETWORK_SIZE - 1];
     }
 
+    public NeuralNetwork makeChild(NeuralNetwork parent2) {
+        Random random = new Random();
+
+        NeuralNetwork child = new NeuralNetwork(7, 14, 4);
+
+        child.setWeights(crossOver(this.getArrayWeights(), parent2.getArrayWeights()));
+        child.setBias(crossOver(this.getArrayBias(), parent2.getArrayBias()));
+
+        return child;
+    }
+
+    public double[] crossOver(double[] p1, double[] p2){
+        if (p1.length != p2.length) return null;
+        double[] child = new double[p1.length];
+        Random num = new Random();
+
+        int crossIndx = num.nextInt(p1.length);
+
+        for (int i = 0; i < p1.length; i++) {
+            if (i < crossIndx) child[i] = p1[i];
+            else child[i] = p2[i];
+        }
+
+        return child;
+    }
+
+    public double[] getArrayWeights() {
+        ArrayList<Double> newWeights = new ArrayList<>();
+
+        for (int layer = 1; layer < NETWORK_SIZE; layer++) {
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+                for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
+                    newWeights.add(weights[layer][neuron][prevNeuron]);
+                }
+            }
+        }
+
+        double[] formatAr = new double[newWeights.size()];
+
+        for (int i = 0; i < formatAr.length; i++) {
+            formatAr[i] = newWeights.get(i);
+        }
+
+        return formatAr;
+    }
+
+    public double[] getArrayBias() {
+        ArrayList<Double> newBias = new ArrayList<>();
+
+        for (int layer = 1; layer < NETWORK_SIZE; layer++) {
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+                newBias.add(bias[layer][neuron]);
+            }
+        }
+
+        double[] formatAr = new double[newBias.size()];
+
+        for (int i = 0; i < formatAr.length; i++) {
+            formatAr[i] = newBias.get(i);
+        }
+
+        return formatAr;
+    }
+
+    public void setWeights(double[] newWeights) {
+
+        int index = 0;
+
+        for (int layer = 1; layer < NETWORK_SIZE; layer++) {
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+                for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
+                        weights[layer][neuron][prevNeuron] = newWeights[index];
+                        index++;
+                }
+            }
+        }
+    }
+
+    public void setBias(double[] newBias) {
+        int index = 0;
+
+        // For each layer
+        for (int layer = 1; layer < NETWORK_SIZE; layer++) {
+            // And each neuron in that layer
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+                bias[layer][neuron] = newBias[index];
+                index++;
+            }
+        }
+    }
+
     public void mutate(double mutationChance) {
 
         Random rand = new Random();
 
         for (int layer = 1; layer < NETWORK_SIZE; layer++) {
-            // And each neuron in that layer
-            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
-                // Adding bias to the sum initially
 
-                if(rand.nextDouble()*100 < mutationChance){
+            for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
+
+                if (rand.nextDouble() * 100 < mutationChance) {
                     bias[layer][neuron] += rand.nextDouble();
-                    System.out.println("Bias Weights");}
-                // Adding to the sum the output of the last layer
-                for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
-                    if(rand.nextDouble()*100 < mutationChance) {
-                        weights[layer][neuron][prevNeuron] += rand.nextDouble();
-                        System.out.println("Mutated Weights");}
+                    //System.out.println("Bias Weights");
                 }
 
-                // The output of this neuron is equal to the sigmoid of the sum
-
+                for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
+                    if (rand.nextDouble() * 100 < mutationChance) {
+                        weights[layer][neuron][prevNeuron] += rand.nextDouble();
+                        //System.out.println("Mutated Weights");}
+                    }
+                }
             }
         }
     }
 
+    public double[][][] getWeights() {
+        return weights;
+    }
 
     private double sigmoid(double x) {
         return (1 / (1 + Math.pow(Math.E, -x)));
     }
-    
+
+
     
 }

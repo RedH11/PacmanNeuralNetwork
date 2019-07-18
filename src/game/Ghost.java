@@ -34,10 +34,10 @@ public interface Ghost {
     int getCurrentX();
     int getCurrentY();
 
-    boolean wallUp();
-    boolean wallDown();
-    boolean wallRight();
-    boolean wallLeft();
+    double wallUp();
+    double wallDown();
+    double wallRight();
+    double wallLeft();
     void addScore(double add);
     double getScore();
 }

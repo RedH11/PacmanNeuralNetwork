@@ -11,6 +11,8 @@ public class InkyGhost implements Ghost {
     NeuralNetwork brain;
     private Grid[][] map;
 
+    private int moveCounter = 0;
+
     public InkyGhost(Grid[][] maplayout){
         map = maplayout;
         brain = new NeuralNetwork(7, 14, 4);
@@ -20,9 +22,8 @@ public class InkyGhost implements Ghost {
         brain = bigBrain;
     }
 
-
-    public NeuralNetwork getBrain() {
-        return brain;
+    public void setBrain(NeuralNetwork brain) {
+        this.brain = brain;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class InkyGhost implements Ghost {
         scared = false;
     }
 
-    public int think(double[]input){
+    public int think(double[] input){
         double []outputs = brain.calculate(input);
         //double up, down, left, right;
         int highestDir = 0;
@@ -73,12 +74,34 @@ public class InkyGhost implements Ghost {
 
         }
         return highestDir;
-
-
-
     }
-    @Override
-    public void move(int dir, Grid[][] map) {
+    
+    public double[] see(int px, int py) {
+        
+        double[] inputs = new double[7];
+
+        // Whether or not there are walls in the four blocks around it
+        inputs[0] = wallUp();
+        inputs[1] = wallRight();
+        inputs[2] = wallDown();
+        inputs[3] = wallLeft();
+
+        // Distance from the ghost to pacman
+        inputs[4] = distanceFromPac(px, py);
+        // Angle from ghost to pacman
+        inputs[5] = closestDirToPac(px, py);
+        if (scared) inputs[6] = 1;
+        else inputs[6] = 0;
+
+        return inputs;
+    }
+
+    public NeuralNetwork getBrain() {
+        return brain;
+    }
+
+
+    public void translate(int dir) {
         // Up
         if (dir == 0) {
             if (!map[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
@@ -100,25 +123,24 @@ public class InkyGhost implements Ghost {
         } else if (dir == 3) {
             if (!map[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
         }
-
     }
-    public double []getInputs(int px, int py){
-        double[]temp = new double [7];
-        if(!wallUp())temp[0]=1.0;
-        else temp[0]=0.0;
-        if(!wallRight())temp[1]=1.0;
-        else temp[1]=0.0;
-        if(!wallDown())temp[2] = 1.0;
-        else temp[2] = 0.0;
-        if(!wallLeft())temp[3]=1.0;
-        else temp[3]=1.0;
-        temp[4] = distanceFromPac(px, py);
-        temp[5] = closestDirToPac(px, py);
-        if(!getScared())temp[6] = 1.0;
-        else temp[6] = 0.0;
 
-        return temp;
+    @Override
+    public void move(int dir, Grid[][] map) {
+
+        // Implements half speed if the ghost is scared
+        if (scared) {
+            if (moveCounter >= 2) {
+                translate(dir);
+                moveCounter = 0;
+            } else {
+                moveCounter++;
+            }
+        } else {
+            translate(dir);
+        }
     }
+
     @Override
     public boolean getScared() {
         return scared;
@@ -145,22 +167,28 @@ public class InkyGhost implements Ghost {
     }
 
     @Override
-    public boolean wallUp() {
-        return map[currentPosY+1][currentPosX].isWall();
+    public double wallUp() {
+        if (map[currentPosY-1][currentPosX].isWall()) return 1;
+        else return 0;
     }
 
     @Override
-    public boolean wallDown() {
-        return map[currentPosY-1][currentPosX].isWall();    }
-
-    @Override
-    public boolean wallRight() {
-        return map[currentPosY][currentPosX+1].isWall();
+    public double wallDown() {
+        if (map[currentPosY+1][currentPosX].isWall()) return 1;
+        else return 0;
     }
 
     @Override
-    public boolean wallLeft() {
-        return map[currentPosY][currentPosX-1].isWall();    }
+    public double wallRight() {
+        if (map[currentPosY][currentPosX+1].isWall()) return 1;
+        else return 0;
+    }
+
+    @Override
+    public double wallLeft() {
+        if (map[currentPosY][currentPosX-1].isWall()) return 1;
+        else return 0;  
+    }
 
     @Override
     public void addScore(double add) {

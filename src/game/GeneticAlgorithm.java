@@ -13,21 +13,25 @@ public class GeneticAlgorithm {
     Stage stage;
 
     ArrayList<GameArray> pop = new ArrayList<>();
-    ArrayList<InkyGhost> babyInkys = new ArrayList<>();
+    ArrayList<GameArray> children = new ArrayList<>();
 
     int popSize;
     int totalGens;
     int generation;
+    int lowerGhosts;
+    int topGhosts;
 
     double mutationChance;
 
     Random random = new Random();
 
-    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, Stage stage) {
+    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, Stage stage) {
         this.popSize = popSize;
         this.stage = stage;
         this.totalGens = totalGens;
         this.mutationChance = mutationChance;
+        this.lowerGhosts = lowerGhosts;
+        this.topGhosts = topGhosts;
 
         makePopulation();
     }
@@ -35,8 +39,8 @@ public class GeneticAlgorithm {
     public void makeGenerations() {
 
         while (generation < totalGens) {
-            if (generation > 0) makePopulation();
-            else recreatePopulation();
+            System.out.println(pop.size());
+            if (generation > 0) recreatePopulation();
             testInkys();
             sortPopulation();
             mutatePopulation();
@@ -57,49 +61,60 @@ public class GeneticAlgorithm {
             pop.add(new GameArray());
         }
     }
+
     public void recreatePopulation() {
-        pop.clear();
+        // Add in the bred children to the population
         for (int i = 0; i < popSize; i++) {
-            pop.add(new GameArray(babyInkys.get(i).brain));
+            pop.add(children.get(i));
         }
     }
 
     public void mutatePopulation() {
-        System.out.println("Captain Mutato");
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).inkyGhost.getBrain().mutate(mutationChance);
+        }
     }
 
     public void breedPopulation() {
-        int inkysNeeded = popSize - babyInkys.size();
-    }
 
-    public void makeChild(NeuralNetwork parent1, NeuralNetwork parent2) {
+        pop.clear();
 
+        NeuralNetwork parent1;
+        NeuralNetwork parent2;
 
+        ArrayList<Integer> parents = NetworkTools.randomValues(0, topGhosts + lowerGhosts, popSize - children.size());
+
+        // Breeds the ghosts based on the parents indexes
+        for (int i = 0; i < popSize - children.size(); i++) {
+
+            parent1 = children.get(parents.get(i)).inkyGhost.getBrain();
+            parent2 = children.get(parents.get(i + 1)).inkyGhost.getBrain();
+
+            // Add the newly bred child to the children array (won't be selected because of the parents array boundary)
+            children.add(new GameArray(parent1.makeChild(parent2)));
+        }
     }
 
     public void sortPopulation() {
 
-        // Sort all inkys by fitness (left worst -> right best)
-        // Collections.sort(babyInkys, new IncomComparator());
-        babyInkys.sort(new IncomComparator());
+        children.clear();
 
+        // Add top __ ghosts to the children array to be bred
+        for (int i = 0; i < topGhosts; i++) {
+            children.add(pop.get(popSize - i - 1));
+        }
 
+        // Get _ lower scoring ghosts to be bred
+        ArrayList<Integer> rand = NetworkTools.randomValues(0, popSize - 1 - topGhosts, lowerGhosts);
 
-        Integer[] rand = NetworkTools.randomValues(0, 89, 5);
-        InkyGhost ranOne = babyInkys.get(rand[0]);
-        InkyGhost ranTwo = babyInkys.get(rand[1]);
-        InkyGhost ranThree = babyInkys.get(rand[2]);
-        InkyGhost ranFour = babyInkys.get(rand[3]);
-        InkyGhost ranFive = babyInkys.get(rand[4]);
+        for (int i = 0; i < rand.size(); i++) {
+            children.add(pop.get(rand.get(i)));
+        }
 
-        babyInkys.subList(0,89).clear();
+        // Sort inkys
+        children.sort(new IncomComparator());
 
-        babyInkys.add(ranOne);
-        babyInkys.add(ranTwo);
-        babyInkys.add(ranThree);
-        babyInkys.add(ranFour);
-        babyInkys.add(ranFive);
+        System.out.println("Highest Fitness: " + pop.get(popSize - 1).inkyGhost.getScore());
 
-        babyInkys.sort(new IncomComparator());
     }
 }

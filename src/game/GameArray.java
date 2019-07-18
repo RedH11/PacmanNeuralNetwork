@@ -28,11 +28,28 @@ public class GameArray {
     final int TOTAL_MOVES = 3600;
     int moves = 0;
 
+    Grid emptyGrid = new Grid();
+    Grid hWallGrid = new Grid();
+    Grid vWallGrid = new Grid();
+    Grid pelletGrid = new Grid();
+    Grid powerPelletGrid = new Grid();
+    Grid pacmanGrid = new Grid();
+    Grid inkyGrid = new Grid();
+
+        
+
     public GameArray() {
         MapLayout mapDefault = new MapLayout();
         gameMap = mapDefault.getLayout();
         pacman = new Pacman();
         inkyGhost = new InkyGhost(gameMap);
+
+        hWallGrid.sethWall(true);
+        vWallGrid.setvWall(true);
+        pelletGrid.setPellet(true);
+        powerPelletGrid.setPowerPellet(true);
+        pacmanGrid.setPacman(true);
+        inkyGrid.setInky(true);
     }
 
     public GameArray(NeuralNetwork brain) {
@@ -40,39 +57,25 @@ public class GameArray {
         gameMap = mapDefault.getLayout();
         pacman = new Pacman();
         inkyGhost = new InkyGhost(gameMap, brain);
+
+        hWallGrid.sethWall(true);
+        vWallGrid.setvWall(true);
+        pelletGrid.setPellet(true);
+        powerPelletGrid.setPowerPellet(true);
+        pacmanGrid.setPacman(true);
+        inkyGrid.setInky(true);
     }
 
     public void runGame() {
 
-        Thread pacmanThread = new Thread(() -> {
-            while (pacmanIsAlive()) {
-                updatePacman();
-                try {
-                    Thread.sleep(1000/pacmanMPS);
-                } catch (InterruptedException ex) {}
-            }
-        });
+        inkyGhost.respawn(gameMap);
 
-        Thread ghostThread = new Thread(() -> {
-            while (pacmanIsAlive()) {
-                if (isScraredMode()) {
-                    ghostsMPS = 1;
-                    updateInky(currDir);
-                    try {
-                        Thread.sleep(1000/ghostsMPS);
-                    } catch (InterruptedException ex) {}
-                } else {
-                    ghostsMPS = 2;
-                    updateInky(currDir);
-                    try {
-                        Thread.sleep(1000/ghostsMPS);
-                    } catch (InterruptedException ex) {}
-                }
-            }
-        });
-
-        pacmanThread.start();
-        ghostThread.start();
+        while (pacmanIsAlive() && moves < TOTAL_MOVES) {
+            updatePacman();
+            updateInky(inkyGhost.think(inkyGhost.see(pacman.getCurrentPosX(), pacman.getCurrentPosY())));
+            printMap();
+            moves++;
+        }
     }
 
     public void showGame(Stage stage){
@@ -196,18 +199,14 @@ public class GameArray {
         gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].setInky(true);
 
         inkyGhost.addScore(Math.sqrt(Math.pow(
-                (inkyGhost.distanceFromPac(pacman.getCurrentPosX(), pacman.getCurrentPosY()) - 46), 2)) / 20);
-
-        System.out.println("Fitness:" + inkyGhost.getScore());
+                (inkyGhost.distanceFromPac(pacman.getCurrentPosX(), pacman.getCurrentPosY()) - 46), 2)) / 40);
 
         if (gameMap[inkyGhost.getCurrentY()][inkyGhost.getCurrentX()].isPacman()) {
             if (inkyGhost.getScared()) {
                 inkyGhost.respawn(gameMap);
                 inkyGhost.addScore(-100);
-                System.out.println("Ghost got eaten");
             } else {
                 inkyGhost.addScore(200);
-                System.out.println("Ate pacman");
                 pacman.setAlive(false);
             }
         }
@@ -229,31 +228,30 @@ public class GameArray {
         return pacman.isAlive();
     }
 
-    public void outputConsoleMap() {
+    public void printMap() {
         for (int r = 0; r < gameMap.length; r++) {
             for (int c = 0; c < gameMap.length; c++) {
-                if (gameMap[r][c].isvWall()) System.out.print("| ");
+                if (gameMap[r][c] == vWallGrid) System.out.print("| ");
                     // Doubled to make a square because the vertical is long
-                else if (gameMap[r][c].ishWall()) System.out.print("- ");
-                else if (gameMap[r][c].isPacman()) System.out.print("C ");
-                else if (gameMap[r][c].isbLWall()) System.out.print("\\ ");
-                else if (gameMap[r][c].isbRWall()) System.out.print("/ ");
-                else if (gameMap[r][c].istLWall()) System.out.print("/ ");
-                else if (gameMap[r][c].istRWall()) System.out.print("\\ ");
+                else if (gameMap[r][c] == hWallGrid) System.out.print("- ");
+                else if (gameMap[r][c] == pacmanGrid) System.out.print("C ");
+                else if (gameMap[r][c] == emptyGrid) System.out.print("  ");
+                else if (gameMap[r][c] == pelletGrid) System.out.print(". ");
+                else if (gameMap[r][c] == powerPelletGrid) System.out.print("* ");
                     // Is ghost
-                else if (gameMap[r][c].isPinky()) System.out.println("P ");
-                else if (gameMap[r][c].isBlinky()) System.out.println("B ");
-                else if (gameMap[r][c].isInky()) System.out.println("I ");
-                else if (gameMap[r][c].isClyde()) System.out.println("8 ");
-                else if (gameMap[r][c].isEmpty()) System.out.print("  ");
-                else if (gameMap[r][c].isPellet()) System.out.print(". ");
-                else if (gameMap[r][c].isPowerPellet()) System.out.print("* ");
-
+                else System.out.println("8 ");
             }
             System.out.println();
         }
+
+        System.out.println("\n\n\n");
     }
+    
     public void setCurrDir(int dir) {
         currDir = dir;
+    }
+
+    public Grid[][] getGameMapLayout() {
+        return gameMap;
     }
 }

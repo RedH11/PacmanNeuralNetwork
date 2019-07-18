@@ -15,7 +15,7 @@ public class VisualMap {
 
     public VisualMap(GameArray game, GraphicsContext gc, int generation, int fitness) {
 
-        gameMap = game.getLayout();
+        gameMap = game.getGameMapLayout();
         this.gc = gc;
         this.generation = generation;
         this.fitness = fitness;

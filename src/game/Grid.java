@@ -68,61 +68,35 @@ public class Grid {
 
     public void setPacman(boolean pacman) {
         this.pacman = pacman;
-        clearGrid(pacman);
+        if (pacman) empty = false;
     }
 
     public void setPinky(boolean pinky) {
         this.pinky = pinky;
-        if (pinky) empty = false;
         if (isWall()) pinky = false;
-    }
-
-    public void settLWall(boolean tLWall) {
-        clearWalls();
-        this.tLWall = tLWall;
-        clearGrid(tLWall);
-    }
-
-    public void settRWall(boolean tRWall) {
-        clearWalls();
-        this.tRWall = tRWall;
-        clearGrid(tRWall);
+        if (pinky) empty = false;
     }
 
     public void setvWall(boolean vWall) {
-        clearWalls();
         this.vWall = vWall;
-        clearGrid(vWall);
+        clearGrid(true);
     }
 
     public void sethWall(boolean hWall) {
-        clearWalls();
         this.hWall = hWall;
-        clearGrid(hWall);
+        clearGrid(true);
     }
 
     public void setClyde(boolean clyde) {
         this.clyde = clyde;
-        if (clyde) empty = false;
         if (isWall()) clyde = false;
-    }
-
-    public void setbRWall(boolean bRWall) {
-        clearWalls();
-        this.bRWall = bRWall;
-        clearGrid(bRWall);
-    }
-
-    public void setbLWall(boolean bLWall) {
-        clearWalls();
-        this.bLWall = bLWall;
-        clearGrid(bLWall);
+        if (clyde) empty = false;
     }
 
     public void setBlinky(boolean blinky) {
         this.blinky = blinky;
-        if (blinky) empty = false;
         if (isWall()) blinky = false;
+        if (blinky) empty = false;
     }
 
     public void setEmpty(boolean empty) {
@@ -130,14 +104,15 @@ public class Grid {
         if (empty) {
             pellet = false;
             pacman = false;
+            inky = false;
         }
         clearWalls();
     }
 
     public void setInky(boolean inky) {
         this.inky = inky;
-        if (inky) empty = false;
         if (isWall()) inky = false;
+        if (inky) empty = false;
     }
 
     public boolean isPellet() {

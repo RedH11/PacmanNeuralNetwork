@@ -1,5 +1,8 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class NetworkTools {
 
     public static double[] createArray(int size, double init_value){
@@ -40,35 +43,22 @@ public class NetworkTools {
     }
 
     // Random values that aren't repeated
-    public static Integer[] randomValues(int lowerBound, int upperBound, int amount) {
+    public static ArrayList<Integer> randomValues(int lowerBound, int upperBound, int amount) {
 
-        lowerBound --;
+        if (upperBound < lowerBound) return null;
 
-        if(amount > (upperBound-lowerBound)){
-            return null;
-        }
+        Random random = new Random();
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
 
-        Integer[] values = new Integer[amount];
-        for(int i = 0; i< amount; i++){
-            int n = (int)(Math.random() * (upperBound-lowerBound+1) + lowerBound);
-            while(containsValue(values, n)){
-                n = (int)(Math.random() * (upperBound-lowerBound+1) + lowerBound);
+        while (arrayList.size() < amount) { // how many numbers u need - it will 6
+            int a = random.nextInt(upperBound)+lowerBound; // this will give numbers between 1 and 50.
+
+            if (!arrayList.contains(a)) {
+                arrayList.add(a);
             }
-            values[i] = n;
         }
-        return values;
-    }
 
-    public static <T extends Comparable<T>> boolean containsValue(T[] ar, T value){
-        for(int i = 0; i < ar.length; i++){
-            if(ar[i] != null){
-                if(value.compareTo(ar[i]) == 0){
-                    return true;
-                }
-            }
-
-        }
-        return false;
+        return arrayList;
     }
 
     public static int indexOfHighestValue(double[] values){
