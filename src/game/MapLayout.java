@@ -43,11 +43,6 @@ public class MapLayout {
         // Center of the grid
         int center = (int) Math.floor(mapLayout.length/2);
 
-        // Pacman Spawn
-        mapLayout[20][center] = pacmanGrid;
-
-        // Spawn ghost in the center
-        mapLayout[12][center] = inkyGrid;
 
         // Outside Walls
         makeBox(center, center, 32, 32, false);
@@ -57,10 +52,10 @@ public class MapLayout {
 
         // Clear pellets around the ghost box (excluding the ghost and pacman)
         for (int c = 10; c < 23; c++) {
-            if (c != 16) {
+            //if (c != 16) {
                 mapLayout[12][c] = emptyGrid;
                 mapLayout[20][c] = emptyGrid;
-            }
+            //}
         }
 
         for (int r = 12; r < 21; r++) {
@@ -250,6 +245,11 @@ public class MapLayout {
         // MAP FIXES
         // All the rows below the ghost are set to pacman?
 
+        // Spawn ghost in the center
+        mapLayout[12][center] = inkyGrid;
+        // Pacman Spawn
+        mapLayout[20][center] = pacmanGrid;
+
         outputConsoleMap();
         System.out.println("Map Made");
     }
@@ -299,11 +299,11 @@ public class MapLayout {
                     // Doubled to make a square because the vertical is long
                 else if (mapLayout[r][c] == hWallGrid) System.out.print("- ");
                 else if (mapLayout[r][c] == pacmanGrid) System.out.print("C ");
+                else if (mapLayout[r][c] == inkyGrid) System.out.print("8 ");
                 else if (mapLayout[r][c] == emptyGrid) System.out.print("  ");
                 else if (mapLayout[r][c] == pelletGrid) System.out.print(". ");
                 else if (mapLayout[r][c] == powerPelletGrid) System.out.print("* ");
                     // Is ghost
-                else System.out.println("8 ");
             }
             System.out.println();
         }
