@@ -17,7 +17,7 @@ public class GeneticAlgorithm {
 
     int popSize;
     int totalGens;
-    int generation = 1;
+    int generation = 0;
     int lowerGhosts;
     int topGhosts;
 
@@ -39,11 +39,21 @@ public class GeneticAlgorithm {
     public void makeGenerations() {
 
         while (generation < totalGens) {
-            if (generation > 1) recreatePopulation();
+            //System.out.println("New Gen");
+            if (generation > 0) {
+                recreatePopulation();
+                System.out.println("Recreated");
+            }
             testInkys();
+            //System.out.println("Tested");
             sortPopulation();
+            //System.out.println("Sorted");
+
             mutatePopulation();
+            //System.out.println("Mutated");
+
             breedPopulation();
+            //System.out.println("Bred");
             generation++;
         }
     }
@@ -81,16 +91,22 @@ public class GeneticAlgorithm {
         NeuralNetwork parent1;
         NeuralNetwork parent2;
 
-        ArrayList<Integer> parents = NetworkTools.randomValues(0, topGhosts + lowerGhosts, popSize - children.size());
+        ArrayList<Integer> parents = NetworkTools.randomValues(0, topGhosts + lowerGhosts, topGhosts + lowerGhosts);
+
+        int parentIndx = 0;
 
         // Breeds the ghosts based on the parents indexes
-        for (int i = 0; i < popSize - children.size(); i++) {
+        while (children.size() < popSize) {
 
-            parent1 = children.get(parents.get(i)).inkyGhost.getBrain();
-            parent2 = children.get(parents.get(i + 1)).inkyGhost.getBrain();
+            parent1 = children.get(parents.get(parentIndx)).inkyGhost.getBrain();
+            parent2 = children.get(parents.get(parentIndx + 1)).inkyGhost.getBrain();
 
+            if (parentIndx == 13) {
+                parentIndx = 0;
+            }
             // Add the newly bred child to the children array (won't be selected because of the parents array boundary)
             children.add(new GameArray(parent1.makeChild(parent2)));
+            parentIndx++;
         }
     }
 
@@ -112,7 +128,7 @@ public class GeneticAlgorithm {
 
         // Sort inkys
         children.sort(new IncomComparator());
-        
+
         System.out.println("Gen " + generation + " fitness " + children.get(children.size() - 1).inkyGhost.getScore());
     }
 }
