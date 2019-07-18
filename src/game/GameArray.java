@@ -36,34 +36,35 @@ public class GameArray {
     Grid pacmanGrid = new Grid();
     Grid inkyGrid = new Grid();
 
-        
-
     public GameArray() {
-        MapLayout mapDefault = new MapLayout();
-        gameMap = mapDefault.getLayout();
-        pacman = new Pacman();
-        inkyGhost = new InkyGhost(gameMap);
-
         hWallGrid.sethWall(true);
         vWallGrid.setvWall(true);
         pelletGrid.setPellet(true);
         powerPelletGrid.setPowerPellet(true);
         pacmanGrid.setPacman(true);
         inkyGrid.setInky(true);
+
+        MapLayout mapDefault = new MapLayout();
+        gameMap = mapDefault.getLayout();
+        printMap();
+        pacman = new Pacman();
+        inkyGhost = new InkyGhost(gameMap);
+
+
     }
 
     public GameArray(NeuralNetwork brain) {
+        hWallGrid.sethWall(true);
+        vWallGrid.setvWall(true);
+        pelletGrid.setPellet(true);
+        powerPelletGrid.setPowerPellet(true);
+        pacmanGrid.setPacman(true);
+        inkyGrid.setInky(true);
+
         MapLayout mapDefault = new MapLayout();
         gameMap = mapDefault.getLayout();
         pacman = new Pacman();
         inkyGhost = new InkyGhost(gameMap, brain);
-
-        hWallGrid.sethWall(true);
-        vWallGrid.setvWall(true);
-        pelletGrid.setPellet(true);
-        powerPelletGrid.setPowerPellet(true);
-        pacmanGrid.setPacman(true);
-        inkyGrid.setInky(true);
     }
 
     public void runGame() {
@@ -231,19 +232,17 @@ public class GameArray {
     public void printMap() {
         for (int r = 0; r < gameMap.length; r++) {
             for (int c = 0; c < gameMap.length; c++) {
-                if (gameMap[r][c] == vWallGrid) System.out.print("| ");
+                if (gameMap[r][c].isvWall()) System.out.print("| ");
                     // Doubled to make a square because the vertical is long
-                else if (gameMap[r][c] == hWallGrid) System.out.print("- ");
-                else if (gameMap[r][c] == pacmanGrid) System.out.print("C ");
-                else if (gameMap[r][c] == emptyGrid) System.out.print("  ");
-                else if (gameMap[r][c] == pelletGrid) System.out.print(". ");
-                else if (gameMap[r][c] == powerPelletGrid) System.out.print("* ");
-                    // Is ghost
-                else System.out.println("8 ");
+                else if (gameMap[r][c].ishWall()) System.out.print("- ");
+                else if (gameMap[r][c].isPacman()) System.out.print("C ");
+                else if (gameMap[r][c].isInky()) System.out.print("8 ");
+                else if (gameMap[r][c].isEmpty()) System.out.print("  ");
+                else if (gameMap[r][c].isPellet()) System.out.print(". ");
+                else if (gameMap[r][c].isPowerPellet()) System.out.print("* ");
             }
             System.out.println();
         }
-
         System.out.println("\n\n\n");
     }
     
