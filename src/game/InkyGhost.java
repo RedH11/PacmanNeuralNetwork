@@ -102,7 +102,23 @@ public class InkyGhost implements Ghost {
         }
 
     }
+    public double []getInputs(int px, int py){
+        double[]temp = new double [7];
+        if(!wallUp())temp[0]=1.0;
+        else temp[0]=0.0;
+        if(!wallRight())temp[1]=1.0;
+        else temp[1]=0.0;
+        if(!wallDown())temp[2] = 1.0;
+        else temp[2] = 0.0;
+        if(!wallLeft())temp[3]=1.0;
+        else temp[3]=1.0;
+        temp[4] = distanceFromPac(px, py);
+        temp[5] = closestDirToPac(px, py);
+        if(!getScared())temp[6] = 1.0;
+        else temp[6] = 0.0;
 
+        return temp;
+    }
     @Override
     public boolean getScared() {
         return scared;
