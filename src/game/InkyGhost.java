@@ -73,6 +73,12 @@ public class InkyGhost implements Ghost {
             }
 
         }
+
+        /*if (highestDir == 0) System.out.println("GO UP BOI");
+        if (highestDir == 1) System.out.println("GO LEFT BOI");
+        if (highestDir == 2) System.out.println("GO RIGHT BOI");
+        if (highestDir == 3) System.out.println("GO DOWN BOI");
+        */
         return highestDir;
     }
     
@@ -180,14 +186,23 @@ public class InkyGhost implements Ghost {
 
     @Override
     public double wallRight() {
-        if (map[currentPosY][currentPosX+1].isWall()) return 1;
-        else return 0;
+        try {
+            if (map[currentPosY][currentPosX + 1].isWall()) return 1;
+            else return 0;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return 0;
+        }
     }
 
     @Override
     public double wallLeft() {
-        if (map[currentPosY][currentPosX-1].isWall()) return 1;
-        else return 0;  
+        // Return 0 if there is an exception if he goes through the tunnel
+        try{
+            if (map[currentPosY][currentPosX-1].isWall()) return 1;
+            else return 0;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return 0;
+        }
     }
 
     @Override
