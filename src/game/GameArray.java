@@ -36,7 +36,9 @@ public class GameArray {
     Grid pacmanGrid = new Grid();
     Grid inkyGrid = new Grid();
 
-    public GameArray() {
+
+
+    public GameArray(int... NETWORK_LAYER_SIZES) {
         hWallGrid.sethWall(true);
         vWallGrid.setvWall(true);
         pelletGrid.setPellet(true);
@@ -48,7 +50,7 @@ public class GameArray {
         gameMap = mapDefault.getLayout();
         //printMap();
         pacman = new Pacman();
-        inkyGhost = new InkyGhost(gameMap);
+        inkyGhost = new InkyGhost(gameMap, NETWORK_LAYER_SIZES);
 
 
     }
@@ -117,13 +119,6 @@ public class GameArray {
 
         stage.setScene(scene);
         stage.show();
-
-        NeuralNetwork nn = new NeuralNetwork(3, 5, 4);
-        double[] outputs = nn.calculate(15, 2 , 3);
-
-        for (int i = 0; i < outputs.length; i++) {
-            System.out.println(outputs[i]);
-        }
 
         // Figure out how to stop garbage collection
 

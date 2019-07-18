@@ -112,7 +112,9 @@ public class Grid {
     public void setInky(boolean inky) {
         this.inky = inky;
         if (isWall()) inky = false;
-        if (inky) empty = false;
+        if (inky) {
+            empty = false;
+        }
     }
 
     public boolean isPellet() {

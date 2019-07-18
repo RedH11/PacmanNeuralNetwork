@@ -13,10 +13,11 @@ public class InkyGhost implements Ghost {
 
     private int moveCounter = 0;
 
-    public InkyGhost(Grid[][] maplayout){
+    public InkyGhost(Grid[][] maplayout, int... NETWORK_LAYER_SIZES){
         map = maplayout;
-        brain = new NeuralNetwork(7, 14, 4);
+        brain = new NeuralNetwork(NETWORK_LAYER_SIZES);
     }
+
     public InkyGhost(Grid[][] maplayout, NeuralNetwork bigBrain){
         map = maplayout;
         brain = bigBrain;

@@ -77,7 +77,7 @@ public class NeuralNetwork {
     public NeuralNetwork makeChild(NeuralNetwork parent2) {
         Random random = new Random();
 
-        NeuralNetwork child = new NeuralNetwork(7, 14, 4);
+        NeuralNetwork child = new NeuralNetwork(NETWORK_LAYER_SIZES);
 
         child.setWeights(crossOver(this.getArrayWeights(), parent2.getArrayWeights()));
         child.setBias(crossOver(this.getArrayBias(), parent2.getArrayBias()));

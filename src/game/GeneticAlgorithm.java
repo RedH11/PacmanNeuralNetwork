@@ -25,13 +25,16 @@ public class GeneticAlgorithm {
 
     Random random = new Random();
 
-    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, Stage stage) {
+    private final int[] NETWORK_LAYER_SIZES;
+
+    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, Stage stage, int... NETWORK_LAYER_SIZES) {
         this.popSize = popSize;
         this.stage = stage;
         this.totalGens = totalGens;
         this.mutationChance = mutationChance;
         this.lowerGhosts = lowerGhosts;
         this.topGhosts = topGhosts;
+        this.NETWORK_LAYER_SIZES = NETWORK_LAYER_SIZES;
 
         makePopulation();
     }
@@ -42,7 +45,7 @@ public class GeneticAlgorithm {
             //System.out.println("New Gen");
             if (generation > 0) {
                 recreatePopulation();
-                System.out.println("Recreated");
+                //System.out.println("Recreated");
             }
             testInkys();
             //System.out.println("Tested");
@@ -67,7 +70,7 @@ public class GeneticAlgorithm {
     // Make a fresh population
     public void makePopulation() {
         for (int i = 0; i < popSize; i++) {
-            pop.add(new GameArray());
+            pop.add(new GameArray(NETWORK_LAYER_SIZES));
         }
     }
 
