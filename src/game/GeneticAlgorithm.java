@@ -17,7 +17,7 @@ public class GeneticAlgorithm {
 
     int popSize;
     int totalGens;
-    int generation;
+    int generation = 1;
     int lowerGhosts;
     int topGhosts;
 
@@ -39,8 +39,7 @@ public class GeneticAlgorithm {
     public void makeGenerations() {
 
         while (generation < totalGens) {
-            System.out.println(pop.size());
-            if (generation > 0) recreatePopulation();
+            if (generation > 1) recreatePopulation();
             testInkys();
             sortPopulation();
             mutatePopulation();
@@ -113,8 +112,7 @@ public class GeneticAlgorithm {
 
         // Sort inkys
         children.sort(new IncomComparator());
-
-        System.out.println("Highest Fitness: " + pop.get(popSize - 1).inkyGhost.getScore());
-
+        
+        System.out.println("Gen " + generation + " fitness " + children.get(children.size() - 1).inkyGhost.getScore());
     }
 }
