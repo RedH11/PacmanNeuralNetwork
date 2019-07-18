@@ -46,7 +46,7 @@ public class GameArray {
 
         MapLayout mapDefault = new MapLayout();
         gameMap = mapDefault.getLayout();
-        printMap();
+        //printMap();
         pacman = new Pacman();
         inkyGhost = new InkyGhost(gameMap);
 
@@ -74,9 +74,31 @@ public class GameArray {
         while (pacmanIsAlive() && moves < TOTAL_MOVES) {
             updatePacman();
             updateInky(inkyGhost.think(inkyGhost.see(pacman.getCurrentPosX(), pacman.getCurrentPosY())));
-            printMap();
+            //printMap();
             moves++;
         }
+
+        /*
+        Thread pacmanThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+                updatePacman();
+                try {
+                    Thread.sleep(1000/pacmanMPS);
+                } catch (InterruptedException ex) {}
+            }
+        });
+
+        Thread ghostThread = new Thread(() -> {
+            while (pacmanIsAlive()) {
+                updateInky(inkyGhost.think(inkyGhost.see(pacman.getCurrentPosX(), pacman.getCurrentPosY())));
+                try {
+                    Thread.sleep(1000/pacmanMPS);
+                } catch (InterruptedException ex) {}
+            }
+        });
+
+        pacmanThread.start();
+        ghostThread.start();*/
     }
 
     public void showGame(Stage stage){
@@ -126,18 +148,10 @@ public class GameArray {
 
         Thread ghostThread = new Thread(() -> {
             while (pacmanIsAlive()) {
-
-                if (isScraredMode()) {
-                    updateInky(currDir);
-                    try {
-                        Thread.sleep(1000/pacmanMPS + 200);
-                    } catch (InterruptedException ex) {}
-                } else {
-                    updateInky(currDir);
-                    try {
-                        Thread.sleep(1000/pacmanMPS);
-                    } catch (InterruptedException ex) {}
-                }
+                updateInky(inkyGhost.think(inkyGhost.see(pacman.getCurrentPosX(), pacman.getCurrentPosY())));
+                try {
+                    Thread.sleep(1000/pacmanMPS);
+                } catch (InterruptedException ex) {}
             }
         });
 
