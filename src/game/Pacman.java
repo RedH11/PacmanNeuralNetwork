@@ -85,7 +85,7 @@ public class Pacman {
 
         // Up
         if (dir == 0) {
-            if (!gameMap[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
+            if (!gameMap[currentPosY - 1][currentPosX].isWall() && !gameMap[currentPosY - 1][currentPosX].isGhost()) currentPosY -= speed;
             else {
                 prevNum = dir;
                 dir = randDir(prevNum);
@@ -93,7 +93,7 @@ public class Pacman {
             // Left
         } else if (dir == 1) {
             try {
-                if (!gameMap[currentPosY][currentPosX-1].isWall()) currentPosX -= speed;
+                if (!gameMap[currentPosY][currentPosX-1].isWall() && !gameMap[currentPosY][currentPosX-1].isGhost()) currentPosX -= speed;
                 else {
                     prevNum = dir;
                     dir = randDir(prevNum);
@@ -105,7 +105,7 @@ public class Pacman {
             // Right
         } else if (dir == 2) {
             try {
-                if (!gameMap[currentPosY][currentPosX+1].isWall()) currentPosX += speed;
+                if (!gameMap[currentPosY][currentPosX+1].isWall() && !gameMap[currentPosY][currentPosX+1].isGhost()) currentPosX += speed;
                 else {
                     prevNum = dir;
                     dir = randDir(prevNum);
@@ -115,7 +115,7 @@ public class Pacman {
             }
             // Down
         } else if (dir == 3) {
-            if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
+            if (!gameMap[currentPosY + 1][currentPosX].isWall() && !gameMap[currentPosY+1][currentPosX].isGhost()) currentPosY += speed;
             else {
                 prevNum = dir;
                 dir = randDir(prevNum);

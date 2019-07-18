@@ -13,9 +13,9 @@ public class VisualMap {
 
     private Grid[][] gameMap;
 
-    public VisualMap(GameArray game, GraphicsContext gc, int generation, int fitness) {
+    public VisualMap(Grid[][] gameMap, GraphicsContext gc, int generation, int fitness) {
 
-        gameMap = game.getGameMapLayout();
+        this.gameMap = gameMap;
         this.gc = gc;
         this.generation = generation;
         this.fitness = fitness;
@@ -57,15 +57,15 @@ public class VisualMap {
                 } else if (gameMap[r][c].isClyde()) {
                     gc.setFill(Color.ORANGE);
                     gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
+                } else if (gameMap[r][c].isPacman()) {
+                    gc.setFill(Color.YELLOW);
+                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
                 } else if (gameMap[r][c].isPellet()) {
                     gc.setFill(Color.YELLOW);
                     gc.fillOval(c * rectW + startX + 7, r * rectW + startY + 7, 5, 5);
                 } else if (gameMap[r][c].isWall()) {
                     gc.setFill(Color.rgb(0, 0, 156));
                     gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
-                } else if (gameMap[r][c].isPacman()) {
-                    gc.setFill(Color.YELLOW);
-                    gc.fillOval(c * rectW + startX, r * rectW + startY, 18, 18);
                 } else if (gameMap[r][c].isPowerPellet()) {
                     gc.setFill(Color.YELLOW);
                     // Correct for difference in layout of upper and lower power pellets
@@ -79,6 +79,10 @@ public class VisualMap {
                 }
             }
         }
+
+        gc.setFill(Color.WHITE);
+        gc.fillText("Fitness: " + fitness, 550, 15);
+        gc.fillText("Generation: " + fitness, 25, 15);
     }
 
     public void updateGrid() {
