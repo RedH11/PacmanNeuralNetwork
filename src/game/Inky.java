@@ -188,7 +188,7 @@ public class Inky {
 
     // Calculates angle to pacman
     public double closestDirToPac(int px, int py) {
-        return (Math.asin(y/distanceFromPac(px, py))*distanceFromPac(px, py));
+        return (Math.asin((py-y)/distanceFromPac(px, py)));
     }
 
 
