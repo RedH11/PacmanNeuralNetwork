@@ -66,7 +66,7 @@ public class PacmanGame {
     int generation;
     FileWriter moveWriter;
 
-    public PacmanGame(int MAXMOVES, boolean recordGame, int generation, int pacNum) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, boolean recordGame, int generation, int pacNum) {
         this.MAXMOVES = MAXMOVES;
         this.recordGame = recordGame;
         this.generation = generation;
@@ -77,12 +77,12 @@ public class PacmanGame {
         if (recordGame) {
 
             try {
-                moveWriter = new FileWriter("/Users/hunterwebb/Desktop/PacmanData/pacGens" + pacNum + "/gen_" + generation);
+                moveWriter = new FileWriter(PacmanDataPath + "pacGens" + pacNum + "/gen_" + generation);
             } catch (Exception ex) {}
         }
     }
 
-    public PacmanGame(int MAXMOVES, boolean recordGame, int generation, int pacNum, NeuralNetwork brain) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, boolean recordGame, int generation, int pacNum, NeuralNetwork brain) {
         this.MAXMOVES = MAXMOVES;
         this.recordGame = recordGame;
         this.generation = generation;
@@ -93,7 +93,7 @@ public class PacmanGame {
         if (recordGame) {
 
             try {
-                moveWriter = new FileWriter("/Users/hunterwebb/Desktop/PacmanData/pacGens" + pacNum + "/gen_" + generation);
+                moveWriter = new FileWriter(PacmanDataPath + "pacGens" + pacNum + "/gen_" + generation);
             } catch (Exception ex) {}
         }
     }
@@ -119,7 +119,7 @@ public class PacmanGame {
             if (recordGame) {
                 writeTurns();
             }
-            printMap();
+            //printMap();
             simulateTurn();
             gameMoves++;
         }

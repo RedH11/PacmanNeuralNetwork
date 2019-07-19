@@ -60,16 +60,17 @@ public class Main extends Application {
         String pathToDesktop = System.getProperty("user.home") + "/Desktop/";
 
         File PacmanData = new File(pathToDesktop + "PacmanData");
+        String PacmanDataPath = PacmanData.getPath() + "/";
         if (!PacmanData.exists()) PacmanData.mkdir();
 
-        GeneticAlgorithm ga = new GeneticAlgorithm(200, 10, 1, 3, 15);
+        GeneticAlgorithm ga = new GeneticAlgorithm(PacmanDataPath,200, 50, 1, 3, 15);
         ga.makeGenerations();
         //PacmanGame pc = new PacmanGame(MAXMOVES);
         //pc.simulateGame();
 
         //System.out.println("Done Evolving");
 
-        //gameFile = "/Users/hunterwebb/Desktop/PacmanData/pacGens3/gen_0";
+        //gameFile = "/Users/hunterwebb/Desktop/PacmanData/pacGens7/gen_43";
 
         Thread GameViewer = new Thread(() -> {
             if (gameFile.length() > 1) {

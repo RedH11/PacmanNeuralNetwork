@@ -23,13 +23,15 @@ public class GeneticAlgorithm {
     double mutationChance;
 
     Random random = new Random();
+    String PacmanDataPath;
 
     private FileWriter fw;
     final int fileNum;
 
     final int MAXMOVES = 500;
 
-    public GeneticAlgorithm(int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts) throws IOException {
+    public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts) throws IOException {
+        this.PacmanDataPath = PacmanDataPath;
         this.populationSize = popSize;
         this.totalGens = totalGens;
         this.mutationChance = mutationChance;
@@ -37,18 +39,18 @@ public class GeneticAlgorithm {
         this.topGhosts = topGhosts;
 
         // Gets amount of files int he folder already
-        File folder = new File("/Users/hunterwebb/Desktop/PacmanData");
+        File folder = new File(PacmanDataPath);
         File[] listOfFiles = folder.listFiles();
 
         // Make file to hold the maps of the generations
         fileNum = listOfFiles.length / 2;
 
         // Make new file to store pacman games
-        new File("/Users/hunterwebb/Desktop/PacmanData/pacGens" + fileNum).mkdir();
+        new File(PacmanDataPath+ "/pacGens" + fileNum).mkdir();
 
         // Create test data file writer
         try {
-            fw = new FileWriter("/Users/hunterwebb/Desktop/PacmanData/pacData" + fileNum + ".txt");
+            fw = new FileWriter(PacmanDataPath + "pacData" + fileNum + ".txt");
         } catch (FileNotFoundException ex) {
             System.out.println("File Not Found");
         }
@@ -98,7 +100,7 @@ public class GeneticAlgorithm {
     public void makePopulation() {
         for (int i = 0; i < populationSize; i++) {
             // First member of each population has their game recorded
-            if (i == 0) population.add(new PacmanGame(MAXMOVES, true, generation, fileNum));
+            if (i == 0) population.add(new PacmanGame(PacmanDataPath, MAXMOVES, true, generation, fileNum));
             else population.add(new PacmanGame(MAXMOVES));
         }
     }
@@ -138,7 +140,7 @@ public class GeneticAlgorithm {
 
             // One child records their game
             if (!oneRecording) {
-                children.add(new PacmanGame(MAXMOVES, true, generation, fileNum, parent1.makeChild(parent2)));
+                children.add(new PacmanGame(PacmanDataPath, MAXMOVES, true, generation, fileNum, parent1.makeChild(parent2)));
                 oneRecording = true;
             }
 
