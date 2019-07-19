@@ -3,6 +3,8 @@ package game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Transform;
 import sun.font.GraphicComponent;
 
 public class VisualGame {
@@ -13,9 +15,12 @@ public class VisualGame {
     int MAXMOVES;
     int[][] pCoords;
     int[][] gCoords;
+    int[] gDirs;
+    int[] gFits;
     GraphicsContext gc;
+    int moves = 0;
 
-    final private int[][] tiles = {
+    private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
@@ -48,15 +53,15 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(int MAXMOVES, int[][] pCoords, int[][] gCoords, GraphicsContext gc, int FPS) {
+    public VisualGame(int MAXMOVES, int[][] pCoords, int[][] gCoords, int[] gDirs, int[] gFits, GraphicsContext gc, int generation, int FPS) {
         this.MAXMOVES = MAXMOVES;
         this.pCoords = pCoords;
         this.gCoords = gCoords;
+        this.gDirs = gDirs;
+        this.gFits = gFits;
         this.gc = gc;
 
         drawMap();
-
-        int moves = 0;
 
         while (moves < MAXMOVES) {
             drawMap();
@@ -118,8 +123,8 @@ public class VisualGame {
         }
 
         gc.setFill(Color.WHITE);
-        gc.fillText("Fitness: " + fitness, 450, 15);
-        gc.fillText("Generation: " + fitness, 25, 15);
+        gc.fillText("Fitness: " + gFits[moves], 450, 15);
+        gc.fillText("Generation: " + generation, 25, 15);
     }
 
     private void drawGame(int moves) {
@@ -140,8 +145,38 @@ public class VisualGame {
         gc.setFill(Color.YELLOW);
         gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
 
+        // Show eaten pellets
+        if (moves > 0) {
+            // Draw empty spaces for pellets behind pacman
+            if (!(pCoords[moves - 1][0] == pCoords[moves][0] && pCoords[moves - 1][1] == pCoords[moves][1])) {
+                tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
+            }
+        }
+
+        int inkyX = iC * rectW + startX  + 9;
+        int inkyY = iR * rectW + startY + 9;
+
+        int lineLength = 15;
+
+        gc.setStroke(Color.GRAY);
+        // Up arrow
+        gc.strokeLine(inkyX, inkyY, inkyX, inkyY - lineLength);
+        // Left arrow
+        gc.strokeLine(inkyX, inkyY, inkyX - lineLength, inkyY);
+        // Right arrow
+        gc.strokeLine(inkyX, inkyY, inkyX + lineLength, inkyY);
+        // Down arrow
+        gc.strokeLine(inkyX, inkyY, inkyX, inkyY + lineLength);
+
+        gc.setStroke(Color.RED);
+        // Set the direction arrow to be red while the others are grey
+        if (gDirs[moves] == 0) gc.strokeLine(inkyX, inkyY, inkyX, inkyY - lineLength);
+        else if (gDirs[moves] == 1) gc.strokeLine(inkyX, inkyY, inkyX - lineLength, inkyY);
+        else if (gDirs[moves] == 2) gc.strokeLine(inkyX, inkyY, inkyX + lineLength, inkyY);
+        else if (gDirs[moves] == 3) gc.strokeLine(inkyX, inkyY, inkyX, inkyY + lineLength);
+
+        // Draw Inky
         gc.setFill(Color.LIGHTBLUE);
         gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
-
     }
 }

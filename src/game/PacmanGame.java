@@ -129,7 +129,7 @@ public class PacmanGame {
 
     public void writeTurns() {
         try {
-            moveWriter.write("P: " + pacman.x + " " + pacman.y + " I: " + inky.x + " " + inky.y + "\n");
+            moveWriter.write("P: " + pacman.x + " " + pacman.y + " I: " + inky.x + " " + inky.y + " Idir: " + inky.getDir() + " Ifit: " + inky.fitness + "\n");
         } catch (Exception ex) {
             System.out.println("Error Writing Moves" + ex);
         }
