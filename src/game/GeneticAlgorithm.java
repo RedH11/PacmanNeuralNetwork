@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GeneticAlgorithm {
-
+    //Initialize arraylists of total population and children
     ArrayList<PacmanGame> population = new ArrayList<>();
     ArrayList<PacmanGame> children = new ArrayList<>();
 
@@ -30,6 +30,16 @@ public class GeneticAlgorithm {
 
     final int MAXMOVES = 500;
 
+    /**
+     * Genetic algorithm function
+     * @param PacmanDataPath dynamic data path for pacman game folder, which saves to desktop
+     * @param popSize total population size of ghosts per generation
+     * @param totalGens total generations to iterate
+     * @param mutationChance chance to mutate per generation
+     * @param lowerGhosts how many random ghosts other than the top we choose
+     * @param topGhosts how many of the top ghosts to breed
+     * @throws IOException
+     */
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
         this.populationSize = popSize;
@@ -38,7 +48,7 @@ public class GeneticAlgorithm {
         this.lowerGhosts = lowerGhosts;
         this.topGhosts = topGhosts;
 
-        // Gets amount of files int he folder already
+        // Gets amount of files in the folder already
         File folder = new File(PacmanDataPath);
         File[] listOfFiles = folder.listFiles();
 
@@ -71,7 +81,10 @@ public class GeneticAlgorithm {
         makePopulation();
     }
 
-
+    /**
+     * Creates each generation and records them to a file
+     * @throws IOException if file fails to write
+     */
     public void makeGenerations() throws IOException {
 
         while (generation < totalGens) {
@@ -90,6 +103,10 @@ public class GeneticAlgorithm {
         fw.close();
     }
 
+    /**
+     * Simulates Inkys
+     * @throws IOException
+     */
     public void testInkys() throws IOException {
         for (PacmanGame game : population) {
             game.simulateGame();
@@ -151,6 +168,10 @@ public class GeneticAlgorithm {
         }
     }
 
+    /**
+     * Sorts population by fitness, worst to best
+     * @throws IOException if file fails to write
+     */
     public void sortPopulation() throws IOException {
 
         children.clear();
