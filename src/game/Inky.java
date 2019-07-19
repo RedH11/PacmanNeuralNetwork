@@ -14,8 +14,8 @@ public class Inky {
 
     // Neural Network Settings
     final int INPUTS = 7;
-    final int HIDDEN_ONE = 30;
-    final int HIDDEN_TWO = 15;
+    final int HIDDEN_ONE = 35;
+    final int HIDDEN_TWO = 20;
     final int OUTPUTS = 4;
 
     private int moveCounter = 0;

@@ -1,7 +1,9 @@
 package game;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -66,73 +68,70 @@ public class PacmanGame {
     int generation;
     FileWriter moveWriter;
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, boolean recordGame, int generation, int pacNum) {
+    String fileContent = "";
+
+    String PacmanDataPath;
+
+    public PacmanGame(String PacmanDataPath, int MAXMOVES) {
         this.MAXMOVES = MAXMOVES;
         this.recordGame = recordGame;
         this.generation = generation;
-        createMap();
-        pacman = new Pacman();
-        inky = new Inky();
+        this.PacmanDataPath = PacmanDataPath;
 
-        if (recordGame) {
+        /*File folder = new File(PacmanDataPath);
+        File[] listOfFiles = folder.listFiles();
+        uniqueNum = listOfFiles.length;*/
 
-            try {
-                moveWriter = new FileWriter(PacmanDataPath + "pacGens" + pacNum + "/gen_" + generation);
-            } catch (Exception ex) {}
-        }
-    }
-
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, boolean recordGame, int generation, int pacNum, NeuralNetwork brain) {
-        this.MAXMOVES = MAXMOVES;
-        this.recordGame = recordGame;
-        this.generation = generation;
-        createMap();
-        pacman = new Pacman();
-        inky = new Inky(brain);
-
-        if (recordGame) {
-
-            try {
-                moveWriter = new FileWriter(PacmanDataPath + "pacGens" + pacNum + "/gen_" + generation);
-            } catch (Exception ex) {}
-        }
-    }
-
-    public PacmanGame(int MAXMOVES, NeuralNetwork brain) {
-        this.MAXMOVES = MAXMOVES;
-        this.recordGame = recordGame;
-        this.generation = generation;
-        createMap();
-        pacman = new Pacman();
-        inky = new Inky(brain);
-    }
-
-    public PacmanGame(int MAXMOVES) {
-        this.MAXMOVES = MAXMOVES;
         createMap();
         pacman = new Pacman();
         inky = new Inky();
     }
 
-    public void simulateGame() throws IOException {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork brain) {
+        this.MAXMOVES = MAXMOVES;
+        this.generation = generation;
+        this.PacmanDataPath = PacmanDataPath;
+
+
+        createMap();
+        pacman = new Pacman();
+        inky = new Inky(brain);
+    }
+
+
+    public void simulateGame() {
         while (gameMoves < MAXMOVES) {
-            if (recordGame) {
-                writeTurns();
-            }
+            fileContent += "P: " + pacman.x + " " + pacman.y + " I: " + inky.x + " " + inky.y + " Idir: " + inky.getDir() + " Ifit: " + inky.fitness + "\n";
             //printMap();
             simulateTurn();
             gameMoves++;
         }
-
-        if (recordGame) moveWriter.close();
     }
 
-    public void writeTurns() {
+    public void writeFileContent(int generation, int fileNum) {
+
+        int lineCount = 0;
+
         try {
-            moveWriter.write("P: " + pacman.x + " " + pacman.y + " I: " + inky.x + " " + inky.y + " Idir: " + inky.getDir() + " Ifit: " + inky.fitness + "\n");
-        } catch (Exception ex) {
-            System.out.println("Error Writing Moves" + ex);
+            moveWriter = new FileWriter(PacmanDataPath + "pacGens" + fileNum + "/gen_" + generation);
+        } catch (Exception ex) {}
+
+        for (int i = 0; i < fileContent.length(); i++) {
+            if (fileContent.charAt(i) == '\n') lineCount++;
         }
+
+        for (int i = 0; i < lineCount; i++) {
+            try {
+                // Write the first column
+                moveWriter.write(fileContent.substring(0, fileContent.indexOf("\n") + 1));
+                // Cut off a column
+                fileContent = fileContent.substring(fileContent.indexOf("\n") + 1);
+            } catch (IOException ex) {}
+        }
+
+        try {
+            moveWriter.close();
+        } catch (IOException ex) {}
     }
 
     public int getInkyFitness() {
@@ -212,5 +211,9 @@ public class PacmanGame {
 
         // Inky in proximity to pacman (within 2 tiles)
         if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman);
+    }
+
+    public NeuralNetwork getBrain() {
+        return inky.brain;
     }
 }

@@ -100,15 +100,14 @@ public class GeneticAlgorithm {
     public void makePopulation() {
         for (int i = 0; i < populationSize; i++) {
             // First member of each population has their game recorded
-            if (i == 0) population.add(new PacmanGame(PacmanDataPath, MAXMOVES, true, generation, fileNum));
-            else population.add(new PacmanGame(MAXMOVES));
+            population.add(new PacmanGame(PacmanDataPath, MAXMOVES));
         }
     }
 
     public void recreatePopulation() {
         // Add in the bred children to the population
         for (int i = 0; i < populationSize; i++) {
-            population.add(children.get(i));
+            population.add(new PacmanGame(PacmanDataPath, MAXMOVES, children.get(i).getBrain()));
         }
     }
 
@@ -126,8 +125,6 @@ public class GeneticAlgorithm {
 
         int parentIndx = 0;
 
-        boolean oneRecording = false;
-
         // Breeds the ghosts based on the parents indexes
         while (children.size() < populationSize) {
 
@@ -138,15 +135,7 @@ public class GeneticAlgorithm {
                 parentIndx = 0;
             }
 
-            // One child records their game
-            if (!oneRecording) {
-                children.add(new PacmanGame(PacmanDataPath, MAXMOVES, true, generation, fileNum, parent1.makeChild(parent2)));
-                oneRecording = true;
-            }
-
-            // Add the newly bred child to the children array (won't be selected because of the parents array boundary)
-            children.add(new PacmanGame(MAXMOVES, parent1.makeChild(parent2)));
-
+            children.add(new PacmanGame(PacmanDataPath, MAXMOVES, parent1.makeChild(parent2)));
             parentIndx++;
         }
     }
@@ -154,6 +143,10 @@ public class GeneticAlgorithm {
     public void sortPopulation() throws IOException {
 
         children.clear();
+
+        population.sort(new FitnessComparator());
+        // Write the top ghost to the file
+        population.get(populationSize - 1).writeFileContent(generation, fileNum);
 
         // Add top __ ghosts to the children array to be bred
         for (int i = 0; i < topGhosts; i++) {

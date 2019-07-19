@@ -11,6 +11,9 @@ public class Pacman {
     // Accessible traits
     boolean powered = false;
     boolean alive = true;
+    boolean firstMoveDone = false;
+    boolean secondMoveDone = false;
+
 
     int poweredMoves = 0;
     // How many moves pacman gets as powered
@@ -88,10 +91,22 @@ public class Pacman {
 
     // Generates a random direction that isn't the last one
     private int randDir(int lastDir) {
+
         int dir = num.nextInt(4);
         while (dir == lastDir) {
             dir = num.nextInt(4);
         }
+
+        // Make pacman go right then down
+        if (!firstMoveDone) {
+            dir = 2;
+            firstMoveDone = true;
+        }
+        else if (!secondMoveDone) {
+            dir = 3;
+            secondMoveDone = true;
+        }
+
         return dir;
     }
 

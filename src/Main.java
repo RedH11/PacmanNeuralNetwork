@@ -72,16 +72,17 @@ public class Main extends Application {
         String PacmanDataPath = PacmanData.getPath() + "/";
         if (!PacmanData.exists()) PacmanData.mkdir();
 
+
         boolean evolve = false;
+        boolean show = true;
 
         if (evolve) {
-            GeneticAlgorithm ga = new GeneticAlgorithm(PacmanDataPath,100, 10, 1, 3, 15);
+            GeneticAlgorithm ga = new GeneticAlgorithm(PacmanDataPath,500, 1, 1, 3, 15);
             ga.makeGenerations();
         }
 
-        int gameNum = 12;
-        int generationNum = 8;
-        boolean show = true;
+        int gameNum = 3;
+        int generationNum = 0;
 
         gameFile = PacmanDataPath + "pacGens" + gameNum + "/gen_" + generationNum;
 
@@ -90,7 +91,7 @@ public class Main extends Application {
                 try {
                     parseFile(gameFile);
                 } catch (FileNotFoundException ex) {}
-                VisualGame vg = new VisualGame(500, pacCoords, gCoords, gDirs, gFits, gc, generationNum, 2);
+                VisualGame vg = new VisualGame(500, pacCoords, gCoords, gDirs, gFits, gc, generationNum, 10);
             } else {
                 gc.setFill(Color.BLACK);
                 gc.fillText("NO GAME SELECTED", stageW/2 - 60, stageH/2);
