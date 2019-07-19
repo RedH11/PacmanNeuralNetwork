@@ -41,6 +41,11 @@ public class Main extends Application {
             gCoords[i][0] = 0;
             gCoords[i][1] = 0;
         }
+        
+        String pathToDesktop = System.getProperty("user.home") + "/Desktop/";
+
+        File PacmanData = new File(pathToDesktop + "PacmanData");
+        if (!PacmanData.exists()) PacmanData.mkdir();
 
         stage.setWidth(stageW );
         stage.setHeight(stageH);
