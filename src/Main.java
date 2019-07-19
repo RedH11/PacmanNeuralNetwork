@@ -79,8 +79,8 @@ public class Main extends Application {
             ga.makeGenerations();
         }
 
-        int gameNum = 3;
-        int generationNum = 7;
+        int gameNum = 12;
+        int generationNum = 8;
         boolean show = true;
 
         gameFile = PacmanDataPath + "pacGens" + gameNum + "/gen_" + generationNum;

@@ -49,6 +49,14 @@ public class Inky {
      */
     private int think(double[] input){
         double[] outputs = brain.calculate(input);
+
+        /*
+        for (int i = 0; i < outputs.length; i++) {
+            System.out.println(outputs[i]);
+        }
+
+        System.out.println();*/
+
         //double up, down, left, right;
         int highestDir = 0;
 
@@ -85,6 +93,15 @@ public class Inky {
         inputs[5] = closestDirToPac(px, py);
         if (scared) inputs[6] = 1;
         else inputs[6] = 0;
+
+        /*
+        System.out.println("Inputs");
+
+        for (int i = 0; i < inputs.length; i++) {
+            System.out.println(inputs[i]);
+        }
+        System.out.println();
+        System.out.println("Outputs");*/
 
         return inputs;
     }
@@ -193,22 +210,22 @@ public class Inky {
 
 
     public double lookUp(Tile[][] map) {
-        if (map[y--][x].wall) return 1;
+        if (wallInWay(0, map)) return 1;
         else return 0;
     }
 
     public double lookDown(Tile[][] map) {
-        if (map[y++][x].wall) return 1;
+        if (wallInWay(3, map)) return 1;
         else return 0;
     }
 
     public double lookRight(Tile[][] map) {
-        if (map[y][x++].wall) return 1;
+        if (wallInWay(2, map)) return 1;
         else return 0;
     }
 
     public double lookLeft(Tile[][] map) {
-        if (map[y][x--].wall) return 1;
+        if (wallInWay(1, map)) return 1;
         else return 0;
     }
 

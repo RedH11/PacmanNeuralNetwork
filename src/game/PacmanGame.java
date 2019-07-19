@@ -55,8 +55,8 @@ public class PacmanGame {
     private int pacEaten = -200;
 
     // How much fitness Inky gets for these achievements
-    private int eatPacman = 500;
-    private int nearPacman = 10;
+    private int eatPacman = 400;
+    private int nearPacman = 1;
     private int inkyEaten = -200;
 
     private int gameMoves = 0;

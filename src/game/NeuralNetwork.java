@@ -17,10 +17,6 @@ public class NeuralNetwork {
     public final int OUTPUT_SIZE;
     public final int NETWORK_SIZE;
 
-    /**
-     * Initializes neural network
-     * @param NETWORK_LAYER_SIZES number of nodes in each network layer
-     */
     public NeuralNetwork(int... NETWORK_LAYER_SIZES) {
         // Size of the different layers of the neural network
         this.NETWORK_LAYER_SIZES = NETWORK_LAYER_SIZES;
@@ -53,11 +49,6 @@ public class NeuralNetwork {
         }
     }
 
-    /**
-     * Dot products the vector of the inputs with the weights to produce output doubles
-     * @param input the 7 input points - 4 directions, distance from pacman, angle from pacman and if scared
-     * @return outputs
-     */
     public double[] calculate(double... input) {
         // If there is too much/ too little data passed in
         if (input.length != this.INPUT_SIZE) return null;
