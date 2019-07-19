@@ -191,7 +191,7 @@ public class Inky {
         return (Math.asin(y/distanceFromPac(px, py))*distanceFromPac(px, py));
     }
 
-    public double lookUp(Tile[][] map) {
+    /*public double lookUp(Tile[][] map) {
         if (map[y--][x].wall) return 1;
         else return 0;
     }
@@ -202,12 +202,32 @@ public class Inky {
     }
 
     public double lookRight(Tile[][] map) {
-        if (map[y][x++].wall) return 1;
-        else return 0;
+            if (map[y][x++].wall) return 1;
+            else return 0;
     }
 
     public double lookLeft(Tile[][] map) {
         if (map[y][x--].wall) return 1;
+        else return 0;
+    }*/
+
+    public double lookUp(Tile[][] map) {
+        if (map[x][y--].wall) return 1;
+        else return 0;
+    }
+
+    public double lookDown(Tile[][] map) {
+        if (map[x][y++].wall) return 1;
+        else return 0;
+    }
+
+    public double lookRight(Tile[][] map) {
+        if (map[x++][y].wall) return 1;
+        else return 0;
+    }
+
+    public double lookLeft(Tile[][] map) {
+        if (map[x--][y].wall) return 1;
         else return 0;
     }
 
