@@ -70,7 +70,7 @@ public class Inky {
      * @return
      */
     private double[] see(Tile[][] map, int px, int py) {
-        
+
         double[] inputs = new double[INPUTS];
 
         // Whether or not there are walls in the four blocks around it
@@ -191,25 +191,6 @@ public class Inky {
         return (Math.asin(y/distanceFromPac(px, py))*distanceFromPac(px, py));
     }
 
-    /*public double lookUp(Tile[][] map) {
-        if (map[y--][x].wall) return 1;
-        else return 0;
-    }
-
-    public double lookDown(Tile[][] map) {
-        if (map[y++][x].wall) return 1;
-        else return 0;
-    }
-
-    public double lookRight(Tile[][] map) {
-            if (map[y][x++].wall) return 1;
-            else return 0;
-    }
-
-    public double lookLeft(Tile[][] map) {
-        if (map[y][x--].wall) return 1;
-        else return 0;
-    }*/
 
     public double lookUp(Tile[][] map) {
         if (map[y--][x].wall) return 1;
@@ -237,5 +218,9 @@ public class Inky {
         if (highestDir == 1) System.out.println("Left output");
         if (highestDir == 2) System.out.println("Right output");
         if (highestDir == 3) System.out.println("Down output");
+    }
+
+    public int getDir() {
+        return dir;
     }
 }
