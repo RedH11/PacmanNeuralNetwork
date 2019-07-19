@@ -13,13 +13,14 @@ public class Pacman {
     boolean alive = true;
 
     int poweredMoves = 0;
-    // How many moves pacman gets as powered
+    // How many moves pacman gets when powered
     int maxPoweredMoves = 50;
 
     public Pacman() {
         respawn();
     }
 
+    //Respawns pacman at start position
     private void respawn() {
         x = 13; // 9
         y = 17; // 20
@@ -27,7 +28,14 @@ public class Pacman {
         alive = true;
     }
 
+    /**
+     * Pacman's move function
+     * @param map the game map
+     * @param Ix Inky's x coordinate
+     * @param Iy Inky's y coordinate
+     */
     private void move(Tile[][] map, int Ix, int Iy) {
+        //Respawn
         if (!alive) respawn();
 
         int prevX = x;
@@ -61,6 +69,12 @@ public class Pacman {
         else if (prevY - y == -2) y--;
     }
 
+    /**
+     * Check if t here's a wall in pacman's way
+     * @param dir the direction pacman is moving in
+     * @param map the game map
+     * @return true/false if there is a wall in the way
+     */
     public boolean wallInWay(int dir, Tile[][] map) {
         if (dir == 0) {
             final int testX = x;
