@@ -212,22 +212,22 @@ public class Inky {
     }*/
 
     public double lookUp(Tile[][] map) {
-        if (map[x][y--].wall) return 1;
+        if (map[y--][x].wall) return 1;
         else return 0;
     }
 
     public double lookDown(Tile[][] map) {
-        if (map[x][y++].wall) return 1;
+        if (map[y++][x].wall) return 1;
         else return 0;
     }
 
     public double lookRight(Tile[][] map) {
-        if (map[x++][y].wall) return 1;
+        if (map[y][x++].wall) return 1;
         else return 0;
     }
 
     public double lookLeft(Tile[][] map) {
-        if (map[x--][y].wall) return 1;
+        if (map[y][x--].wall) return 1;
         else return 0;
     }
 
