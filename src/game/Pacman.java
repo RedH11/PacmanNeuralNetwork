@@ -3,180 +3,106 @@ package game;
 import java.util.Random;
 
 public class Pacman {
-    private int speed = 1;
-    private boolean isPowered = false;
-    private int currentPosX = 16;
-    private int currentPosY = 20;
-    private int dir = -1;
-    private int score = 0;
-    private boolean isAlive = true;
+    Random num = new Random();
+    int x;
+    int y;
+    private int dir = num.nextInt(4); // Start pacman in a random direction
+    private int fitness = 0;
+    // Accessible traits
+    boolean powered = false;
+    boolean alive = true;
+
+    int poweredMoves = 0;
+    // How many moves pacman gets as powered
+    int maxPoweredMoves = 50;
 
     public Pacman() {
-        setCurrentPosX(16);
-        setCurrentPosY(20);
-        this.score = 0;
-        this.speed = 1;
-        this.isPowered = false;
-        this.isAlive = true;
-        this.dir = -1;
+        respawn();
     }
 
-    public void move(Grid[][] gameMap) {
+    private void respawn() {
+        x = 13; // 9
+        y = 17; // 20
+        powered = false;
+        alive = true;
+    }
 
-        // Up
+    private void move(Tile[][] map, int Ix, int Iy) {
+        if (!alive) respawn();
+
+        int prevX = x;
+        int prevY = y;
+
+        // map[x][y]
+
+        // 0: Up / 1: Left / 2: Right / 3: Down
+        switch (dir) {
+            case 0:
+                if (!wallInWay(dir, map) && !(Ix == x && Iy == y--)) y--;
+                else dir = randDir(dir);
+                break;
+            case 1:
+                if (!wallInWay(dir, map) && !(Ix == x-- && Iy == y)) x--;
+                else dir = randDir(dir);
+                break;
+            case 2:
+                if (!wallInWay(dir, map) && !(Ix == x++ && Iy == y)) x++;
+                else dir = randDir(dir);
+                break;
+            case 3:
+                if (!wallInWay(dir, map) && !(Ix == x && Iy == y++)) y++;
+                else dir = randDir(dir);
+                break;
+        }
+
+        if (prevX - x == 2) x++;
+        else if (prevX - x == -2) x--;
+        else if (prevY - y == 2) y++;
+        else if (prevY - y == -2) y--;
+    }
+
+    public boolean wallInWay(int dir, Tile[][] map) {
         if (dir == 0) {
-            if (!gameMap[currentPosY - 1][currentPosX].isWall()) currentPosY -= speed;
-            // Left
+            final int testX = x;
+            final int testY = y - 1;
+            if (map[testY][testX].wall) return true;
         } else if (dir == 1) {
-            try {
-                if (!gameMap[currentPosY][currentPosX-1].isWall()) currentPosX -= speed;
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                currentPosX = 31;
-            }
-            // Right
+            final int testX = x - 1;
+            final int testY = y;
+            if (map[testY][testX].wall) return true;
         } else if (dir == 2) {
-            try {
-                if (!gameMap[currentPosY][currentPosX+1].isWall()) currentPosX += speed;
-            } catch (IndexOutOfBoundsException ex) {
-                currentPosX = 0;
-            }
-            // Down
+            final int testX = x + 1;
+            final int testY = y;
+            if (map[testY][testX].wall) return true;
         } else if (dir == 3) {
-            if (!gameMap[currentPosY + 1][currentPosX].isWall()) currentPosY += speed;
+            final int testX = x;
+            final int testY = y + 1;
+            if (map[testY][testX].wall) return true;
         }
-
-        /*
-        // If he collides with a ghost
-        if (gameMap[currentPosX][currentPosY].isGhost() && !isPowered) {
-            isAlive = false;
-            gameMap[currentPosX][currentPosY].setEmpty(true);
-            System.out.println("DEAD");
-        }*/
-
-        if (gameMap[currentPosX][currentPosY].isPellet()) {
-            score += 10;
-            gameMap[currentPosX][currentPosY].setPellet(false);
-        }
-
-        if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
-            score += 50;
-            gameMap[currentPosX][currentPosY].setPowerPellet(false);
-            isPowered = true;
-        }
+        return false;
     }
 
-    // Generates a random direction other than the current one
-    public int randDir(int prevNum) {
-        Random num = new Random();
+    public void addFitness(int add) {
+        fitness += add;
+    }
 
+    // Generates a random direction that isn't the last one
+    private int randDir(int lastDir) {
         int dir = num.nextInt(4);
-        while (dir == prevNum) {
+        while (dir == lastDir) {
             dir = num.nextInt(4);
         }
-
         return dir;
     }
 
-    // Bot that moves pacman in random directions
-    public void moveBot(Grid[][] gameMap) {
-        int prevNum;
+    // Move pacman in random directions without hitting ghost
+    public void moveBot(Tile[][] map, int Ix, int Iy) {
 
-        if (dir == -1) dir = 2;
+        // Check states
+        if (powered) poweredMoves++;
+        if (poweredMoves == maxPoweredMoves) powered = false;
 
-        // Up
-        if (dir == 0) {
-            if (!gameMap[currentPosY - 1][currentPosX].isWall() && !gameMap[currentPosY - 1][currentPosX].isGhost()) currentPosY -= speed;
-            else {
-                prevNum = dir;
-                dir = randDir(prevNum);
-            }
-            // Left
-        } else if (dir == 1) {
-            try {
-                if (!gameMap[currentPosY][currentPosX-1].isWall() && !gameMap[currentPosY][currentPosX-1].isGhost()) currentPosX -= speed;
-                else {
-                    prevNum = dir;
-                    dir = randDir(prevNum);
-                }
-
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                currentPosX = 31;
-            }
-            // Right
-        } else if (dir == 2) {
-            try {
-                if (!gameMap[currentPosY][currentPosX+1].isWall() && !gameMap[currentPosY][currentPosX+1].isGhost()) currentPosX += speed;
-                else {
-                    prevNum = dir;
-                    dir = randDir(prevNum);
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                currentPosX = 0;
-            }
-            // Down
-        } else if (dir == 3) {
-            if (!gameMap[currentPosY + 1][currentPosX].isWall() && !gameMap[currentPosY+1][currentPosX].isGhost()) currentPosY += speed;
-            else {
-                prevNum = dir;
-                dir = randDir(prevNum);
-            }
-        }
-
-        if (gameMap[currentPosX][currentPosY].isGhost()) {
-            isAlive = false;
-            gameMap[currentPosX][currentPosY].setEmpty(true);
-        }
-
-        if (gameMap[currentPosX][currentPosY].isPellet()) {
-            //score += 100;
-            gameMap[currentPosX][currentPosY].setPellet(false);
-        }
-
-        if (gameMap[currentPosX][currentPosY].isPowerPellet()) {
-            //score += 100;
-            gameMap[currentPosX][currentPosY].setPowerPellet(false);
-            isPowered = true;
-        }
-
-    }
-
-    public void setPowered(boolean powered) {
-        isPowered = powered;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
-    public void setCurrentPosX(int x) {
-        currentPosX = x;
-    }
-
-    public void setCurrentPosY(int y) {
-        currentPosX = y;
-    }
-
-    public void setDir(int dir) {
-        this.dir = dir;
-    }
-
-    public int getDir() {
-        return dir;
-    }
-
-    public boolean isPowered() {
-        return isPowered;
-    }
-
-    public int getCurrentPosX() {
-        return currentPosX;
-    }
-
-    public int getCurrentPosY() {
-        return currentPosY;
-    }
-
-    public boolean isAlive() {
-        return isAlive;
+        // Keep moving straight until a wall is hit
+        move(map, Ix, Iy);
     }
 }

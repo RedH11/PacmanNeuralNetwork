@@ -1,6 +1,6 @@
 package game;
 
-public interface Ghost {
+/*public interface Ghost {
     /*
     -inputs
         -distance from pacman
@@ -10,6 +10,7 @@ public interface Ghost {
       -outputs
         -weighted directions
      */
+/*
     int STARTING_X = 16;
     int STARTING_Y = 12;
     double score = 0;
@@ -40,4 +41,4 @@ public interface Ghost {
     double wallLeft();
     void addScore(double add);
     double getScore();
-}
+}*/
