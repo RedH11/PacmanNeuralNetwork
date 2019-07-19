@@ -27,6 +27,7 @@ public class Main extends Application {
 
     int[][] pacCoords = new int[MAXMOVES][2];
     int[][] gCoords = new int[MAXMOVES][2];
+    String gameFile = "";
 
     public static void main(String[] args) {
         launch(args);
@@ -41,13 +42,8 @@ public class Main extends Application {
             gCoords[i][0] = 0;
             gCoords[i][1] = 0;
         }
-        
-        String pathToDesktop = System.getProperty("user.home") + "/Desktop/";
 
-        File PacmanData = new File(pathToDesktop + "PacmanData");
-        if (!PacmanData.exists()) PacmanData.mkdir();
-
-        stage.setWidth(stageW );
+        stage.setWidth(stageW);
         stage.setHeight(stageH);
 
         // The canvas for the pacman game
@@ -61,15 +57,19 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        //GeneticAlgorithm ga = new GeneticAlgorithm(200, 10, 1, 3, 15);
-        //ga.makeGenerations();
+        String pathToDesktop = System.getProperty("user.home") + "/Desktop/";
+
+        File PacmanData = new File(pathToDesktop + "PacmanData");
+        if (!PacmanData.exists()) PacmanData.mkdir();
+
+        GeneticAlgorithm ga = new GeneticAlgorithm(200, 10, 1, 3, 15);
+        ga.makeGenerations();
         //PacmanGame pc = new PacmanGame(MAXMOVES);
         //pc.simulateGame();
 
         //System.out.println("Done Evolving");
 
-        String gameFile = "/Users/hunterwebb/Desktop/PacmanData/pacGens0/gen_0";
-                //"/Users/hunterwebb/Desktop/PacmanData/pacGens1/gen_8"
+        //gameFile = "/Users/hunterwebb/Desktop/PacmanData/pacGens3/gen_0";
 
         Thread GameViewer = new Thread(() -> {
             if (gameFile.length() > 1) {
@@ -79,12 +79,11 @@ public class Main extends Application {
                 VisualGame vg = new VisualGame(500, pacCoords, gCoords, gc, 10);
             } else {
                 gc.setFill(Color.BLACK);
-                gc.fillText("NO GAME SELECTED", stageW/2, stageH/2);
+                gc.fillText("NO GAME SELECTED", stageW/2 - 60, stageH/2);
             }
         });
 
         GameViewer.start();
-
     }
 
     public void parseFile(String fileName) throws FileNotFoundException {

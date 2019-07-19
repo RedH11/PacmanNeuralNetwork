@@ -60,7 +60,7 @@ public class VisualGame {
 
         while (moves < MAXMOVES) {
             drawMap();
-            drawGame(0);
+            drawGame(moves);
             moves++;
             try {
                 Thread.sleep(1000/FPS);
@@ -133,8 +133,8 @@ public class VisualGame {
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
 
-        int iR = gCoords[moves][0];
-        int iC = gCoords[moves][1];
+        int iC = gCoords[moves][0];
+        int iR = gCoords[moves][1];
 
         // Draw pacman and inky
         gc.setFill(Color.YELLOW);

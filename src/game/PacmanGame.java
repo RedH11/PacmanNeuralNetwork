@@ -168,7 +168,7 @@ public class PacmanGame {
             for (int x = 0; x < 28; x++) {
                 if (x == pacman.x && y == pacman.y) System.out.print("C\t");
                 else if (x == inky.x && y == inky.y) System.out.print("8\t");
-                else if (map[y][x].wall) System.out.print(x + "\t");
+                else if (map[y][x].wall) System.out.print("0\t");
                 else if (map[y][x].eaten) System.out.print("\t");
                 else if (map[y][x].dot) System.out.print("-\t");
                 else if (map[y][x].bigDot) System.out.print("+\t");
@@ -201,13 +201,13 @@ public class PacmanGame {
         }
 
         // Pacman on a pellet
-        if (map[pacman.x][pacman.y].bigDot && !map[pacman.x][pacman.y].eaten) {
+        if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
             pacman.powered = true;
             pacman.addFitness(poweredScore);
-            map[pacman.x][pacman.y].eaten = true;
-        } else if (map[pacman.x][pacman.y].dot && !map[pacman.x][pacman.y].eaten) {
+            map[pacman.y][pacman.x].eaten = true;
+        } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
             pacman.addFitness(pelletScore);
-            map[pacman.x][pacman.y].eaten = true;
+            map[pacman.y][pacman.x].eaten = true;
         }
 
         // Inky in proximity to pacman (within 2 tiles)
