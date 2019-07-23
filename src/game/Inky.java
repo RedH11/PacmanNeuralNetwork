@@ -7,6 +7,8 @@ public class Inky {
     int x;
     int y;
     int fitness = 0;
+    int fitness2 = 0;
+    int fitness3 = 0;
     private int dir;
     boolean scared = false;
     boolean alive = true;
@@ -14,8 +16,8 @@ public class Inky {
 
     // Neural Network Settings
     final int INPUTS = 7;
-    final int HIDDEN_ONE = 35;
-    final int HIDDEN_TWO = 20;
+    final int HIDDEN_ONE = 80;
+    final int HIDDEN_TWO = 50;
     final int OUTPUTS = 4;
 
     private int moveCounter = 0;
@@ -47,26 +49,29 @@ public class Inky {
      * @param input the input data
      * @return the direction with the highest output, which Inky takes
      */
-    private int think(double[] input){
+    private int think(double[] input, Tile[][] map){
         double[] outputs = brain.calculate(input);
-
-        /*
-        for (int i = 0; i < outputs.length; i++) {
-            System.out.println(outputs[i]);
-        }
-
-        System.out.println();*/
 
         //double up, down, left, right;
         int highestDir = 0;
 
-        for(int i = 1; i < outputs.length; i++){
-            if(outputs[highestDir]<outputs[i]){
-                highestDir = i;
-            }
-
+        while (wallInWay(highestDir, map)) {
+            highestDir++;
         }
-        // outputDecision(highestDir);
+
+        if (!(highestDir == 3)) {
+            // Pacman isn't restricted to always be moving like the ghosts are
+            for (int i = highestDir + 1; i < outputs.length; i++) {
+                if (outputs[highestDir] < outputs[i]) {
+                    if (!wallInWay(i, map)) highestDir = i;
+                }
+            }
+        }
+
+        /*while (wallInWay(highestDir, map)) {
+            highestDir = randDir(highestDir);
+        }*/
+
         return highestDir;
     }
 
@@ -114,7 +119,7 @@ public class Inky {
      */
     public void move(Tile[][] map, int px, int py) {
         if (!alive) respawn();
-        dir = think(see(map, px, py));
+        dir = think(see(map, px, py), map);
 
         int prevX = x;
         int prevY = y;
@@ -155,8 +160,10 @@ public class Inky {
                     break;
             }
         }
+
         if (scaredMoves == maxScaredMoves) scared = false;
 
+        // Can't move twice in a turn
         if (prevX - x == 2) x++;
         else if (prevX - x == -2) x--;
         else if (prevY - y == 2) y++;
@@ -190,8 +197,10 @@ public class Inky {
         return false;
     }
 
-    public void addFitness(double add) {
-        fitness += add;
+    public void addFitness(double add, int round) {
+        if (round == 1) fitness += add;
+        else if (round == 2) fitness2 += add;
+        else fitness3 += add;
     }
 
     public NeuralNetwork getBrain() {
@@ -227,6 +236,17 @@ public class Inky {
     public double lookLeft(Tile[][] map) {
         if (wallInWay(1, map)) return 1;
         else return 0;
+    }
+
+    // Generates a random direction that isn't the last one
+    private int randDir(int lastDir) {
+
+        int dir = num.nextInt(4);
+        while (dir == lastDir) {
+            dir = num.nextInt(4);
+        }
+
+        return dir;
     }
 
     // Print direction

@@ -2,10 +2,6 @@ package game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
-import sun.font.GraphicComponent;
 
 public class VisualGame {
 
@@ -17,8 +13,14 @@ public class VisualGame {
     int[][] gCoords;
     int[] gDirs;
     int[] gFits;
+    int[] pDirs;
+    int[] pFits;
+    boolean pPowered[];
     GraphicsContext gc;
     int moves = 0;
+    int[][] g2Coords;
+    int[] g2Fits;
+    int [] g2Dirs;
 
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -53,24 +55,34 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(int MAXMOVES, int[][] pCoords, int[][] gCoords, int[] gDirs, int[] gFits, GraphicsContext gc, int generation, int FPS) {
+    public VisualGame(int MAXMOVES, int[][] pCoords, int[][] gCoords, int[] gDirs, int[] gFits, int[][] g2Coords, int[] g2Dirs, int[] g2Fits, int[] pDirs, int[] pFits, boolean pPowered[], GraphicsContext gc, int generation, int FPS) {
         this.MAXMOVES = MAXMOVES;
         this.pCoords = pCoords;
         this.gCoords = gCoords;
         this.gDirs = gDirs;
         this.gFits = gFits;
+        this.pDirs = pDirs;
+        this.pFits = pFits;
+        this.pPowered = pPowered;
         this.gc = gc;
+        this.generation = generation;
+        this.g2Coords = g2Coords;
+        this.g2Dirs = g2Dirs;
+        this.g2Fits = g2Fits;
 
         drawMap();
 
-        while (moves < MAXMOVES) {
-            drawMap();
-            drawGame(moves);
-            moves++;
-            try {
-                Thread.sleep(1000/FPS);
-            } catch (InterruptedException ex) {}
-        }
+        try {
+            while (moves < MAXMOVES && g2Coords[moves][1] != 0) {
+                drawMap();
+                drawGame(moves);
+                moves++;
+                try {
+                    Thread.sleep(1000 / FPS);
+                } catch (InterruptedException ex) {
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException ex) {}
     }
 
     private void drawMap() {
@@ -123,7 +135,9 @@ public class VisualGame {
         }
 
         gc.setFill(Color.WHITE);
-        gc.fillText("Fitness: " + gFits[moves], 450, 15);
+        gc.fillText("Inky 1 Fitness: " + gFits[moves], 400, 15);
+        gc.fillText("Inky 2 Fitness: " + g2Fits[moves], 400, 30);
+        gc.fillText("Pacman Fitness: " + pFits[moves], 400, 45);
         gc.fillText("Generation: " + generation, 25, 15);
     }
 
@@ -141,9 +155,26 @@ public class VisualGame {
         int iC = gCoords[moves][0];
         int iR = gCoords[moves][1];
 
-        // Draw pacman and inky
-        gc.setFill(Color.YELLOW);
-        gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+        int iC2 = g2Coords[moves][0];
+        int iR2 = g2Coords[moves][1];
+
+        int arrowLength = 15;
+
+        // Draw pacman and inky and arrows showing their direction
+
+        int pacX = pC * rectW + startX  + 9;
+        int pacY = pR * rectW + startY + 9;
+
+        drawArrows(pacX, pacY, moves, pDirs, arrowLength);
+
+        if (pPowered[moves]) {
+            gc.setFill(Color.LIGHTGOLDENRODYELLOW);
+            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+        } else {
+            gc.setFill(Color.YELLOW);
+            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+        }
+
 
         // Show eaten pellets
         if (moves > 0) {
@@ -156,27 +187,40 @@ public class VisualGame {
         int inkyX = iC * rectW + startX  + 9;
         int inkyY = iR * rectW + startY + 9;
 
-        int lineLength = 15;
+        int inkyX2 = iC2 * rectW + startX + 9;
+        int inkyY2 = iR2 * rectW + startY + 9;
 
+        drawArrows(inkyX, inkyY, moves, gDirs, arrowLength);
+        drawArrows(inkyX2, inkyY2, moves, g2Dirs, arrowLength);
+
+        // Draw Inky
+        if (pPowered[moves]) {
+            gc.setFill(Color.BLUEVIOLET);
+            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
+            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
+        } else {
+            gc.setFill(Color.LIGHTBLUE);
+            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
+            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
+        }
+    }
+
+    public void drawArrows (int x, int y, int moves, int[] dirs, int length) {
         gc.setStroke(Color.GRAY);
         // Up arrow
-        gc.strokeLine(inkyX, inkyY, inkyX, inkyY - lineLength);
+        gc.strokeLine(x, y, x, y - length);
         // Left arrow
-        gc.strokeLine(inkyX, inkyY, inkyX - lineLength, inkyY);
+        gc.strokeLine(x, y, x - length, y);
         // Right arrow
-        gc.strokeLine(inkyX, inkyY, inkyX + lineLength, inkyY);
+        gc.strokeLine(x, y, x + length, y);
         // Down arrow
-        gc.strokeLine(inkyX, inkyY, inkyX, inkyY + lineLength);
+        gc.strokeLine(x, y, x, y + length);
 
         gc.setStroke(Color.RED);
         // Set the direction arrow to be red while the others are grey
-        if (gDirs[moves] == 0) gc.strokeLine(inkyX, inkyY, inkyX, inkyY - lineLength);
-        else if (gDirs[moves] == 1) gc.strokeLine(inkyX, inkyY, inkyX - lineLength, inkyY);
-        else if (gDirs[moves] == 2) gc.strokeLine(inkyX, inkyY, inkyX + lineLength, inkyY);
-        else if (gDirs[moves] == 3) gc.strokeLine(inkyX, inkyY, inkyX, inkyY + lineLength);
-
-        // Draw Inky
-        gc.setFill(Color.LIGHTBLUE);
-        gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
+        if (dirs[moves] == 0) gc.strokeLine(x, y, x, y - length);
+        else if (dirs[moves] == 1) gc.strokeLine(x, y, x - length, y);
+        else if (dirs[moves] == 2) gc.strokeLine(x, y, x + length, y);
+        else if (dirs[moves] == 3) gc.strokeLine(x, y, x, y + length);
     }
 }

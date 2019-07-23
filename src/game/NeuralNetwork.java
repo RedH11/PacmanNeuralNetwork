@@ -1,9 +1,10 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
 
     // First is layer and second is neuron
     private double[][] output;
@@ -186,10 +187,6 @@ public class NeuralNetwork {
                 }
             }
         }
-    }
-
-    public double[][][] getWeights() {
-        return weights;
     }
 
     private double sigmoid(double x) {
