@@ -83,28 +83,27 @@ public class PacmanGame {
 
         createMap();
         pacman = new Pacman();
-        inky = new Inky();
-        inkyTwo = new Inky();
+      //  inky = new Inky();
+       // inkyTwo = new Inky();
     }
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork inkyBrainOne, int inkyOneFitness, NeuralNetwork inkyBrainTwo, int inkyTwoFitness, NeuralNetwork pacmanBrain, int pacmanFitness) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, int pacmanFitness) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
         createMap();
         pacman = new Pacman(pacmanBrain);
         pacman.fitness = pacmanFitness;
-        inky = new Inky(inkyBrainOne);
-        inky.fitness = inkyOneFitness;
-        inkyTwo = new Inky(inkyBrainTwo);
-        inkyTwo.fitness = inkyTwoFitness;
+      //  inky = new Inky(inkyBrainOne);
+       // inky.fitness = inkyOneFitness;
+        //inkyTwo = new Inky(inkyBrainTwo);
+        //inkyTwo.fitness = inkyTwoFitness;
     }
 
 
     public void simulateGame(int round) {
         gameMoves = 0;
         while ((numPellets < MAX_PELLETS) && (pacman.lives > 0) && (gameMoves < MAXMOVES)) {
-            fileContent += "P: " + pacman.x + " " + pacman.y + " I1: " + inky.x + " " + inky.y + " I1dir: " + inky.getDir() +
-                    " Ifit: " + inky.fitness + " I2: " + inkyTwo.x + " " + inkyTwo.y + " I2dir: " + inkyTwo.getDir() + " " + " I2fit: " + inkyTwo.fitness + " Pdir: " + pacman.getDir() + " Pfit: " + pacman.fitness + " Ppowered: " + pacman.powered + "\n";
+            fileContent += "P: " + pacman.x + " " + pacman.y +  " Pdir: " + pacman.getDir() + " Pfit: " + pacman.fitness + " Ppowered: " + pacman.powered + "\n";
             simulateTurn(round);
             gameMoves++;
         }
@@ -166,8 +165,8 @@ public class PacmanGame {
         for (int y = 0; y < 31; y++) {
             for (int x = 0; x < 28; x++) {
                 if (x == pacman.x && y == pacman.y) System.out.print("C\t");
-                else if (x == inky.x && y == inky.y) System.out.print("8\t");
-                else if (x == inkyTwo.x && y == inkyTwo.y) System.out.print("8\t");
+              //  else if (x == inky.x && y == inky.y) System.out.print("8\t");
+               // else if (x == inkyTwo.x && y == inkyTwo.y) System.out.print("8\t");
                 else if (map[y][x].wall) System.out.print("0\t");
                 else if (map[y][x].eaten) System.out.print("\t");
                 else if (map[y][x].dot) System.out.print("-\t");
@@ -179,22 +178,22 @@ public class PacmanGame {
     }
 
     private void simulateTurn(int round) {
-        pacman.move(map, inky.x, inky.y, inkyTwo.x, inkyTwo.y);
+        pacman.move(map);
         checkStates(round);
-        inky.move(map, pacman.x, pacman.y);
-        checkStates(round);
-        inkyTwo.move(map, pacman.x, pacman.y);
-        checkStates(round);
+       // inky.move(map, pacman.x, pacman.y);
+        //checkStates(round);
+       // inkyTwo.move(map, pacman.x, pacman.y);
+        //checkStates(round);
     }
 
     private void checkStates(int round) {
         if (gameMoves - scaredStart == poweredMoves) {
             pacman.powered = false;
-            inky.scared = false;
-            inkyTwo.scared = false;
+          //  inky.scared = false;
+           // inkyTwo.scared = false;
         }
 
-        // Interaction when Pacman and Inky Collide
+      /*  // Interaction when Pacman and Inky Collide
         if (pacman.x == inky.x && pacman.y == inky.y) {
             if (!pacman.powered) {
                 pacman.alive = false;
@@ -210,6 +209,8 @@ public class PacmanGame {
             }
         }
 
+
+
         if (pacman.x == inkyTwo.x && pacman.y == inkyTwo.y) {
             if (!pacman.powered) {
                 pacman.alive = false;
@@ -224,12 +225,12 @@ public class PacmanGame {
                 inkyTwo.addFitness(inkyEaten, round);
             }
         }
-
+*/
         // Pacman on a pellet
         if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
             pacman.powered = true;
-            inky.scared = true;
-            inkyTwo.scared = true;
+        //    inky.scared = true;
+          //  inkyTwo.scared = true;
             pacman.addFitness(poweredScore, round);
             map[pacman.y][pacman.x].eaten = true;
             scaredStart = gameMoves;
@@ -240,10 +241,10 @@ public class PacmanGame {
         }
 
         // Inky in proximity to pacman (within 2 tiles)
-        if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman, round);
-        if (inkyTwo.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inkyTwo.addFitness(nearPacman, round);
+      //  if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman, round);
+      //  if (inkyTwo.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inkyTwo.addFitness(nearPacman, round);
     }
-
+/*
     public Inky getBestInky(){
 
         double xAvg = (inky.fitness + inky.fitness2 + inky.fitness3) / 3;
@@ -254,6 +255,8 @@ public class PacmanGame {
         return inky;
 
     }
+
+ */
     public void WriteObjectToFile(Object serObj, int generation) {
 
         try {

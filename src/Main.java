@@ -71,8 +71,8 @@ public class Main extends Application {
         // When viewing what character to show
         boolean pacman = true;
         // File Settings
-        int gameNum = 22;
-        int generationNum = 3;
+        int gameNum = 24;
+        int generationNum = 0;
 
         if (evolve) {
             GeneticAlgorithm[] tests3 = new GeneticAlgorithm[podAmount];
@@ -96,7 +96,7 @@ public class Main extends Application {
                     gc.fillText("NO GAME SELECTED", stageW / 2 - 60, stageH / 2);
                 }
 
-                VisualGame vg = new VisualGame(500, pacCoords, gCoords, gDirs, gFits, g2Coords, g2Dirs, g2Fits, pDirs, pFits, pPowered, gc, generationNum, 12);
+               VisualGame vg = new VisualGame(500, pacCoords,  pDirs, pFits, pPowered, gc, generationNum, 12);
                 gc.setFill(Color.WHITE);
                 gc.fillText("GAME OVER", stageW / 2 - 60, stageH / 2);
 
@@ -134,42 +134,42 @@ public class Main extends Application {
                 // Trim off _I1:_
                 str = str.substring(str.indexOf("I1:") + 4);
                 // X coord
-                x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                gCoords[coordsCollected][0] = x;
+               // x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+             //   gCoords[coordsCollected][0] = x;
                 // Trim off space
                 str = str.substring(str.indexOf(" ") + 1);
                 // Y coord
-                y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                gCoords[coordsCollected][1] = y;
+              //  y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+            //    gCoords[coordsCollected][1] = y;
                 // Trim off I1dir:_
-                str = str.substring(str.indexOf(":") + 2);
+             //   str = str.substring(str.indexOf(":") + 2);
                 // Ghost Direction int
-                gDirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
+               // gDirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
                 // Trim off I2fit:_
-                str = str.substring(str.indexOf(":") + 2);
+             //   str = str.substring(str.indexOf(":") + 2);
                 // Ghost Fitness int
-                gFits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                //gFits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
 
                 // Trim off _I2:_
-                str = str.substring(str.indexOf("I2:") + 4);
+               // str = str.substring(str.indexOf("I2:") + 4);
                 // X coord
-                x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                g2Coords[coordsCollected][0] = x;
+               // x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                //g2Coords[coordsCollected][0] = x;
                 // Trim off space
-                str = str.substring(str.indexOf(" ") + 1);
+                //str = str.substring(str.indexOf(" ") + 1);
                 // Y coord
-                y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                g2Coords[coordsCollected][1] = y;
+                //y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                //g2Coords[coordsCollected][1] = y;
                 // Trim off I2dir:_
-                str = str.substring(str.indexOf(":") + 2);
+                //str = str.substring(str.indexOf(":") + 2);
                 // Ghost Direction int
-                g2Dirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
+                //g2Dirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
                 // Trim off I2fit:_
-                str = str.substring(str.indexOf(":") + 2);
+                //str = str.substring(str.indexOf(":") + 2);
                 // Ghost Fitness int
-                g2Fits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                //g2Fits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
                 // Trim off Pdir:_
-                str = str.substring(str.indexOf(":") + 2);
+            //    str = str.substring(str.indexOf(":") + 2);
                 // Pacman direction int
                 pDirs[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
                 // Trim off Pfit:_

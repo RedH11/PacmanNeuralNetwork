@@ -62,10 +62,10 @@ public class Pacman {
             }
         }
 
-        /*
+
         while (wallInWay(highestDir, map)) {
             highestDir = randDir(highestDir);
-        }*/
+        }
 
         return highestDir;
     }
@@ -86,14 +86,14 @@ public class Pacman {
 
     }
 
-    private double[] see(Tile[][] map, int Ix, int Iy, int I2x, int I2y) {
+    private double[] see(Tile[][] map) {
 
         int visionDistance = 1;
 
         // The inputs are the size of all of the tiles around packman depending on the vision distance and whether or not he is powered
         double[] inputs = new double[(int) (Math.pow(2, visionDistance + 2) + 1)];
 
-        lookAround(map, inputs, Ix, Iy, I2x, I2y, visionDistance);
+        lookAround(map, inputs, visionDistance);
 
         /*
         // Whether or not there are walls in the four blocks around it
@@ -126,15 +126,14 @@ public class Pacman {
         return inputs;
     }
 
-    private void lookAround(Tile[][] map, double[] inputs, int Ix, int Iy, int I2x, int I2y, int visionDist) {
+    private void lookAround(Tile[][] map, double[] inputs,  int visionDist) {
 
         int inputsIndex = 0;
 
         for (int j = -1; j < visionDist + 1; j++) {
             for (int i = -1; i < visionDist + 1; i++) {
                 if (!(i == 0 && j == 0)) {
-                    if ((y + j == Iy && x + i == Ix) || (y + j == I2y && x + i == I2x)) inputs[inputsIndex] = 3;
-                    else if (map[y + j][x + i].wall) inputs[inputsIndex] = 2;
+                    if (map[y + j][x + i].wall) inputs[inputsIndex] = 2;
                     else if (map[y + j][x + i].dot) inputs[inputsIndex] = 1;
                     else if (map[y + j][x + i].bigDot) inputs[inputsIndex] = 0;
                     inputsIndex++;
@@ -144,14 +143,18 @@ public class Pacman {
     }
 
     //Calculates distance from Inky
-    private double distanceFromInky(int ix, int iy) {
+/*    private double distanceFromInky(int ix, int iy) {
         return Math.sqrt(Math.pow(ix-x, 2) + Math.pow(iy-y, 2));
     }
+
+
 
     // Calculates angle to Inky
     private double closestDirToInky(int ix, int iy) {
         return (Math.asin((iy-y)/distanceFromInky(ix, iy)));
     }
+
+ */
 
     private double lookUp(Tile[][] map) {
         if (wallInWay(0, map)) return 1;
@@ -205,10 +208,10 @@ public class Pacman {
         }
     }
 
-    public void move(Tile[][] map, int Ix, int Iy, int I2x, int I2y) {
+    public void move(Tile[][] map) {
         if (!alive) respawn();
 
-        dir = think(see(map, Ix, Iy, I2x, I2y), map);
+        dir = think(see(map), map);
 
         int prevX = x;
         int prevY = y;

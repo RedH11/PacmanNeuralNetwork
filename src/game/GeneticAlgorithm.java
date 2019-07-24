@@ -64,7 +64,7 @@ public class GeneticAlgorithm {
         // Create test data file writer
         try {
             pacWriter = new FileWriter(this.PacmanDataPath + "/pacFits" + fileNum + ".txt");
-            inkyWriter = new FileWriter(this.PacmanDataPath + "/inkyFits" + fileNum + ".txt");
+          //  inkyWriter = new FileWriter(this.PacmanDataPath + "/inkyFits" + fileNum + ".txt");
         } catch (FileNotFoundException ex) {
             System.out.println("File Not Found");
         }
@@ -72,26 +72,28 @@ public class GeneticAlgorithm {
         // Write in test data to file
         try {
             pacWriter.write("Pacman - Popsize: " + popSize + "\nMutationChance: " + mutationChance + "\nTopGhosts: " + topPacman + "\nLowerGhosts: " + lowerPacman + "\nNNSizes ");
-            inkyWriter.write("Inky - Popsize: " + popSize + "\nMutationChance: " + mutationChance + "\nTopGhosts: " + topGhosts + "\nLowerGhosts: " + lowerGhosts + "\nNNSizes ");
+          //  inkyWriter.write("Inky - Popsize: " + popSize + "\nMutationChance: " + mutationChance + "\nTopGhosts: " + topGhosts + "\nLowerGhosts: " + lowerGhosts + "\nNNSizes ");
 
             // Write in neural network proportions
             pacWriter.write(new Pacman().INPUTS + " ");
             pacWriter.write(new Pacman().HIDDEN_ONE + " ");
             pacWriter.write(new Pacman().HIDDEN_TWO + " ");
             pacWriter.write(new Pacman().OUTPUTS + "\n");
-            inkyWriter.write(new Inky().INPUTS + " ");
+         /*   inkyWriter.write(new Inky().INPUTS + " ");
             inkyWriter.write(new Inky().HIDDEN_ONE + " ");
             inkyWriter.write(new Inky().HIDDEN_TWO + " ");
             inkyWriter.write(new Inky().OUTPUTS + "\n");
+
+          */
 
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
             // File write the time
             pacWriter.write(new SimpleDateFormat("dd-MMM-YYYY").format(new Date()) + "\n");
-            inkyWriter.write(new SimpleDateFormat("dd-MMM-YYYY").format(new Date()) + "\n");
+          //  inkyWriter.write(new SimpleDateFormat("dd-MMM-YYYY").format(new Date()) + "\n");
             pacWriter.write( sdf.format(cal.getTime()) + "\n");
-            inkyWriter.write( sdf.format(cal.getTime()) + "\n");
+          //  inkyWriter.write( sdf.format(cal.getTime()) + "\n");
 
         } catch (NullPointerException ex) {
             System.out.println("Error Writing File");
@@ -104,29 +106,30 @@ public class GeneticAlgorithm {
     public void makeGenerations() throws IOException {
 
         while (generation < totalGens) {
-            roundRobin();
-            roundRobin();
-            lastRoundRobin = true;
-            roundRobin();
+            test();
+  //          roundRobin();
+    //        roundRobin();
+      //      lastRoundRobin = true;
+        //    roundRobin();
             sort();
             mutate();
             clear();
             breedPopulation();
             generation++;
-            lastRoundRobin = false;
-            round = 0;
+          //  lastRoundRobin = false;
+            //round = 0;
         }
 
         // Write all fitness records to file
         writeAllFitnesses();
         // Close file writer for fitness
         pacWriter.close();
-        inkyWriter.close();
+       // inkyWriter.close();
     }
 
     private void writeAllFitnesses() throws IOException {
         pacWriter.write(pacFitnessStr);
-        inkyWriter.write(inkyFitnessStr);
+    //    inkyWriter.write(inkyFitnessStr);
     }
 
     // Make a fresh population of Inkys and Pacmans
@@ -149,18 +152,18 @@ public class GeneticAlgorithm {
         round++;
 
         test();
-        inkies.clear();
+        //inkies.clear();
         pacmen.clear();
 
         for (PacmanGame game : gamePopulation) {
-            inkies.add(game.inky);
-            inkies.add(game.inkyTwo);
+      //      inkies.add(game.inky);
+        //    inkies.add(game.inkyTwo);
             pacmen.add(game.pacman);
         }
 
         // Shuffle around pacmen to hit new inky ghosts
         Collections.shuffle(pacmen);
-        Collections.shuffle(inkies);
+     //   Collections.shuffle(inkies);
 
         if (!lastRoundRobin) gamePopulation.clear();
 
@@ -168,71 +171,80 @@ public class GeneticAlgorithm {
 
         for (int i = 0; i < populationSize; i++) {
             // Put all of the inkies and pacmen back into new games with different opponents
-            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, inkies.get(ghostIndx).brain, inkies.get(ghostIndx).fitness, inkies.get(ghostIndx + 1).brain, inkies.get(ghostIndx + 1).fitness, pacmen.get(i).brain, pacmen.get(i).fitness));
+            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES,  pacmen.get(i).brain, pacmen.get(i).fitness));
             ghostIndx += 2;
         }
     }
 
     public void sort() {
 
-        inkyBabys.clear();
+      //  inkyBabys.clear();
         pacmanBabys.clear();
 
         // Add all inkys and pacmen to the baby arrays
         for (int i = 0; i < populationSize; i++) {
-            inkyBabys.add(gamePopulation.get(i));
+           // inkyBabys.add(gamePopulation.get(i));
             pacmanBabys.add(gamePopulation.get(i));
         }
 
         // Sort the inky babies by the best inky in each game
-        inkyBabys.sort(new InkyFitnessComparator());
+      //  inkyBabys.sort(new InkyFitnessComparator());
         // Sort the pacman babies by their fitnesses
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         // Make file records of the best Pacman/Inky
-        inkyBabys.get(inkyBabys.size() - 1).writeFileContent(generation, fileNum, false);
+     //   inkyBabys.get(inkyBabys.size() - 1).writeFileContent(generation, fileNum, false);
         pacmanBabys.get(pacmanBabys.size() - 1).writeFileContent(generation, fileNum, true);
 
         // Print and Record the best fitness
-        System.out.println("I Gen " + generation + " fitness " + inkyBabys.get(inkyBabys.size() - 1).getBestInky().fitness);
+   //     System.out.println("I Gen " + generation + " fitness " + inkyBabys.get(inkyBabys.size() - 1).getBestInky().fitness);
         System.out.println("P Gen " + generation + " fitness " + pacmanBabys.get(pacmanBabys.size() - 1).getPacmanFitness());
         System.out.println();
-        String inkyFitness = Double.toString(Math.round(inkyBabys.get(inkyBabys.size() - 1).getBestInky().fitness));
+    //    String inkyFitness = Double.toString(Math.round(inkyBabys.get(inkyBabys.size() - 1).getBestInky().fitness));
         String pacmanFitness = Double.toString(Math.round(pacmanBabys.get(pacmanBabys.size() - 1).getPacmanFitness()));
-        if (inkyFitness != null) inkyFitnessStr += (inkyFitness + "\n");
+      //  if (inkyFitness != null) inkyFitnessStr += (inkyFitness + "\n");
         if (pacmanFitness != null) pacFitnessStr += (pacmanFitness + "\n");
 
         // Remove non top pacman/inky babys
-        while(inkyBabys.size() > topGhosts) {
+    /*    while(inkyBabys.size() > topGhosts) {
             inkyBabys.remove(0);
         }
+
+     */
         while (pacmanBabys.size() > topPacman) {
             pacmanBabys.remove(0);
         }
 
         // Get _ lower scoring ghosts/pacmen to be bred
-        ArrayList<Integer> randInkys = NetworkTools.randomValues(0, populationSize - 1 - topGhosts, lowerGhosts);
+     //   ArrayList<Integer> randInkys = NetworkTools.randomValues(0, populationSize - 1 - topGhosts, lowerGhosts);
         ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
 
         // Add random inkys and pacmen
-        for (int i = 0; i < randInkys.size(); i++) {
-            inkyBabys.add(gamePopulation.get(randInkys.get(i)));
+    /*    for (int i = 0; i < randInkys.size(); i++) {
+            ink
+           Babys.add(gamePopulation.get(randInkys.get(i)));
+
         }
+
+     */
 
         for (int i = 0; i < randPacmen.size(); i++) {
             pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
         }
 
         // Sort inkys and pacmen
-        inkyBabys.sort(new InkyFitnessComparator());
+       // inkyBabys.sort(new InkyFitnessComparator());
         pacmanBabys.sort(new PacmanFitnessComparator());
     }
 
     public void mutate() {
         // Mutate some inky babies
+        /*
         for (int i = 0; i < inkyBabys.size(); i++) {
             inkyBabys.get(i).getBestInky().brain.mutate(mutationChance);
         }
+
+         */
         // Mutate some pacman babies
         for (int i = 0; i < pacmanBabys.size(); i++) {
             pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
@@ -257,7 +269,7 @@ public class GeneticAlgorithm {
         NeuralNetwork parent1;
         NeuralNetwork parent2;
         int parentIndx = 0;
-
+/*
         // Inky Breeding
         inkyBrains.clear();
         // Add in top inky brains
@@ -275,6 +287,8 @@ public class GeneticAlgorithm {
             inkyBrains.add(parent1.makeChild(parent2));
             parentIndx++;
         }
+
+ */
 
 
         // Pacman Breeding
@@ -299,7 +313,7 @@ public class GeneticAlgorithm {
 
         // Repopulated game population with new inky and pacman brains starting with 0 fitness
         for (int i = 0; i < populationSize; i++) {
-            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, inkyBrains.get(ghostIndex), 0, inkyBrains.get(ghostIndex + 1), 0,  pacmanBrains.get(i), 0));
+            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES,   pacmanBrains.get(i), 0));
             ghostIndex += 2;
         }
 

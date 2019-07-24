@@ -10,13 +10,16 @@ class InkyFitnessComparator implements Comparator<PacmanGame> {
            return a negative number when o1 < o2
                   a positive number when o1 > o2
                   0 when o1 == o2
-        */
+
 
         double xAvg = (x.getBestInky().fitness + x.getBestInky().fitness2 + x.getBestInky().fitness3) / 3;
         double yAvg = (y.getBestInky().fitness + y.getBestInky().fitness2 + y.getBestInky().fitness3) / 3;
 
         if (xAvg < yAvg) return -1;
         else if (xAvg > yAvg) return 1;
+        return 0;
+
+         */
         return 0;
     }
 }
