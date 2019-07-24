@@ -231,11 +231,11 @@ public class PacmanGame {
             pacman.powered = true;
         //    inky.scared = true;
           //  inkyTwo.scared = true;
-            pacman.addFitness(poweredScore, round);
+            pacman.addFitness(poweredScore);
             map[pacman.y][pacman.x].eaten = true;
             scaredStart = gameMoves;
         } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
-            pacman.addFitness(pelletScore, round);
+            pacman.addFitness(pelletScore);
             map[pacman.y][pacman.x].eaten = true;
             numPellets++;
         }

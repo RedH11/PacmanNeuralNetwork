@@ -8,8 +8,6 @@ public class Pacman {
     int y;
     private int dir = num.nextInt(4); // Start pacman in a random direction
     int fitness = 0;
-    int fitness2 = 0;
-    int fitness3 = 0;
     int lives = 3;
     // Accessible traits
     boolean powered = false;
@@ -18,7 +16,7 @@ public class Pacman {
     NeuralNetwork brain;
 
     // Neural Network Settings
-    final int INPUTS = 9;
+    final int INPUTS = 25;
     final int HIDDEN_ONE = 80;
     final int HIDDEN_TWO = 50;
     final int OUTPUTS = 4;
@@ -42,9 +40,11 @@ public class Pacman {
         alive = true;
     }
     
-    public int getAvgFitness() {
+  /*  public int getAvgFitness() {
         return ((fitness + fitness2 + fitness3) / 3);
     }
+
+   */
 
 
     private int think(double[] input, Tile[][] map){
@@ -67,10 +67,12 @@ public class Pacman {
             }
         }
 
-
+/*
         while (wallInWay(highestDir, map)) {
             highestDir = randDir(highestDir);
         }
+
+ */
 
         return highestDir;
     }
@@ -93,10 +95,10 @@ public class Pacman {
 
     private double[] see(Tile[][] map) {
 
-        int visionDistance = 1;
+        int visionDistance = 2;
 
         // The inputs are the size of all of the tiles around packman depending on the vision distance and whether or not he is powered
-        double[] inputs = new double[(int) (Math.pow(2, visionDistance + 2) + 1)];
+        double[] inputs = new double[25];
 
         lookAround(map, inputs, visionDistance);
 
@@ -138,10 +140,15 @@ public class Pacman {
         for (int j = -1; j < visionDist + 1; j++) {
             for (int i = -1; i < visionDist + 1; i++) {
                 if (!(i == 0 && j == 0)) {
-                    if (map[y + j][x + i].wall) inputs[inputsIndex] = 2;
-                    else if (map[y + j][x + i].dot) inputs[inputsIndex] = 1;
-                    else if (map[y + j][x + i].bigDot) inputs[inputsIndex] = 0;
-                    inputsIndex++;
+                    try {
+                        if (map[y + j][x + i].wall) inputs[inputsIndex] = 2;
+                        else if (map[y + j][x + i].dot) inputs[inputsIndex] = 1;
+                        else if (map[y + j][x + i].bigDot) inputs[inputsIndex] = 0;
+                        inputsIndex++;
+                    }
+                    catch (java.lang.ArrayIndexOutOfBoundsException IOE){
+
+                    }
                 }
             }
         }
@@ -267,10 +274,9 @@ public class Pacman {
         return false;
     }
 
-    public void addFitness(int add, int round) {
-        if (round == 1) fitness += add;
-        else if (round == 2) fitness2 += add;
-        else fitness3 += add;
+    public void addFitness(int add) {
+     fitness += add;
+
     }
 
     // Generates a random direction that isn't the last one

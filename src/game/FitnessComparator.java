@@ -33,8 +33,8 @@ class PacmanFitnessComparator implements Comparator<PacmanGame> {
                   0 when o1 == o2
         */
 
-        double xAvg = (x.pacman.fitness + x.pacman.fitness2 + x.pacman.fitness3) / 3;
-        double yAvg = (y.pacman.fitness + y.pacman.fitness2 + y.pacman.fitness3) / 3;
+        double xAvg = (x.pacman.fitness);
+        double yAvg = (y.pacman.fitness);
 
         if (xAvg < yAvg) return -1;
         else if (xAvg > yAvg) return 1;
