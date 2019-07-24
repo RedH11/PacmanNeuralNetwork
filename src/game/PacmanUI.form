@@ -1,74 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="game.PacmanUI">
-  <grid id="27dc6" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="PacmanTextPanel" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="521" height="400"/>
+      <xy x="20" y="20" width="589" height="516"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-9672580"/>
+      <foreground color="-10067339"/>
+      <minimumSize width="525" height="500"/>
+      <preferredSize width="700" height="500"/>
+    </properties>
     <border type="none"/>
     <children>
-      <component id="d0510" class="javax.swing.JTextPane" binding="welcomeToPacmanTheTextPane" default-binding="true">
+      <component id="d0510" class="javax.swing.JTextPane" binding="PacmanText">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
         <properties>
-          <font name="Comic Sans MS" size="16"/>
-          <text value="Welcome to Pacman! The ghost is controlled by a neural network. To play, choose the number of generations to train the ghost for. Higher generations will mean a harder ghost."/>
+          <background color="-9672580"/>
+          <caretColor color="-9672580"/>
+          <disabledTextColor color="-9672580"/>
+          <font name="Comic Sans MS" size="26"/>
+          <foreground color="-460552"/>
+          <opaque value="false"/>
+          <text value="Welcome to Pacman! The ghost is controlled by a neural network. To play, choose the number of generations to train the ghost for. Higher generations will make a harder ghost."/>
         </properties>
       </component>
-      <component id="7214f" class="javax.swing.JRadioButton" binding="gen20">
+      <vspacer id="63f">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="2" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="0" height="25"/>
+            <preferred-size width="0" height="25"/>
+            <maximum-size width="50" height="100"/>
+          </grid>
+        </constraints>
+      </vspacer>
+      <grid id="9e82" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <background color="-14116565"/>
-          <font name="Comic Sans MS" size="18"/>
-          <text value="20 Generations"/>
+          <enabled value="false"/>
+          <foreground color="-9672580"/>
+          <opaque value="false"/>
         </properties>
-      </component>
-      <component id="b4f21" class="javax.swing.JRadioButton" binding="gen100">
-        <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <background color="-4490474"/>
-          <font name="Comic Sans MS" size="18"/>
-          <text value="100 Generations"/>
-        </properties>
-      </component>
-      <component id="baed1" class="javax.swing.JRadioButton" binding="gen200">
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <background color="-5303282"/>
-          <font name="Comic Sans MS" size="18"/>
-          <text value="200 Generations"/>
-        </properties>
-      </component>
+        <border type="none"/>
+        <children>
+          <component id="7214f" class="javax.swing.JRadioButton" binding="gen20">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-14116565"/>
+              <font name="Comic Sans MS" size="18"/>
+              <selected value="false"/>
+              <text value="20 Generations"/>
+            </properties>
+          </component>
+          <component id="b4f21" class="javax.swing.JRadioButton" binding="gen100">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-4490474"/>
+              <font name="Comic Sans MS" size="18"/>
+              <text value="100 Generations"/>
+            </properties>
+          </component>
+          <component id="baed1" class="javax.swing.JRadioButton" binding="gen200">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-5303282"/>
+              <font name="Comic Sans MS" size="18"/>
+              <text value="200 Generations"/>
+            </properties>
+          </component>
+          <hspacer id="53e55">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <hspacer id="45bf6">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+        </children>
+      </grid>
       <component id="c6e79" class="javax.swing.JButton" binding="playButton">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <minimum-size width="-1" height="60"/>
+          </grid>
         </constraints>
         <properties>
+          <autoscrolls value="false"/>
+          <background color="-15846957"/>
+          <borderPainted value="false"/>
+          <contentAreaFilled value="true"/>
+          <doubleBuffered value="false"/>
+          <enabled value="true"/>
+          <focusPainted value="false"/>
+          <focusTraversalPolicyProvider value="true"/>
           <font name="Comic Sans MS" size="18"/>
-          <foreground color="-4473925"/>
+          <foreground color="-16111961"/>
+          <selected value="false"/>
           <text value="Play"/>
         </properties>
       </component>
       <vspacer id="e45f8">
         <constraints>
-          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="1" anchor="0" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="0" height="50"/>
+            <preferred-size width="0" height="50"/>
+            <maximum-size width="50" height="100"/>
+          </grid>
         </constraints>
       </vspacer>
-      <vspacer id="63f">
+      <hspacer id="42404">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="b296e">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <vspacer id="cdc9c">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="difficultyButtons">
+      <member id="7214f"/>
+      <member id="b4f21"/>
+      <member id="baed1"/>
+    </group>
+  </buttonGroups>
 </form>
