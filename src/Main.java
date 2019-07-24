@@ -46,20 +46,20 @@ public class Main extends Application {
 
         setup(stage);
 
-        boolean evolve = false;
+        boolean evolve = true;
 
         // Settings for genetic algorithm
-        int popSize = 600;
-        int totalGens = 150;
+        int popSize = 1000;
+        int totalGens = 200;
         double mutationChance = 0.5;
-        int lowerPacmen = 4;
-        int upperPacmen = 20;
+        int lowerPacmen = 6;
+        int upperPacmen = 40;
         // Amount of genetic algorithms run
-        int podAmount = 1;
+        int podAmount = 3;
 
         // File Settings
-        int gameNum = 54;
-        int generationNum = 140;
+        int gameNum = 76;
+        int generationNum = 160;
 
         if (evolve) {
             GeneticAlgorithm[] tests3 = new GeneticAlgorithm[podAmount];
