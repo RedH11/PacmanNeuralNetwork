@@ -10,17 +10,11 @@ public class VisualGame {
 
     int MAXMOVES;
     int[][] pCoords;
-    int[][] gCoords;
-    int[] gDirs;
-    int[] gFits;
     int[] pDirs;
     int[] pFits;
     boolean pPowered[];
     GraphicsContext gc;
     int moves = 0;
-    int[][] g2Coords;
-    int[] g2Fits;
-    int [] g2Dirs;
 
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -40,9 +34,9 @@ public class VisualGame {
             {1, 1, 1, 1, 1, 1, 0, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
             {1, 8, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 8, 1},
@@ -58,17 +52,11 @@ public class VisualGame {
     public VisualGame(int MAXMOVES, int[][] pCoords,  int[] pDirs, int[] pFits, boolean pPowered[], GraphicsContext gc, int generation, int FPS) {
         this.MAXMOVES = MAXMOVES;
         this.pCoords = pCoords;
-        this.gCoords = gCoords;
-        this.gDirs = gDirs;
-        this.gFits = gFits;
         this.pDirs = pDirs;
         this.pFits = pFits;
         this.pPowered = pPowered;
         this.gc = gc;
         this.generation = generation;
-        this.g2Coords = g2Coords;
-        this.g2Dirs = g2Dirs;
-        this.g2Fits = g2Fits;
 
         drawMap();
 
@@ -135,8 +123,6 @@ public class VisualGame {
         }
 
         gc.setFill(Color.WHITE);
-//        gc.fillText("Inky 1 Fitness: " + gFits[moves], 400, 15);
-      //  gc.fillText("Inky 2 Fitness: " + g2Fits[moves], 400, 30);
         gc.fillText("Pacman Fitness: " + pFits[moves], 400, 45);
         gc.fillText("Generation: " + generation, 25, 15);
     }
@@ -152,16 +138,9 @@ public class VisualGame {
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
 
-       // int iC = gCoords[moves][0];
-     //   int iR = gCoords[moves][1];
-
-    //    int iC2 = g2Coords[moves][0];
-      //  int iR2 = g2Coords[moves][1];
-
         int arrowLength = 15;
 
         // Draw pacman and inky and arrows showing their direction
-
         int pacX = pC * rectW + startX  + 9;
         int pacY = pR * rectW + startY + 9;
 
@@ -183,28 +162,6 @@ public class VisualGame {
                 tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
             }
         }
-
-    //    int inkyX = iC * rectW + startX  + 9;
-      //  int inkyY = iR * rectW + startY + 9;
-
-        //int inkyX2 = iC2 * rectW + startX + 9;
-        //int inkyY2 = iR2 * rectW + startY + 9;
-
-        //drawArrows(inkyX, inkyY, moves, gDirs, arrowLength);
-        //drawArrows(inkyX2, inkyY2, moves, g2Dirs, arrowLength);
-/*
-        // Draw Inky
-        if (pPowered[moves]) {
-            gc.setFill(Color.BLUEVIOLET);
-            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
-            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
-        } else {
-            gc.setFill(Color.LIGHTBLUE);
-            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
-            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
-        }
-
- */
     }
 
     public void drawArrows (int x, int y, int moves, int[] dirs, int length) {

@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
@@ -23,21 +24,11 @@ public class Main extends Application {
     int stageH = 620;
     int currDir = 0;
 
-    final int MAXMOVES = 600;
+    final int MAXMOVES = 60;
 
-    /**
-     * pacCoords - Pacman's Coordinate History
-     * gCoords - Ghost's (Inky for now) Coordinate History
-     * gDirs - Ghost's Direction History
-     * gFits - Ghost's Fitness History
-     */
     int[][] pacCoords = new int[MAXMOVES][2];
     int[][] gCoords = new int[MAXMOVES][2];
     int[][] g2Coords = new int[MAXMOVES][2];
-    int[] gDirs = new int[MAXMOVES];
-    int[] gFits = new int[MAXMOVES];
-    int[] g2Dirs = new int[MAXMOVES];
-    int[] g2Fits = new int[MAXMOVES];
     int[] pDirs = new int[MAXMOVES];
     int[] pFits = new int[MAXMOVES];
     boolean[] pPowered = new boolean[MAXMOVES];
@@ -58,26 +49,22 @@ public class Main extends Application {
         boolean evolve = false;
 
         // Settings for genetic algorithm
-        int popSize = 100;
-        int totalGens = 20;
-        double mutationChance = 6;
-        int lowerGhosts = 2;
-        int upperGhosts = 10;
-        int lowerPacmen = 2;
-        int upperPacmen = 10;
+        int popSize = 600;
+        int totalGens = 150;
+        double mutationChance = 0.5;
+        int lowerPacmen = 4;
+        int upperPacmen = 20;
         // Amount of genetic algorithms run
         int podAmount = 1;
 
-        // When viewing what character to show
-        boolean pacman = true;
         // File Settings
-        int gameNum = 24;
-        int generationNum = 0;
+        int gameNum = 54;
+        int generationNum = 140;
 
         if (evolve) {
             GeneticAlgorithm[] tests3 = new GeneticAlgorithm[podAmount];
             for (int i = 0; i < tests3.length; i++) {
-                tests3[i] = new GeneticAlgorithm(PacmanDataPath, popSize, totalGens, mutationChance, lowerGhosts, upperGhosts, lowerPacmen, upperPacmen);
+                tests3[i] = new GeneticAlgorithm(PacmanDataPath, popSize, totalGens, mutationChance, lowerPacmen, upperPacmen);
             }
             for (int i = 0; i < tests3.length; i++) {
                 tests3[i].makeGenerations();
@@ -85,8 +72,7 @@ public class Main extends Application {
         }
 
         // Viewing Setup
-        if (pacman) gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGen_" + generationNum;
-        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/Inkgen_" + generationNum;
+        gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGen_" + generationNum;
 
         Thread GameViewer = new Thread(() -> {
                 try {
@@ -130,46 +116,9 @@ public class Main extends Application {
                 // Y coord
                 int y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
                 pacCoords[coordsCollected][1] = y;
-
-                // Trim off _I1:_
                 str = str.substring(str.indexOf("I1:") + 4);
-                // X coord
-               // x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-             //   gCoords[coordsCollected][0] = x;
                 // Trim off space
                 str = str.substring(str.indexOf(" ") + 1);
-                // Y coord
-              //  y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-            //    gCoords[coordsCollected][1] = y;
-                // Trim off I1dir:_
-             //   str = str.substring(str.indexOf(":") + 2);
-                // Ghost Direction int
-               // gDirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
-                // Trim off I2fit:_
-             //   str = str.substring(str.indexOf(":") + 2);
-                // Ghost Fitness int
-                //gFits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-
-                // Trim off _I2:_
-               // str = str.substring(str.indexOf("I2:") + 4);
-                // X coord
-               // x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                //g2Coords[coordsCollected][0] = x;
-                // Trim off space
-                //str = str.substring(str.indexOf(" ") + 1);
-                // Y coord
-                //y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                //g2Coords[coordsCollected][1] = y;
-                // Trim off I2dir:_
-                //str = str.substring(str.indexOf(":") + 2);
-                // Ghost Direction int
-                //g2Dirs[coordsCollected] = Integer.parseInt(str.substring(0, 1));
-                // Trim off I2fit:_
-                //str = str.substring(str.indexOf(":") + 2);
-                // Ghost Fitness int
-                //g2Fits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                // Trim off Pdir:_
-            //    str = str.substring(str.indexOf(":") + 2);
                 // Pacman direction int
                 pDirs[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
                 // Trim off Pfit:_

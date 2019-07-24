@@ -8,7 +8,6 @@ public class Pacman {
     int y;
     private int dir = num.nextInt(4); // Start pacman in a random direction
     int fitness = 0;
-    int lives = 3;
     // Accessible traits
     boolean powered = false;
     boolean alive = true;
@@ -16,21 +15,19 @@ public class Pacman {
     NeuralNetwork brain;
 
     // Neural Network Settings
-    final int INPUTS = 25;
-    final int HIDDEN_ONE = 80;
-    final int HIDDEN_TWO = 50;
+    final int INPUTS = 9;
+    final int HIDDEN_ONE = 30;
+    //final int HIDDEN_TWO = 30;
     final int OUTPUTS = 4;
 
     public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS);
+        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
         respawn();
-        lives = 3;
     }
 
     public Pacman(NeuralNetwork brain) {
         this.brain = brain;
         respawn();
-        lives = 3;
     }
 
     private void respawn() {
@@ -39,13 +36,6 @@ public class Pacman {
         powered = false;
         alive = true;
     }
-    
-  /*  public int getAvgFitness() {
-        return ((fitness + fitness2 + fitness3) / 3);
-    }
-
-   */
-
 
     private int think(double[] input, Tile[][] map){
 
@@ -54,25 +44,10 @@ public class Pacman {
         //double up, down, left, right;
         int highestDir = 0;
 
-        while (wallInWay(highestDir, map)) {
-            highestDir++;
+        // Pacman isn't restricted to always be moving like the ghosts are
+        for (int i = highestDir + 1; i < outputs.length; i++) {
+            if (outputs[highestDir] < outputs[i]) { highestDir = i; }
         }
-
-        if (!(highestDir == 3)) {
-            // Pacman isn't restricted to always be moving like the ghosts are
-            for (int i = highestDir + 1; i < outputs.length; i++) {
-                if (outputs[highestDir] < outputs[i]) {
-                    if (!wallInWay(i, map)) highestDir = i;
-                }
-            }
-        }
-
-/*
-        while (wallInWay(highestDir, map)) {
-            highestDir = randDir(highestDir);
-        }
-
- */
 
         return highestDir;
     }
@@ -95,40 +70,15 @@ public class Pacman {
 
     private double[] see(Tile[][] map) {
 
-        int visionDistance = 2;
+        int visionDistance = 1;
 
         // The inputs are the size of all of the tiles around packman depending on the vision distance and whether or not he is powered
-        double[] inputs = new double[25];
+        double[] inputs = new double[(int) (Math.pow(2, visionDistance + 2) + 1)];
 
         lookAround(map, inputs, visionDistance);
 
-        /*
-        // Whether or not there are walls in the four blocks around it
-        inputs[0] = lookUp(map);
-        inputs[1] = lookLeft(map);
-        inputs[2] = lookRight(map);
-        inputs[3] = lookDown(map);
-        inputs[4] = lookTwoUp(map);
-        inputs[5] = lookTwoLeft(map);
-        inputs[6] = lookTwoRight(map);
-        inputs[7] = lookTwoDown(map);
-        // Distance from the ghost to pacman
-        inputs[4] = distanceFromInky(Ix,Iy);
-        // Angle from ghost to pacman
-        inputs[5] = closestDirToInky(Ix, Iy);
-        inputs[6] = distanceFromInky(I2x, I2y);
-        inputs[7] = closestDirToInky(I2x, I2y);*/
         if (powered) inputs[inputs.length - 1] = 1;
         else inputs[inputs.length - 1] = 0;
-
-
-        /*System.out.println("Inputs");
-
-        for (int i = 0; i < inputs.length; i++) {
-            System.out.println(inputs[i]);
-        }
-        System.out.println();
-        System.out.println("Outputs");*/
 
         return inputs;
     }
@@ -140,83 +90,13 @@ public class Pacman {
         for (int j = -1; j < visionDist + 1; j++) {
             for (int i = -1; i < visionDist + 1; i++) {
                 if (!(i == 0 && j == 0)) {
-                    try {
-                        if (map[y + j][x + i].wall) inputs[inputsIndex] = 2;
-                        else if (map[y + j][x + i].dot) inputs[inputsIndex] = 1;
-                        else if (map[y + j][x + i].bigDot) inputs[inputsIndex] = 0;
-                        inputsIndex++;
-                    }
-                    catch (java.lang.ArrayIndexOutOfBoundsException IOE){
-
-                    }
+                    if (map[y + j][x + i].wall) inputs[inputsIndex] = 0;
+                    else if(map[y + j][x + i].eaten) inputs[inputsIndex] = 1;
+                    else if (map[y + j][x + i].dot) inputs[inputsIndex] = 2;
+                    else if (map[y + j][x + i].bigDot) inputs[inputsIndex] = 3;
+                    inputsIndex++;
                 }
             }
-        }
-    }
-
-    //Calculates distance from Inky
-/*    private double distanceFromInky(int ix, int iy) {
-        return Math.sqrt(Math.pow(ix-x, 2) + Math.pow(iy-y, 2));
-    }
-
-
-
-    // Calculates angle to Inky
-    private double closestDirToInky(int ix, int iy) {
-        return (Math.asin((iy-y)/distanceFromInky(ix, iy)));
-    }
-
- */
-
-    private double lookUp(Tile[][] map) {
-        if (wallInWay(0, map)) return 1;
-        else if(map[y-1][x].dot){
-            return 0.33;
-        }
-        else if(map[y-1][x].bigDot){
-            return 0.66;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    private double lookDown(Tile[][] map) {
-        if (wallInWay(3, map)) return 1;
-        else if(map[y+1][x].dot){
-            return 0.33;
-        }
-        else if(map[y+1][x].bigDot){
-            return 0.66;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    private double lookRight(Tile[][] map) {
-        if (wallInWay(2, map)) return 1;
-        else if(map[y][x+1].dot){
-            return 0.33;
-        }
-        else if(map[y][x+1].bigDot){
-            return 0.66;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    public double lookLeft(Tile[][] map) {
-        if (wallInWay(1, map)) return 1;
-        else if(map[y][x-1].dot){
-            return 0.33;
-        }
-        else if(map[y][x-1].bigDot){
-            return 0.66;
-        }
-        else {
-            return 0;
         }
     }
 
@@ -233,16 +113,16 @@ public class Pacman {
         // 0: Up / 1: Left / 2: Right / 3: Down
         switch (dir) {
             case 0:
-                y--;
+                if (!wallInWay(0, map)) y--;
                 break;
             case 1:
-                x--;
+                if (!wallInWay(1, map)) x--;
                 break;
             case 2:
-                x++;
+                if (!wallInWay(2, map)) x++;
                 break;
             case 3:
-                y++;
+                if (!wallInWay(3, map)) y++;
                 break;
         }
 
@@ -275,13 +155,11 @@ public class Pacman {
     }
 
     public void addFitness(int add) {
-     fitness += add;
-
+        fitness += add;
     }
 
     // Generates a random direction that isn't the last one
     private int randDir(int lastDir) {
-
         int dir = num.nextInt(4);
         while (dir == lastDir) {
             dir = num.nextInt(4);

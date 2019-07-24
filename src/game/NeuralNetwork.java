@@ -41,7 +41,6 @@ public class NeuralNetwork implements Serializable {
             // Generate random biases and fill array
             this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], 0.3, 0.7);
 
-
             if (i > 0) {
                 weights[i] = new double[NETWORK_LAYER_SIZES[i]][NETWORK_LAYER_SIZES[i - 1]];
                 // Generate random weights and fill array
@@ -182,7 +181,7 @@ public class NeuralNetwork implements Serializable {
                 for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
                     if (rand.nextDouble() * 100 < mutationChance) {
                         weights[layer][neuron][prevNeuron] += rand.nextDouble();
-                        //System.out.println("Mutated Weights");}
+                        //System.out.println("Mutated Weights");
                     }
                 }
             }
