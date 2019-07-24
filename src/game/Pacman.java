@@ -41,6 +41,11 @@ public class Pacman {
         powered = false;
         alive = true;
     }
+    
+    public int getAvgFitness() {
+        return ((fitness + fitness2 + fitness3) / 3);
+    }
+
 
     private int think(double[] input, Tile[][] map){
 
