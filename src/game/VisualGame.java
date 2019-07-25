@@ -149,17 +149,17 @@ public class VisualGame {
 
         drawArrows(pacX, pacY, moves, pDirs, arrowLength);
 
-        Image pacLeft = new Image("Sprites/pacman_left.png");
-        Image pacRight = new Image("Sprites/pacman_right.png");
-        Image pacUp = new Image("Sprites/pacman_up.png");
-        Image pacDown = new Image("Sprites/pacman_down.png");
-        Image poweredPacLeft = new Image("Sprites/powered_pacman_left.png");
-        Image poweredPacRight = new Image("Sprites/powered_pacman_right.png");
+        Image pacLeft = new Image("assets/sprites/pacman_left.png");
+        Image pacRight = new Image("assets/sprites/pacman_right.png");
+        Image pacUp = new Image("assets/sprites/pacman_up.png");
+        Image pacDown = new Image("assets/sprites/pacman_down.png");
+        Image poweredPacLeft = new Image("assets/sprites/powered_pacman_left.png");
+        Image poweredPacRight = new Image("assets/sprites/powered_pacman_right.png");
         Image pacmanImage = pacLeft;
 
-        Image inkyLeft = new Image("Sprites/inky_left.png");
-        Image inkyRight = new Image("Sprites/inky_Right.png");
-        Image scaredGhost = new Image("Sprites/scared_ghost.png");
+        Image inkyLeft = new Image("assets/sprites/inky_left.png");
+        Image inkyRight = new Image("assets/sprites/inky_Right.png");
+        Image scaredGhost = new Image("assets/sprites/scared_ghost.png");
         Image inkyImage = inkyLeft;
 
         //Set Pacman's sprite depending on movement direction / powered state
