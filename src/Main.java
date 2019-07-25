@@ -3,16 +3,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Scanner;
 
 /*
     https://stackoverflow.com/questions/33250413/javafx-stage-show-ending-in-program-freezing
@@ -21,11 +15,11 @@ import java.util.Scanner;
 
 public class Main extends Application {
 
-    int stageW = 1450;
-    int stageH = 620;
+    int stageW = 400;
+    int stageH = 400;
     int currDir = 0;
 
-    final int MAXMOVES = 600;
+    final int MAXMOVES = 200;
 
     String PacmanDataPath;
     GraphicsContext gameGC;
@@ -54,7 +48,7 @@ public class Main extends Application {
         PacmanDataPath = PacmanData.getPath();
         if (!PacmanData.exists()) PacmanData.mkdir();
 
-        stage.setScene(new Scene(new PacmanSettings(stage, PacmanDataPath, gameGC), stageW, stageH + 20));
+        stage.setScene(new Scene(new PacmanSettings(stage, PacmanDataPath, gameGC), stageW, stageH));
     }
 
     public void createGameStage() {
@@ -71,4 +65,3 @@ public class Main extends Application {
         game.show();
     }
 }
-

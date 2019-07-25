@@ -1,137 +1,70 @@
 package game;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import javax.swing.*;
+import javax.sound.sampled.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 public class PacmanSettings extends Pane {
+
+    final int MAXMOVES = 200;
+
+    int[][] pacCoords = new int[MAXMOVES][2];
+    int[][] gCoords = new int[MAXMOVES][2];
+    int[][] g2Coords = new int[MAXMOVES][2];
+    int[] pDirs = new int[MAXMOVES];
+    int[] pFits = new int[MAXMOVES];
+    boolean[] pPowered = new boolean[MAXMOVES];
 
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
     String PacmanDataPath;
     VisualGame vg = null;
 
+    String[] audioFiles = new String[] {"src/game/assets/8 bit rocky.wav", "src/game/assets/8 bit all star.wav"};
+    AudioInputStream audioInputStream;
+    Clip clip;
+
     public PacmanSettings(Stage stage, String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
 
-        // The canvas for the pacman game
-        Canvas gameCanvas = new Canvas(950, 620);
-        // Hide it at first
-        GraphicsContext gc = gameCanvas.getGraphicsContext2D();
-
-        gc.setFill(Color.rgb(211, 211,211));
-        gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-
-        VBox settings = new VBox();
-        settings.setPadding(new Insets(5, 10, 5, 10));
-        settings.setSpacing(10);
-        settings.setPrefWidth(250);
         VBox viewer = new VBox();
         viewer.setPadding(new Insets(5, 10, 5, 10));
         viewer.setSpacing(10);
-        viewer.setPrefWidth(250);
-        // SETTINGS
-
-        Label evolLabel = new Label("Evolution Settings");
-
-        Label popLbl = new Label("Population");
-        TextField popTF = new TextField();
-        popTF.setPromptText("Population Size");
-
-        Label genLbl = new Label("Generations");
-        TextField gensTF = new TextField();
-        gensTF.setPromptText("Total Generations");
-
-        Label mutateLbl = new Label("Mutation");
-        TextField mutateTF = new TextField();
-        mutateTF.setPromptText("Mutation Chance");
-
-        Label lowerPac = new Label("Lower Pacman");
-        TextField lowerPacmanTF = new TextField();
-        lowerPacmanTF.setPromptText("How Many Worse Pacman to Keep");
-
-        Label topPac = new Label ("Top Pacman");
-        TextField topPacmanTF = new TextField();
-        topPacmanTF.setPromptText("How Many Top Pacman to Keep");
-
-        Button evolve = new Button("Evolve");
-        evolve.setOnAction(ev -> {
-            Thread tests = new Thread(() -> {
-                try {
-                    GeneticAlgorithm ga = new GeneticAlgorithm(
-                            PacmanDataPath, Integer.parseInt(popTF.getText()),
-                            Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
-                            Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText())
-                    );
-
-                    ga.makeGenerations();
-
-                } catch (IOException ex) {
-                    // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
-                    Platform.runLater(() -> {
-                        invalAlert.setTitle("Error Evolving" + ex);
-                        invalAlert.show();
-                    });
-                }
-            });
-
-            tests.start();
-            try {
-                tests.join();
-            } catch (InterruptedException ex){}
-        });
-
-        Button clearDisplay = new Button("Clear");
-        clearDisplay.setOnAction( event -> {
-            gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-            gc.setFill(Color.rgb(211, 211,211));
-            gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-        });
+        viewer.setPrefWidth(300);
 
         // VIEWER
         Label viewLabel = new Label("Evolution Settings");
 
-        TextField gameNum = new TextField();
-        gameNum.setPromptText("Insert Game Number");
-
         Label possibleGames = new Label("Options:\n");
         // Gets amount of files in the folder already
-        File folder = new File(PacmanDataPath);
+        File folder = new File(PacmanDataPath + "/Game" + 100 + "/Gens");
         File[] listOfFiles = folder.listFiles();
         ArrayList<File> fileList = new ArrayList<>();
 
         // Starts at one to skip DS.Store file
-        for (int i = 1; i < listOfFiles.length; i++) {
+        for (int i = 0; i < listOfFiles.length; i++) {
             fileList.add(listOfFiles[i]);
         }
 
-        Collections.sort(fileList, new Comparator<File>() {
+        /*Collections.sort(fileList, new Comparator<File>() {
             @Override
             public int compare(File s1, File s2) {
                 int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
                 if (letter != 0) return letter;
                 else return 0;
             }
-        });
+        });*/
 
         for (int i = 1; i < fileList.size() - 1; i++) {
             possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");
@@ -146,70 +79,123 @@ public class PacmanSettings extends Pane {
         TextField genNum = new TextField();
         genNum.setPromptText("Insert Generation Number");
 
-        Label gameType = new Label("Pacman");
+        Label gameType = new Label("^ Insert Generation");
+
+        Rectangle progressRect = new Rectangle(10, 10, Color.BLUE);
 
         Button showGame = new Button("Show Game");
+        Label trainingProgress = new Label("TRAININGGGGGG PROGRESSSSSSS!!!!!");
+
         showGame.setOnAction(ev -> {
-            Thread showing = new Thread(() -> {
+            Thread progress = new Thread(() -> {
+                startAudio();
+                Random random = new Random();
                 try {
-                    if (vg != null) vg.stop();
-                    InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), true);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 8);
+                    for (int i = 0; i < 400; i += 10) {
+                        if (i < 50) progressRect.setWidth(i);
+                        else if (i < 100) progressRect.setWidth(progressRect.getWidth() - 0.5);
+                        else if (i < 150) progressRect.setWidth(progressRect.getWidth() + 1);
+                        else if (i < 200) progressRect.setHeight(progressRect.getHeight() + 10);
+                        else if (i < 210) progressRect.setHeight(10);
+                        else if (i < 340) {
+                            progressRect.setWidth(progressRect.getHeight() + 10);
+                            progressRect.setHeight(progressRect.getHeight() + 10);
+                        }
+                        else if (i < 350) {
+                            progressRect.setWidth(10);
+                            progressRect.setHeight(10);
+                        } else if (i < 390) {
+                            progressRect.setFill(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+                        }
+                        else progressRect.setWidth(3000);
+                        Thread.sleep(250);
+                    }
                 } catch (Exception ex) {}
             });
+
+            Thread showing = new Thread(() -> {
+                try {
+                    Thread.sleep(10000);
+                    String gameFile = PacmanDataPath + "/Game" + 100 + "/Gens/PacGen_" + Integer.parseInt(genNum.getText());
+                    parseFile(gameFile);
+                    vg = new VisualGame(200, pacCoords, pDirs, pFits, pPowered, gameGC, Integer.parseInt(genNum.getText()), 8);
+                    clip.stop();
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            });
+
+            progress.start();
             showing.start();
         });
 
+
         BorderPane root = new BorderPane();
 
-        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve, clearDisplay);
-        viewer.getChildren().addAll(viewLabel, possibleGames, gameNum, genNum, gameType, showGame);
-        root.setCenter(gameCanvas);
-        root.setLeft(settings);
-        root.setRight(viewer);
+        viewer.getChildren().addAll(viewLabel, possibleGames, genNum, gameType, showGame, progressRect, trainingProgress);
+        root.setCenter(viewer);
 
         getChildren().add(root);
     }
 
-    private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
-        ArrayList<InfoStorage> objects = new ArrayList<>();
-        InputStream is = null;
-        try {
-            is = new FileInputStream(filename);
-            ObjectInputStream ois = new ObjectInputStream(is);
-            while (true) {
-                try {
-                    InfoStorage object = (InfoStorage) ois.readObject();
-                    objects.add(object);
-                } catch (EOFException ex) {
-                    break;
-                }
-            }
-        } finally {
-            if (is != null) {
-                is.close();
+    public void parseFile(String fileName) throws FileNotFoundException {
+        String str = "";
+
+        int coordsCollected = 0;
+
+        File file = new File(fileName);
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNextLine()) {
+            str = sc.nextLine();
+            if (str.length() > 0) {
+                // Trim off P:_
+                str = str.substring(str.indexOf("P") + 3);
+
+                // X coord
+                int x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                pacCoords[coordsCollected][0] = x;
+                // Trim off space between
+                str = str.substring(str.indexOf(" ") + 1);
+                // Y coord
+                int y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                pacCoords[coordsCollected][1] = y;
+                str = str.substring(str.indexOf("I1:") + 4);
+                // Trim off space
+                str = str.substring(str.indexOf(" ") + 1);
+                // Pacman direction int
+                pDirs[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                // Trim off Pfit:_
+                str = str.substring(str.indexOf(":") + 2);
+                pFits[coordsCollected] = Integer.parseInt(str.substring(0, str.indexOf(" ")));
+                // Trim off Ppowered:
+                str = str.substring(str.indexOf(":") + 2);
+                pPowered[coordsCollected] = Boolean.valueOf(str);
+                coordsCollected++;
             }
         }
-        return objects;
+
+    }
+
+    private void startAudio() {
+        try {
+            audioPlayer();
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
-    public InfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
-        String gameFile = "";
+    public void audioPlayer() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        // create AudioInputStream object
+        audioInputStream =
+                getAudioInputStream(new File(audioFiles[0]));
 
-        // Viewing Setup
-        if (pacman) gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
-        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/InkGens";
+        // create clip reference
+        clip = AudioSystem.getClip();
 
-        try {
-            ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);
-
-            return allGames.get(generationNum);
-
-        } catch (Exception ex) {
-            invalAlert.setContentText("File Not Found");
-            invalAlert.show();
-        }
-        return null;
+        // open audioInputStream to the clip
+        clip.open(audioInputStream);
+        clip.start();
     }
 }

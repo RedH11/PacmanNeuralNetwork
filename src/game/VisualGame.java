@@ -1,19 +1,13 @@
 package game;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class VisualGame {
 
     private int generation;
     private int fitness;
-
-    private int visionDistance = 1;
 
     int MAXMOVES;
     int[][] pCoords;
@@ -22,8 +16,6 @@ public class VisualGame {
     boolean pPowered[];
     GraphicsContext gc;
     int moves = 0;
-
-    private boolean complete = false;
 
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -43,9 +35,9 @@ public class VisualGame {
             {1, 1, 1, 1, 1, 1, 0, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
             {1, 8, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 8, 1},
@@ -58,33 +50,28 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, int FPS) {
-        this.MAXMOVES = is.getMAXMOVES();
-        this.pCoords = is.getPacCoords();
-        this.pDirs = is.getpDirs();
-        this.pFits = is.getpFits();
-        this.pPowered = is.getpPowered();
-
+    public VisualGame(int MAXMOVES, int[][] pCoords,  int[] pDirs, int[] pFits, boolean[] pPowered, GraphicsContext gc, int generation, int FPS) {
+        this.MAXMOVES = MAXMOVES;
+        this.pCoords = pCoords;
+        this.pDirs = pDirs;
+        this.pFits = pFits;
+        this.pPowered = pPowered;
+        this.gc = gc;
         this.generation = generation;
 
-        this.gc = gameGC;
+        drawMap();
 
         try {
-            while (moves < MAXMOVES && pCoords[moves][1] != 0) {
+            while (moves < MAXMOVES && pCoords[moves][0] != 0) {
                 drawMap();
                 drawGame(moves);
                 moves++;
                 try {
                     Thread.sleep(1000 / FPS);
                 } catch (InterruptedException ex) {
-                    System.out.println("Interruption oof");
                 }
             }
         } catch (ArrayIndexOutOfBoundsException ex) {}
-    }
-
-    public void stop() {
-        moves = MAXMOVES;
     }
 
     private void drawMap() {
@@ -152,33 +139,80 @@ public class VisualGame {
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
 
-
         int arrowLength = 15;
 
         // Draw pacman and inky and arrows showing their direction
-
         int pacX = pC * rectW + startX  + 9;
         int pacY = pR * rectW + startY + 9;
 
         drawArrows(pacX, pacY, moves, pDirs, arrowLength);
 
-        if (pPowered[moves]) {
-            gc.setFill(Color.LIGHTGOLDENRODYELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
-        } else {
-            gc.setFill(Color.YELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
-        }
+        //drawArrows(pacX, pacY, moves, pDirs, arrowLength);
 
-        // Make pacmans vision area rectangles with a white stroke
-        for (int j = -1; j < visionDistance + 1; j++) {
-            for (int i = -1; i < visionDistance + 1; i++) {
-                if (pC * rectW + startX + i >= 0 && pR * rectW + startY + j >= 0) {
-                    gc.setStroke(Color.rgb(0, 0, 0, 100));
-                    gc.strokeRect(pC * rectW + startX + i, pR * rectW + startY + j, rectW, rectW);
-                }
+        Image pacLeft = new Image("game/assets/sprites/pacman_left.png");
+        Image pacRight = new Image("game/assets/sprites/pacman_right.png");
+        Image pacUp = new Image("game/assets/sprites/pacman_up.png");
+        Image pacDown = new Image("game/assets/sprites/pacman_down.png");
+        Image poweredPacLeft = new Image("game/assets/sprites/powered_pacman_left.png");
+        Image poweredPacRight = new Image("game/assets/sprites/powered_pacman_right.png");
+        Image pacmanImage = pacLeft;
+
+        /*
+        Image inkyLeft = new Image("Sprites/inky_left.png");
+        Image inkyRight = new Image("Sprites/inky_Right.png");
+        Image scaredGhost = new Image("Sprites/scared_ghost.png");
+        Image inkyImage = inkyLeft;*/
+
+        //Set Pacman's sprite depending on movement direction / powered state
+        if (pDirs[moves] == 0) {
+            if (pPowered[moves]) {
+
+            } else {
+                pacmanImage = pacUp;
             }
         }
+        if (pDirs[moves] == 1) {
+            if (pPowered[moves]) {
+                pacmanImage = poweredPacLeft;
+            } else {
+                pacmanImage = pacLeft;
+            }
+        }
+        if (pDirs[moves] == 2) {
+            if (pPowered[moves]) {
+                pacmanImage = poweredPacRight;
+            } else {
+                pacmanImage = pacRight;
+            }
+        }
+        if (pDirs[moves] == 3) {
+            if (pPowered[moves]) {
+
+            } else {
+                pacmanImage = pacDown;
+            }
+        }
+
+        //Set Inky's sprite depending on movement direction / scared state
+        /*if (gDirs[moves] == 1) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyLeft;
+            }
+        }
+        if (gDirs[moves] == 2) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyRight;
+            }
+        }*/
+        //Draw Pacman
+        gc.drawImage(pacmanImage, pC * rectW + startX, pR * rectW + startY);
+        //Draw Inkies
+        /*gc.drawImage(inkyImage, iC * rectW + startX, iR * rectW + startY, 20, 20);
+        gc.drawImage(inkyImage, iC2 * rectW + startX, iR2 * rectW + startY, 20, 20);*/
 
         // Show eaten pellets
         if (moves > 0) {
@@ -187,7 +221,6 @@ public class VisualGame {
                 tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
             }
         }
-
     }
 
     public void drawArrows (int x, int y, int moves, int[] dirs, int length) {
