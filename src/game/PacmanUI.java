@@ -43,37 +43,37 @@ public class PacmanUI {
 
     private JPanel PacmanTextPanel;
     private JTextPane PacmanText;
-    private JRadioButton gen20;
-    private JRadioButton gen100;
+    private JRadioButton gen50;
     private JRadioButton gen200;
+    private JRadioButton gen800;
     private JButton playButton;
 
     public PacmanUI() {
 
         //Run game with 20 generations ghost when clicked
-        gen20.addMouseListener(new MouseAdapter() {
+        gen50.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                genNumber = 20;
+                genNumber = 50;
 
             }
         });
         //Run game with 100 generations ghost when clicked
-        gen100.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                genNumber = 100;
-
-            }
-        });
-        //Run game with 200 generations ghost when clicked
         gen200.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 genNumber = 200;
+
+            }
+        });
+        //Run game with 200 generations ghost when clicked
+        gen800.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                genNumber = 800;
 
             }
         });

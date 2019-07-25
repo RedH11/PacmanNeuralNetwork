@@ -50,7 +50,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="7214f" class="javax.swing.JRadioButton" binding="gen20">
+          <component id="7214f" class="javax.swing.JRadioButton" binding="gen50">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -61,7 +61,7 @@
               <text value="20 Generations"/>
             </properties>
           </component>
-          <component id="b4f21" class="javax.swing.JRadioButton" binding="gen100">
+          <component id="b4f21" class="javax.swing.JRadioButton" binding="gen200">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -71,7 +71,7 @@
               <text value="100 Generations"/>
             </properties>
           </component>
-          <component id="baed1" class="javax.swing.JRadioButton" binding="gen200">
+          <component id="baed1" class="javax.swing.JRadioButton" binding="gen800">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
