@@ -30,7 +30,7 @@ public class GeneticAlgorithm {
     private String pacFitnessStr;
 
     final int fileNum;
-    final int MAXMOVES = 60;
+    final int MAXMOVES = 100;
 
     boolean startBreeding = false;
 
@@ -149,6 +149,11 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         startBreeding =  pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness != 0;
+
+        if (generation == 300 && pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness < 500) {
+            generation = 0;
+            startBreeding = false;
+        }
 
         if (startBreeding) {
 
