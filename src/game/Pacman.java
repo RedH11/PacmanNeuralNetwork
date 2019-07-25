@@ -216,7 +216,58 @@ public class Pacman {
         return dir;
     }
 
+
     public int getDir() {
         return dir;
+    }
+    public int distWallUp(Tile [][]map){
+        int dist = 0;
+        for(int i = 0; i < 26; i ++){
+            if(map[y-i][x].wall){
+                dist = i;
+                break;
+            }
+        }
+        return dist;
+    }
+    public int numPUp(Tile[][]map){
+        int numP = 0;
+        for(int i = y; i > 1; i--) {
+            if (!map[i][x].wall) {
+                if (map[i][x].dot) {
+                    numP++;
+                }
+            }
+            else{
+                break;
+            }
+        }
+
+        return numP;
+    }
+    public int distWallDown(Tile [][]map){
+        int dist = 0;
+        for(int i = 0; i < 26; i ++){
+            if(map[y-i][x].wall){
+                dist = i;
+                break;
+            }
+        }
+        return dist;
+    }
+    public int numPDown(Tile[][]map){
+        int numP = 0;
+        for(int i = y; i < 26; i++) {
+            if (!map[i][x].wall) {
+                if (map[i][x].dot) {
+                    numP++;
+                }
+            }
+            else{
+                break;
+            }
+        }
+
+        return numP;
     }
 }

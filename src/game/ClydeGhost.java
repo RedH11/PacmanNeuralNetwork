@@ -1,7 +1,5 @@
 package game;
 
-import java.util.Random;
-
 /*
 public class ClydeGhost implements Ghost {
     private int currentPosX = STARTING_X;

@@ -3,8 +3,6 @@ package game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-
 public class VisualMap {
 
     private int generation;

@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Random;
 import java.util.Scanner;
 
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;

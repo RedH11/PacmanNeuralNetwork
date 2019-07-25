@@ -1,14 +1,9 @@
 package game;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -16,11 +11,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.*;
-import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
-import static javafx.scene.input.KeyCode.F;
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 public class PacmanSettings extends Pane {
