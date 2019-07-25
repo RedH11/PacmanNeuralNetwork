@@ -1,6 +1,7 @@
 package game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class VisualGame {
@@ -146,14 +147,71 @@ public class VisualGame {
 
         drawArrows(pacX, pacY, moves, pDirs, arrowLength);
 
-        if (pPowered[moves]) {
-            gc.setFill(Color.LIGHTGOLDENRODYELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
-        } else {
-            gc.setFill(Color.YELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+        drawArrows(pacX, pacY, moves, pDirs, arrowLength);
+
+        Image pacLeft = new Image("Sprites/pacman_left.png");
+        Image pacRight = new Image("Sprites/pacman_right.png");
+        Image pacUp = new Image("Sprites/pacman_up.png");
+        Image pacDown = new Image("Sprites/pacman_down.png");
+        Image poweredPacLeft = new Image("Sprites/powered_pacman_left.png");
+        Image poweredPacRight = new Image("Sprites/powered_pacman_right.png");
+        Image pacmanImage = pacLeft;
+
+        Image inkyLeft = new Image("Sprites/inky_left.png");
+        Image inkyRight = new Image("Sprites/inky_Right.png");
+        Image scaredGhost = new Image("Sprites/scared_ghost.png");
+        Image inkyImage = inkyLeft;
+
+        //Set Pacman's sprite depending on movement direction / powered state
+        if (pDirs[moves] == 0) {
+            if (pPowered[moves]) {
+
+            } else {
+                pacmanImage = pacUp;
+            }
+        }
+        if (pDirs[moves] == 1) {
+            if (pPowered[moves]) {
+                pacmanImage = poweredPacLeft;
+            } else {
+                pacmanImage = pacLeft;
+            }
+        }
+        if (pDirs[moves] == 2) {
+            if (pPowered[moves]) {
+                pacmanImage = poweredPacRight;
+            } else {
+                pacmanImage = pacRight;
+            }
+        }
+        if (pDirs[moves] == 3) {
+            if (pPowered[moves]) {
+
+            } else {
+                pacmanImage = pacDown;
+            }
         }
 
+        //Set Inky's sprite depending on movement direction / scared state
+        /*if (gDirs[moves] == 1) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyLeft;
+            }
+        }
+        if (gDirs[moves] == 2) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyRight;
+            }
+        }*/
+        //Draw Pacman
+        gc.drawImage(pacmanImage, pC * rectW + startX, pR * rectW + startY);
+        //Draw Inkies
+        /*gc.drawImage(inkyImage, iC * rectW + startX, iR * rectW + startY, 20, 20);
+        gc.drawImage(inkyImage, iC2 * rectW + startX, iR2 * rectW + startY, 20, 20);*/
 
         // Show eaten pellets
         if (moves > 0) {
