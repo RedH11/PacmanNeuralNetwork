@@ -24,7 +24,7 @@ public class Main extends Application {
     int stageH = 620;
     int currDir = 0;
 
-    final int MAXMOVES = 60;
+    final int MAXMOVES = 100;
 
     int[][] pacCoords = new int[MAXMOVES][2];
     int[][] gCoords = new int[MAXMOVES][2];
@@ -50,16 +50,16 @@ public class Main extends Application {
 
         // Settings for genetic algorithm
         int popSize = 1000;
-        int totalGens = 200;
+        int totalGens = 800;
         double mutationChance = 0.5;
         int lowerPacmen = 6;
         int upperPacmen = 40;
         // Amount of genetic algorithms run
-        int podAmount = 3;
+        int podAmount = 1;
 
         // File Settings
-        int gameNum = 76;
-        int generationNum = 160;
+        int gameNum = 1;
+        int generationNum = 350;
 
         if (evolve) {
             GeneticAlgorithm[] tests3 = new GeneticAlgorithm[podAmount];

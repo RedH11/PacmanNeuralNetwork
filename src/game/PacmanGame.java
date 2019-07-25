@@ -8,9 +8,11 @@ import java.io.ObjectOutputStream;
 public class PacmanGame {
 
     Pacman pacman;
-    Inky inky;
-    Inky inkyTwo;
     int numPellets;
+    int repeatMoves = 0;
+    int prevX = 0;
+    int prevY = 0;
+    boolean moveCheckerOn = false;
     final int MAX_PELLETS = 258;
 
     // 28 rows, 31 columns
@@ -146,7 +148,18 @@ public class PacmanGame {
     }
 
     private void simulateTurn() {
-        pacman.move(map);
+
+        if (!moveCheckerOn && pacman.fitness > 450) moveCheckerOn = true;
+        prevX = pacman.x;
+        prevY = pacman.y;
+
+        if (repeatMoves == 7) {
+            pacman.newMove(map, pacman.getDir());
+            repeatMoves = 0;
+        } else pacman.move(map);
+
+        if (moveCheckerOn && (pacman.x == prevX) && (pacman.y == prevY)) repeatMoves++;
+
         checkStates();
     }
 

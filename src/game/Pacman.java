@@ -52,6 +52,21 @@ public class Pacman {
         return highestDir;
     }
 
+    private int think(double[] input, int prevDir){
+
+        double[] outputs = brain.calculate(input);
+
+        //double up, down, left, right;
+        int highestDir = 0;
+
+        // Pacman isn't restricted to always be moving like the ghosts are
+        for (int i = highestDir + 1; i < outputs.length; i++) {
+            if (outputs[highestDir] < outputs[i] && i != prevDir) { highestDir = i; }
+        }
+
+        return highestDir;
+    }
+
     // Print direction
     private void outputDecision(int highestDir) {
         if (highestDir == 0) System.out.println("Up output");
@@ -98,6 +113,39 @@ public class Pacman {
                 }
             }
         }
+    }
+
+    public void newMove(Tile[][] map, int prevDir) {
+        if (!alive) respawn();
+
+        dir = think(see(map), prevDir);
+
+        int prevX = x;
+        int prevY = y;
+
+        // map[x][y]
+
+        // 0: Up / 1: Left / 2: Right / 3: Down
+        switch (dir) {
+            case 0:
+                if (!wallInWay(0, map)) y--;
+                break;
+            case 1:
+                if (!wallInWay(1, map)) x--;
+                break;
+            case 2:
+                if (!wallInWay(2, map)) x++;
+                break;
+            case 3:
+                if (!wallInWay(3, map)) y++;
+                break;
+        }
+
+        // Can't move twice in a turn
+        if (prevX - x == 2) x++;
+        else if (prevX - x == -2) x--;
+        else if (prevY - y == 2) y++;
+        else if (prevY - y == -2) y--;
     }
 
     public void move(Tile[][] map) {
