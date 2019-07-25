@@ -11,23 +11,25 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Scanner;
 
 /*
-    DOESN'T PRINT OUT THE LAST GEN
-    AND I HAD THE CONSOLE PRINTING OUT SIDEWAYS THE WHOLE GODDAMN TIME
+    https://stackoverflow.com/questions/33250413/javafx-stage-show-ending-in-program-freezing
+    FOR FIXING THE FREEZING
  */
+
 public class Main extends Application {
 
-    int stageW = 550;
-    int stageH = 620;
+    int stageW = 400;
+    int stageH = 400;
     int currDir = 0;
 
-    final int MAXMOVES = 500;
+    final int MAXMOVES = 200;
 
-    int[][] pacCoords = new int[MAXMOVES][2];
-    int[][] gCoords = new int[MAXMOVES][2];
-    String gameFile = "";
+    String PacmanDataPath;
+    GraphicsContext gameGC;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -36,95 +38,36 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        for (int i = 0; i < MAXMOVES; i++) {
-            pacCoords[i][0] = 0;
-            pacCoords[i][1] = 0;
-            gCoords[i][0] = 0;
-            gCoords[i][1] = 0;
-        }
+        createGameStage();
+        setup(stage);
+        stage.setResizable(false);
 
-        stage.setWidth(stageW);
-        stage.setHeight(stageH);
-
-        // The canvas for the pacman game
-        Canvas canvas = new Canvas(stageW, stageH);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        Pane root = new Pane();
-        root.getChildren().addAll(canvas);
-        Scene scene = new Scene(root, stageW, stageH);
-
-        stage.setScene(scene);
         stage.show();
+    }
+
+    public void setup(Stage stage) {
+        stage.setWidth(stageW);
+        stage.setHeight(stageH + 20);
 
         String pathToDesktop = System.getProperty("user.home") + "/Desktop/";
-
         File PacmanData = new File(pathToDesktop + "PacmanData");
-        String PacmanDataPath = PacmanData.getPath() + "/";
+        PacmanDataPath = PacmanData.getPath();
         if (!PacmanData.exists()) PacmanData.mkdir();
 
-        GeneticAlgorithm ga = new GeneticAlgorithm(PacmanDataPath,200, 50, 1, 3, 15);
-        ga.makeGenerations();
-        //PacmanGame pc = new PacmanGame(MAXMOVES);
-        //pc.simulateGame();
-
-        //System.out.println("Done Evolving");
-
-        //gameFile = "/Users/hunterwebb/Desktop/PacmanData/pacGens7/gen_43";
-
-        Thread GameViewer = new Thread(() -> {
-            if (gameFile.length() > 1) {
-                try {
-                    parseFile(gameFile);
-                } catch (FileNotFoundException ex) {}
-                VisualGame vg = new VisualGame(500, pacCoords, gCoords, gc, 10);
-            } else {
-                gc.setFill(Color.BLACK);
-                gc.fillText("NO GAME SELECTED", stageW/2 - 60, stageH/2);
-            }
-        });
-
-        GameViewer.start();
+        stage.setScene(new Scene(new PacmanSettings(stage, PacmanDataPath, gameGC), stageW, stageH));
     }
 
-    public void parseFile(String fileName) throws FileNotFoundException {
-        String str = "";
-
-        int coordsCollected = 0;
-
-        File file = new File(fileName);
-        Scanner sc = new Scanner(file);
-
-        while (sc.hasNextLine()) {
-            str = sc.nextLine();
-            if (str.length() > 0) {
-                // Trim off P:_
-                str = str.substring(str.indexOf("P") + 3);
-
-                // X coord
-                int x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                pacCoords[coordsCollected][0] = x;
-                // Trim off space between
-                str = str.substring(str.indexOf(" ") + 1);
-                // Y coord
-                int y = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                pacCoords[coordsCollected][1] = y;
-
-                // Trim off _I:_
-                str = str.substring(str.indexOf("I") + 3);
-
-                // X coord
-                x = Integer.parseInt(str.substring(0, str.indexOf(" ")));
-                gCoords[coordsCollected][0] = x;
-                // Trim off space between2
-                str = str.substring(str.indexOf(" ") + 1);
-                // Y coord
-                y = Integer.parseInt(str);
-                gCoords[coordsCollected][1] = y;
-                coordsCollected++;
-            }
-        }
-
+    public void createGameStage() {
+        Stage game = new Stage();
+        game.setWidth(550);
+        game.setHeight(620);
+        // The canvas for the pacman game
+        Canvas canvas = new Canvas(550, 620);
+        // Hide it at first
+        gameGC = canvas.getGraphicsContext2D();
+        Pane root = new Pane();
+        root.getChildren().add(canvas);
+        game.setScene(new Scene(root, 550, 620));
+        game.show();
     }
 }
-

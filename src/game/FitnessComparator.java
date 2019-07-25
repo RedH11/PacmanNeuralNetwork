@@ -2,7 +2,7 @@ package game;
 
 import java.util.Comparator;
 
-class FitnessComparator implements Comparator<PacmanGame> {
+class InkyFitnessComparator implements Comparator<PacmanGame> {
 
     @Override
     public int compare(PacmanGame x, PacmanGame y) {
@@ -10,10 +10,26 @@ class FitnessComparator implements Comparator<PacmanGame> {
            return a negative number when o1 < o2
                   a positive number when o1 > o2
                   0 when o1 == o2
-        */
-        if (x.getInkyFitness() < y.getInkyFitness()) return -1;
-        else if (x.getInkyFitness() > y.getInkyFitness()) return 1;
+
+
+        double xAvg = (x.getBestInky().fitness + x.getBestInky().fitness2 + x.getBestInky().fitness3) / 3;
+        double yAvg = (y.getBestInky().fitness + y.getBestInky().fitness2 + y.getBestInky().fitness3) / 3;
+
+        if (xAvg < yAvg) return -1;
+        else if (xAvg > yAvg) return 1;
+        return 0;
+
+         */
         return 0;
     }
+}
 
+class PacmanFitnessComparator implements Comparator<PacmanGame> {
+    @Override
+    public int compare(PacmanGame x, PacmanGame y) {
+
+        if (x.pacman.fitness < y.pacman.fitness) return -1;
+        else if (x.pacman.fitness > y.pacman.fitness) return 1;
+        return 0;
+    }
 }

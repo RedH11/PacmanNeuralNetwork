@@ -7,6 +7,8 @@ public class Inky {
     int x;
     int y;
     int fitness = 0;
+    int fitness2 = 0;
+    int fitness3 = 0;
     private int dir;
     boolean scared = false;
     boolean alive = true;
@@ -14,8 +16,8 @@ public class Inky {
 
     // Neural Network Settings
     final int INPUTS = 7;
-    final int HIDDEN_ONE = 30;
-    final int HIDDEN_TWO = 15;
+    final int HIDDEN_ONE = 80;
+    final int HIDDEN_TWO = 50;
     final int OUTPUTS = 4;
 
     private int moveCounter = 0;
@@ -47,18 +49,29 @@ public class Inky {
      * @param input the input data
      * @return the direction with the highest output, which Inky takes
      */
-    private int think(double[] input){
+    private int think(double[] input, Tile[][] map){
         double[] outputs = brain.calculate(input);
+
         //double up, down, left, right;
         int highestDir = 0;
 
-        for(int i = 1; i < outputs.length; i++){
-            if(outputs[highestDir]<outputs[i]){
-                highestDir = i;
-            }
-
+        while (wallInWay(highestDir, map)) {
+            highestDir++;
         }
-        // outputDecision(highestDir);
+
+        if (!(highestDir == 3)) {
+            // Pacman isn't restricted to always be moving like the ghosts are
+            for (int i = highestDir + 1; i < outputs.length; i++) {
+                if (outputs[highestDir] < outputs[i]) {
+                    if (!wallInWay(i, map)) highestDir = i;
+                }
+            }
+        }
+
+        /*while (wallInWay(highestDir, map)) {
+            highestDir = randDir(highestDir);
+        }*/
+
         return highestDir;
     }
 
@@ -70,7 +83,7 @@ public class Inky {
      * @return
      */
     private double[] see(Tile[][] map, int px, int py) {
-        
+
         double[] inputs = new double[INPUTS];
 
         // Whether or not there are walls in the four blocks around it
@@ -86,6 +99,15 @@ public class Inky {
         if (scared) inputs[6] = 1;
         else inputs[6] = 0;
 
+        /*
+        System.out.println("Inputs");
+
+        for (int i = 0; i < inputs.length; i++) {
+            System.out.println(inputs[i]);
+        }
+        System.out.println();
+        System.out.println("Outputs");*/
+
         return inputs;
     }
 
@@ -97,7 +119,7 @@ public class Inky {
      */
     public void move(Tile[][] map, int px, int py) {
         if (!alive) respawn();
-        dir = think(see(map, px, py));
+        dir = think(see(map, px, py), map);
 
         int prevX = x;
         int prevY = y;
@@ -138,8 +160,10 @@ public class Inky {
                     break;
             }
         }
+
         if (scaredMoves == maxScaredMoves) scared = false;
 
+        // Can't move twice in a turn
         if (prevX - x == 2) x++;
         else if (prevX - x == -2) x--;
         else if (prevY - y == 2) y++;
@@ -173,8 +197,10 @@ public class Inky {
         return false;
     }
 
-    public void addFitness(double add) {
-        fitness += add;
+    public void addFitness(double add, int round) {
+        if (round == 1) fitness += add;
+        else if (round == 2) fitness2 += add;
+        else fitness3 += add;
     }
 
     public NeuralNetwork getBrain() {
@@ -188,27 +214,39 @@ public class Inky {
 
     // Calculates angle to pacman
     public double closestDirToPac(int px, int py) {
-        return (Math.asin(y/distanceFromPac(px, py))*distanceFromPac(px, py));
+        return (Math.asin((py-y)/distanceFromPac(px, py)));
     }
 
+
     public double lookUp(Tile[][] map) {
-        if (map[y--][x].wall) return 1;
+        if (wallInWay(0, map)) return 1;
         else return 0;
     }
 
     public double lookDown(Tile[][] map) {
-        if (map[y++][x].wall) return 1;
+        if (wallInWay(3, map)) return 1;
         else return 0;
     }
 
     public double lookRight(Tile[][] map) {
-        if (map[y][x++].wall) return 1;
+        if (wallInWay(2, map)) return 1;
         else return 0;
     }
 
     public double lookLeft(Tile[][] map) {
-        if (map[y][x--].wall) return 1;
+        if (wallInWay(1, map)) return 1;
         else return 0;
+    }
+
+    // Generates a random direction that isn't the last one
+    private int randDir(int lastDir) {
+
+        int dir = num.nextInt(4);
+        while (dir == lastDir) {
+            dir = num.nextInt(4);
+        }
+
+        return dir;
     }
 
     // Print direction
@@ -217,5 +255,9 @@ public class Inky {
         if (highestDir == 1) System.out.println("Left output");
         if (highestDir == 2) System.out.println("Right output");
         if (highestDir == 3) System.out.println("Down output");
+    }
+
+    public int getDir() {
+        return dir;
     }
 }
