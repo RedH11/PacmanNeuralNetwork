@@ -58,7 +58,7 @@
               <background color="-14116565"/>
               <font name="Comic Sans MS" size="18"/>
               <selected value="false"/>
-              <text value="20 Generations"/>
+              <text value="50 Generations"/>
             </properties>
           </component>
           <component id="b4f21" class="javax.swing.JRadioButton" binding="gen200">
@@ -68,7 +68,7 @@
             <properties>
               <background color="-4490474"/>
               <font name="Comic Sans MS" size="18"/>
-              <text value="100 Generations"/>
+              <text value="200 Generations"/>
             </properties>
           </component>
           <component id="baed1" class="javax.swing.JRadioButton" binding="gen800">
@@ -78,7 +78,7 @@
             <properties>
               <background color="-5303282"/>
               <font name="Comic Sans MS" size="18"/>
-              <text value="200 Generations"/>
+              <text value="800 Generations"/>
             </properties>
           </component>
           <hspacer id="53e55">

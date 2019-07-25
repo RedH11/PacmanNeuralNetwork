@@ -7,13 +7,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Scanner;
+
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 public class PacmanUI {
     int stageW = 550;
@@ -29,8 +33,10 @@ public class PacmanUI {
     int[] pFits = new int[MAXMOVES];
     boolean[] pPowered = new boolean[MAXMOVES];
 
-    String gameFile = "";
-    String PacmanDataPath;
+    static String gameFile = "";
+    static String PacmanDataPath;
+    String[] audioFiles = new String[] {"src/game/assets/8 bit rocky.wav", "src/game/assets/8 bit all star.wav"};
+    String audioFile;
     GraphicsContext gc;
 
     int popSize = 600;
@@ -40,6 +46,9 @@ public class PacmanUI {
     int upperPacmen = 20;
     // Amount of genetic algorithms run
     int podAmount = 1;
+
+    AudioInputStream audioInputStream;
+    Clip clip;
 
     private JPanel PacmanTextPanel;
     private JTextPane PacmanText;
@@ -82,6 +91,19 @@ public class PacmanUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                // Epic loading time
+                try {
+                    audioPlayer();
+                } catch (UnsupportedAudioFileException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (LineUnavailableException ex) {
+                    ex.printStackTrace();
+                }
+
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+
                 // Get latest game & generation
                 int gameNum = 54;
                 int generationNum = genNumber;
@@ -98,6 +120,24 @@ public class PacmanUI {
             }
         });
     }
+    public void audioPlayer() throws UnsupportedAudioFileException,
+            IOException, LineUnavailableException
+    {
+        // create AudioInputStream object
+        Random rand = new Random();
+        int fileNum = rand.nextInt(2);
+        audioInputStream =
+                getAudioInputStream(new File(audioFiles[fileNum]));
+
+        // create clip reference
+        clip = AudioSystem.getClip();
+
+        // open audioInputStream to the clip
+        clip.open(audioInputStream);
+
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
     public void parseFile(String fileName) throws FileNotFoundException {
         String str = "";
 
