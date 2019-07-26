@@ -11,6 +11,9 @@ public class Pacman {
     // Accessible traits
     boolean powered = false;
     boolean alive = true;
+   int repeatMoves = 0;
+    boolean repeat = false;
+    final int ALLOWED_REPEAT_MOVES = 7;
 
     NeuralNetwork brain;
 
@@ -52,10 +55,10 @@ public class Pacman {
         return highestDir;
     }
 
-    private int think(double[] input, int prevDir){
+    private int think(double[] input, int prevDir, InfoStorage is){
 
         double[] outputs = brain.calculate(input);
-
+       // is.setNNOutputs(outputs);
         //double up, down, left, right;
         int highestDir = 0;
 
@@ -157,6 +160,14 @@ public class Pacman {
                 break;
         }
 
+        if ((prevX == x )&& (prevY == y)){
+            repeatMoves++;
+        }
+
+        if(repeatMoves == ALLOWED_REPEAT_MOVES){
+             moveRep(map, is, dir);
+            repeatMoves = 0;
+        }
         // Can't move twice in a turn
         if (prevX - x == 2) x++;
         else if (prevX - x == -2) x--;
@@ -164,10 +175,10 @@ public class Pacman {
         else if (prevY - y == -2) y--;
     }
 
-    public void move(Tile[][] map) {
+    public void moveRep(Tile[][] map, InfoStorage is, int dirP) {
         if (!alive) respawn();
+        int dir = think(see(map), dirP, is);
 
-        dir = think(see(map), new InfoStorage(0));
 
         int prevX = x;
         int prevY = y;

@@ -74,6 +74,7 @@ public class InfoStorage implements Serializable {
 
     public void setNNOutputs(double[] outputs) {
         this.outputs[totalNNInfo] = outputs;
+        totalNNInfo++;
     }
 
     public int getTotalCoords() {

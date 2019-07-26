@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class PacmanGame implements Serializable {
 
     Pacman pacman;
-
+    boolean repeat = false;
     int numPellets;
     final int MAX_PELLETS = 258;
 
@@ -130,6 +130,7 @@ public class PacmanGame implements Serializable {
     }
 
     private void simulateTurn(int round) {
+
         pacman.newMove(map, is);
         checkStates(round);
      //   inky.move(map, pacman.x, pacman.y, si);

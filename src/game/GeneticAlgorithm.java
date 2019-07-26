@@ -34,7 +34,7 @@ public class GeneticAlgorithm {
     private NeuralNetwork parent1;
     private NeuralNetwork parent2;
 
-    private final int MAXMOVES = 600;
+    private final int MAXMOVES = 400;
     private boolean lastRoundRobin = false;
 
     private int fitnessX = 10;
@@ -226,6 +226,7 @@ public class GeneticAlgorithm {
             gc.setFill(Color.YELLOW);
             gc.fillOval(fitnessX, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2), coordinateW, coordinateW);
             gc.fillText(Double.toString(pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness), fitnessX - coordinateW, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2 - 20));
+            System.out.println("Gen "+ generation + " : " + pacmanBabys.get(pacmanBabys.size()-1).pacman.fitness);
         }
 
         fitnessX += 40;
