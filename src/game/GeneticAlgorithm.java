@@ -231,13 +231,18 @@ public class GeneticAlgorithm {
 
     private void recordFitness() {
 
+        if (mutationChance <= 0.5) gc.setFill(Color.rgb(204, 229, 255));
+        else if (mutationChance <= 0.6) gc.setFill(Color.rgb(153, 204, 255));
+        else if (mutationChance <= 0.7) gc.setFill(Color.rgb(102, 178, 255));
+        else if (mutationChance <= 0.8) gc.setFill(Color.rgb(51, 153, 255));
+        else if (mutationChance <= 0.9) gc.setFill(Color.rgb(0, 128, 255));
+        else gc.setFill(Color.rgb(0, 102, 204));
+
         System.out.println("Gen " + generation + " " + pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness);
         if (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness == 0) {
-            gc.setFill(Color.YELLOW);
             gc.fillOval(fitnessX, 620, coordinateW, coordinateW);
 
         } else {
-            gc.setFill(Color.YELLOW);
             gc.fillOval(fitnessX, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2), coordinateW, coordinateW);
         }
 
