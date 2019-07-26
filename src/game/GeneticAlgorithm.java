@@ -40,7 +40,15 @@ public class GeneticAlgorithm {
     private int fitnessX = 10;
     private GraphicsContext gc;
     private int coordinateW = 5;
-    boolean ValidGen = true;
+    private boolean ValidGen = true;
+    private int plateuCounter = 0;
+    private int prevFitness = 0;
+    private int plateuLimit = 10;
+    private boolean isAPlateu = false;
+
+    // How many of the population are mutated when plateuing
+    private int mutateOccurance = 3;
+    private double mutateIncrease = 1;
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -154,30 +162,6 @@ public class GeneticAlgorithm {
         }
     }
 
-    public void roundRobin() {
-        round++;
-
-        test();
-        pacmen.clear();
-
-        for (PacmanGame game : gamePopulation) {
-            pacmen.add(game.pacman);
-        }
-
-        // Shuffle around pacmen to hit new inky ghosts
-        Collections.shuffle(pacmen);
-
-        if (!lastRoundRobin) gamePopulation.clear();
-
-        int ghostIndx = 0;
-
-        for (int i = 0; i < populationSize; i++) {
-            // Put all of the inkies and pacmen back into new games with different opponents
-            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, pacmen.get(i).brain));
-            ghostIndx += 2;
-        }
-    }
-
     public void sort() {
 
         pacmanBabys.clear();
@@ -194,6 +178,7 @@ public class GeneticAlgorithm {
         if((topPac.pacman.fitness < 500)&&(generation == 500)){
             ValidGen = false;
         }
+
         if(ValidGen) {
             topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
@@ -203,6 +188,21 @@ public class GeneticAlgorithm {
 
             } catch (Exception ex) {
             }
+
+            if (prevFitness == topPac.pacman.fitness) plateuCounter++;
+
+            if (plateuCounter == plateuLimit) {
+                isAPlateu = true;
+                System.out.println("Is a plateau");
+            }
+
+            if (!isAPlateu) prevFitness = topPac.pacman.fitness;
+            else if (prevFitness != topPac.pacman.fitness) {
+                plateuCounter = 0;
+                System.out.println("Plateau Ended");
+                isAPlateu = false;
+            }
+
             recordFitness();
 
             // Remove non top pacman
@@ -225,7 +225,8 @@ public class GeneticAlgorithm {
     public void mutate() {
         // Mutate some pacman babies
         for (int i = 0; i < pacmanBabys.size(); i++) {
-            pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
+            if (isAPlateu && i % mutateOccurance == 0) pacmanBabys.get(i).pacman.brain.mutate(mutationChance + mutateIncrease);
+            else pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
         }
     }
 
