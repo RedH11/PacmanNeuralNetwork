@@ -6,8 +6,7 @@ import java.util.ArrayList;
 public class PacmanGame implements Serializable {
 
     Pacman pacman;
-    Inky inky;
-    Inky inkyTwo;
+
     int numPellets;
     final int MAX_PELLETS = 258;
 
@@ -76,38 +75,36 @@ public class PacmanGame implements Serializable {
         is = new InfoStorage(MAXMOVES);
         createMap();
         pacman = new Pacman();
-        inky = new Inky();
-        inkyTwo = new Inky();
+      //  inky = new Inky();
+       // inkyTwo = new Inky();
     }
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork inkyBrainOne, NeuralNetwork inkyBrainTwo, NeuralNetwork pacmanBrain) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
         createMap();
         is = new InfoStorage(MAXMOVES);
         pacman = new Pacman(pacmanBrain);
         //pacman.fitness = pacmanFitness;
-        inky = new Inky(inkyBrainOne);
+       // inky = new Inky(inkyBrainOne);
         //inky.fitness = inkyOneFitness;
-        inkyTwo = new Inky(inkyBrainTwo);
+      //  inkyTwo = new Inky(inkyBrainTwo);
         //inkyTwo.fitness = inkyTwoFitness;
     }
 
 
     public void simulateGame(int round) {
         gameMoves = 0;
-        while ((numPellets < MAX_PELLETS) && (pacman.lives > 0) && (gameMoves < MAXMOVES)) {
+        while ((numPellets < MAX_PELLETS) &&  (gameMoves < MAXMOVES)) {
             // Add all of the game information
             simulateTurn(round);
-            is.addAllCoords(pacman.x, pacman.y, inky.x, inky.y, inkyTwo.x, inkyTwo.y);
-            is.addAllInfo(pacman.getDir(), pacman.getAvgFitness(), pacman.powered, inky.getDir(), inky.getAvgFitness(), inkyTwo.getDir(), inkyTwo.getAvgFitness());
+             is.addAllCoords(pacman.x, pacman.y);
+            is.addAllInfo(pacman.getDir(), pacman.fitness, pacman.powered);
             gameMoves++;
         }
     }
 
-    public int getPacmanAverageFitness() {
-        return ((pacman.fitness + pacman.fitness2 + pacman.fitness3) / 3);
-    }
+
 
     private void createMap() {
         // Initialize tiles
@@ -133,21 +130,21 @@ public class PacmanGame implements Serializable {
     }
 
     private void simulateTurn(int round) {
-        pacman.move(map, inky.x, inky.y, inkyTwo.x, inkyTwo.y, is);
+        pacman.newMove(map, is);
         checkStates(round);
-        inky.move(map, pacman.x, pacman.y, is);
-        checkStates(round);
-        inkyTwo.move(map, pacman.x, pacman.y, is);
-        checkStates(round);
+     //   inky.move(map, pacman.x, pacman.y, si);
+       // checkStates(round);
+        //inkyTwo.move(map, pacman.x, pacman.y, is);
+        //checkStates(round);
     }
 
     private void checkStates(int round) {
         if (gameMoves - scaredStart == poweredMoves) {
             pacman.powered = false;
-            inky.scared = false;
-            inkyTwo.scared = false;
+          //  inky.scared = false;
+            //inkyTwo.scared = false;
         }
-
+/*
         // Interaction when Pacman and Inky Collide
         if (pacman.x == inky.x && pacman.y == inky.y) {
             if (!pacman.powered) {
@@ -179,25 +176,27 @@ public class PacmanGame implements Serializable {
             }
         }
 
+ */
+
         // Pacman on a pellet
         if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
             pacman.powered = true;
-            inky.scared = true;
-            inkyTwo.scared = true;
-            pacman.addFitness(poweredScore, round);
+         //   inky.scared = true;
+           // inkyTwo.scared = true;
+            pacman.addFitness(poweredScore);
             map[pacman.y][pacman.x].eaten = true;
             scaredStart = gameMoves;
         } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
-            pacman.addFitness(pelletScore, round);
+            pacman.addFitness(pelletScore);
             map[pacman.y][pacman.x].eaten = true;
             numPellets++;
         }
 
         // Inky in proximity to pacman (within 2 tiles)
-        if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman, round);
-        if (inkyTwo.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inkyTwo.addFitness(nearPacman, round);
+     //   if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman, round);
+       // if (inkyTwo.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inkyTwo.addFitness(nearPacman, round);
     }
-
+/*
     public Inky getBestInky(){
         double xAvg = (inky.fitness + inky.fitness2 + inky.fitness3) / 3;
         double yAvg = (inkyTwo.fitness + inkyTwo.fitness2 + inkyTwo.fitness3) / 3;
@@ -211,6 +210,8 @@ public class PacmanGame implements Serializable {
         Inky tempI = getBestInky();
         return ((tempI.fitness + tempI.fitness2 + tempI.fitness3) / 3);
     }
+
+ */
 
     public InfoStorage getIs() {
         return is;
@@ -256,8 +257,8 @@ public class PacmanGame implements Serializable {
         for (int y = 0; y < 31; y++) {
             for (int x = 0; x < 28; x++) {
                 if (x == pacman.x && y == pacman.y) System.out.print("C\t");
-                else if (x == inky.x && y == inky.y) System.out.print("8\t");
-                else if (x == inkyTwo.x && y == inkyTwo.y) System.out.print("8\t");
+              //  else if (x == inky.x && y == inky.y) System.out.print("8\t");
+                //else if (x == inkyTwo.x && y == inkyTwo.y) System.out.print("8\t");
                 else if (map[y][x].wall) System.out.print("0\t");
                 else if (map[y][x].eaten) System.out.print("\t");
                 else if (map[y][x].dot) System.out.print("-\t");
