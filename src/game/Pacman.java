@@ -236,7 +236,7 @@ public class Pacman {
         int numP = 0;
         for(int i = y; i > 1; i--) {
             if (!map[i][x].wall) {
-                if (map[i][x].dot) {
+                if (map[i][x].dot || map[i][x].bigDot) {
                     numP++;
                 }
             }
@@ -262,7 +262,7 @@ public class Pacman {
         int numP = 0;
         for(int i = y; i < 26; i++) {
             if (!map[i][x].wall) {
-                if (map[i][x].dot) {
+                if (map[i][x].dot||map[i][x].bigDot) {
                     numP++;
                 }
             }
@@ -288,7 +288,7 @@ public class Pacman {
         int numP = 0;
         for(int i = x; i > 1; i--) {
             if (!map[y][i].wall) {
-                if (map[y][i].dot) {
+                if (map[y][i].dot||map[y][i].bigDot) {
                     numP++;
                 }
             }
@@ -303,7 +303,7 @@ public class Pacman {
     public int distWallRight(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
-            if(map[y][x-i].wall){
+            if(map[y][x+i].wall){
                 dist = i-1;
                 break;
             }
@@ -314,7 +314,7 @@ public class Pacman {
         int numP = 0;
         for(int i = x; i < 26; i++) {
             if (!map[y][i].wall) {
-                if (map[y][i].dot) {
+                if (map[y][i].dot||map[y][i].bigDot) {
                     numP++;
                 }
             }
