@@ -217,18 +217,17 @@ public class GeneticAlgorithm {
 
     private void recordFitness() {
 
+        System.out.println("Gen " + generation + " " + pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness);
         if (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness == 0) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(fitnessX, 620, coordinateW, coordinateW);
-            gc.fillText("0", fitnessX - coordinateW, 620-20);
 
         } else {
             gc.setFill(Color.YELLOW);
             gc.fillOval(fitnessX, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2), coordinateW, coordinateW);
-            gc.fillText(Double.toString(pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness), fitnessX - coordinateW, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2 - 20));
         }
 
-        fitnessX += 40;
+        fitnessX += 8;
 
         String pacmanFitness = Double.toString(Math.round(pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness));
         if (pacmanFitness != null) pacFitnessStr += (pacmanFitness + "\n");
