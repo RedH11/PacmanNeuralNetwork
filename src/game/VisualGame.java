@@ -17,17 +17,11 @@ public class VisualGame {
 
     int MAXMOVES;
     int[][] pCoords;
-    int[][] gCoords;
-    int[] gDirs;
-    int[] gFits;
     int[] pDirs;
     int[] pFits;
     boolean pPowered[];
     GraphicsContext gc;
     int moves = 0;
-    int[][] g2Coords;
-    int[] g2Fits;
-    int [] g2Dirs;
 
     private boolean complete = false;
 
@@ -70,20 +64,12 @@ public class VisualGame {
         this.pDirs = is.getpDirs();
         this.pFits = is.getpFits();
         this.pPowered = is.getpPowered();
-
-        this.gCoords = is.getgCoords();
-        this.gDirs = is.getgDirs();
-        this.gFits = is.getgFits();
-
-        this.g2Coords = is.getG2Coords();
-        this.g2Dirs = is.getG2Dirs();
-        this.g2Fits = is.getG2Fits();
         this.generation = generation;
 
         this.gc = gameGC;
 
         try {
-            while (moves < MAXMOVES && g2Coords[moves][1] != 0) {
+            while (moves < MAXMOVES && pCoords[moves][1] != 0) {
                 drawMap();
                 drawGame(moves);
                 moves++;
@@ -150,8 +136,6 @@ public class VisualGame {
         }
 
         gc.setFill(Color.WHITE);
-        gc.fillText("Inky 1 Fitness: " + gFits[moves], 400, 15);
-        gc.fillText("Inky 2 Fitness: " + g2Fits[moves], 400, 30);
         gc.fillText("Pacman Fitness: " + pFits[moves], 400, 45);
         gc.fillText("Generation: " + generation, 25, 15);
     }
@@ -166,12 +150,6 @@ public class VisualGame {
         // Get pacmans row and column coordinate (r, c)
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
-
-        int iC = gCoords[moves][0];
-        int iR = gCoords[moves][1];
-
-        int iC2 = g2Coords[moves][0];
-        int iR2 = g2Coords[moves][1];
 
         int arrowLength = 15;
 
@@ -190,42 +168,12 @@ public class VisualGame {
             gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
         }
 
-        // Make pacmans vision area rectangles with a white stroke
-        for (int j = -1; j < visionDistance + 1; j++) {
-            for (int i = -1; i < visionDistance + 1; i++) {
-                if (pC * rectW + startX + i >= 0 && pR * rectW + startY + j >= 0) {
-                    gc.setStroke(Color.rgb(0, 0, 0, 0.2));
-                    gc.strokeRect(pC * rectW + startX + i, pR * rectW + startY + j, rectW, rectW);
-                }
-            }
-        }
-
         // Show eaten pellets
         if (moves > 0) {
             // Draw empty spaces for pellets behind pacman
             if (!(pCoords[moves - 1][0] == pCoords[moves][0] && pCoords[moves - 1][1] == pCoords[moves][1])) {
                 tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
             }
-        }
-
-        int inkyX = iC * rectW + startX  + 9;
-        int inkyY = iR * rectW + startY + 9;
-
-        int inkyX2 = iC2 * rectW + startX + 9;
-        int inkyY2 = iR2 * rectW + startY + 9;
-
-        drawArrows(inkyX, inkyY, moves, gDirs, arrowLength);
-        drawArrows(inkyX2, inkyY2, moves, g2Dirs, arrowLength);
-
-        // Draw Inky
-        if (pPowered[moves]) {
-            gc.setFill(Color.BLUEVIOLET);
-            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
-            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
-        } else {
-            gc.setFill(Color.LIGHTBLUE);
-            gc.fillOval(iC * rectW + startX, iR * rectW + startY, 18, 18);
-            gc.fillOval(iC2 * rectW + startX, iR2 *rectW + startY, 18, 18);
         }
     }
 
