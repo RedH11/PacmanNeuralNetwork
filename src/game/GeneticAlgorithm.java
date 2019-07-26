@@ -34,12 +34,13 @@ public class GeneticAlgorithm {
     private NeuralNetwork parent1;
     private NeuralNetwork parent2;
 
-    private final int MAXMOVES = 600;
+    private final int MAXMOVES = 400;
     private boolean lastRoundRobin = false;
 
     private int fitnessX = 10;
     private GraphicsContext gc;
     private int coordinateW = 5;
+    boolean ValidGen = true;
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -106,17 +107,25 @@ public class GeneticAlgorithm {
     public void makeGenerations() throws IOException {
 
         while (generation < totalGens) {
-            roundRobin();
-            roundRobin();
-            lastRoundRobin = true;
-            roundRobin();
+            test();
             sort();
-            mutate();
-            clear();
-            breedPopulation();
-            generation++;
-            lastRoundRobin = false;
-            round = 0;
+            if(ValidGen) {
+                mutate();
+                clear();
+                breedPopulation();
+                generation++;
+                lastRoundRobin = false;
+
+            }
+            else{
+                ValidGen = true;
+                pacmanBabys.clear();
+                gamePopulation.clear();
+                generation = 0;
+
+               makePopulation();
+
+            }
         }
 
         // Write all fitness records to file
@@ -182,30 +191,35 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-
-        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
-
-        try {
-            // Make file records of the best Pacman/Inky
-            pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
-
-        } catch (Exception ex) {}
-        recordFitness();
-
-        // Remove non top pacman
-        while (pacmanBabys.size() > topPacman) {
-            pacmanBabys.remove(0);
+        if((topPac.pacman.fitness < 500)&&(generation == 500)){
+            ValidGen = false;
         }
+        if(ValidGen) {
+            topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
-        // Get a set number of lower scoring ghosts/pacmen to be kept alive
-        ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
+            try {
+                // Make file records of the best Pacman/Inky
+                pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
 
-        for (int i = 0; i < randPacmen.size(); i++) {
-            pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
+            } catch (Exception ex) {
+            }
+            recordFitness();
+
+            // Remove non top pacman
+            while (pacmanBabys.size() > topPacman) {
+                pacmanBabys.remove(0);
+            }
+
+            // Get a set number of lower scoring ghosts/pacmen to be kept alive
+            ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
+
+            for (int i = 0; i < randPacmen.size(); i++) {
+                pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
+            }
+
+            // Sort inkys and pacmen
+            pacmanBabys.sort(new PacmanFitnessComparator());
         }
-
-        // Sort inkys and pacmen
-        pacmanBabys.sort(new PacmanFitnessComparator());
     }
 
     public void mutate() {
@@ -259,6 +273,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < populationSize; i++) {
             gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, pacmanBrains.get(i)));
         }
+
     }
 
     public double calcRate(int n, double u1) {

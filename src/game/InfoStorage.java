@@ -124,4 +124,6 @@ public class InfoStorage implements Serializable {
     public int getMAXMOVES() {
         return MAXMOVES;
     }
+
+
 }
