@@ -1,18 +1,14 @@
 package game;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.util.ArrayList;
 
-public class PacmanGame {
+public class PacmanGame implements Serializable {
 
     Pacman pacman;
+    Inky inky;
+    Inky inkyTwo;
     int numPellets;
-    int repeatMoves = 0;
-    int prevX = 0;
-    int prevY = 0;
-    boolean moveCheckerOn = false;
     final int MAX_PELLETS = 258;
 
     // 28 rows, 31 columns
@@ -57,6 +53,13 @@ public class PacmanGame {
     // How much fitness Pacman gets for these achievements
     private int pelletScore = 10;
     private int poweredScore = 10;
+    private int eatGhost = 0;
+    private int pacEaten = 0;
+
+    // How much fitness Inky gets for these achievements
+    private int eatPacman = 200;
+    private int nearPacman = 1;
+    private int inkyEaten = -20;
 
     private int poweredMoves = 20;
 
@@ -64,50 +67,46 @@ public class PacmanGame {
     private int scaredStart = 0;
     private int MAXMOVES;
 
-    FileWriter moveWriter;
-    String fileContent = "";
-    String PacmanDataPath;
+    private InfoStorage is;
+    static String PacmanDataPath;
 
     public PacmanGame(String PacmanDataPath, int MAXMOVES) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
+        is = new InfoStorage(MAXMOVES);
         createMap();
         pacman = new Pacman();
+        inky = new Inky();
+        inkyTwo = new Inky();
     }
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork inkyBrainOne, NeuralNetwork inkyBrainTwo, NeuralNetwork pacmanBrain) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
         createMap();
+        is = new InfoStorage(MAXMOVES);
         pacman = new Pacman(pacmanBrain);
+        //pacman.fitness = pacmanFitness;
+        inky = new Inky(inkyBrainOne);
+        //inky.fitness = inkyOneFitness;
+        inkyTwo = new Inky(inkyBrainTwo);
+        //inkyTwo.fitness = inkyTwoFitness;
     }
 
 
-    public void simulateGame() {
+    public void simulateGame(int round) {
         gameMoves = 0;
-        while ((numPellets < MAX_PELLETS) && (gameMoves < MAXMOVES)) {
-            fileContent += "P: " + pacman.x + " " + pacman.y +  " Pdir: " + pacman.getDir() + " Pfit: " + pacman.fitness + " Ppowered: " + pacman.powered + "\n";
-            simulateTurn();
+        while ((numPellets < MAX_PELLETS) && (pacman.lives > 0) && (gameMoves < MAXMOVES)) {
+            // Add all of the game information
+            simulateTurn(round);
+            is.addAllCoords(pacman.x, pacman.y, inky.x, inky.y, inkyTwo.x, inkyTwo.y);
+            is.addAllInfo(pacman.getDir(), pacman.getAvgFitness(), pacman.powered, inky.getDir(), inky.getAvgFitness(), inkyTwo.getDir(), inkyTwo.getAvgFitness());
             gameMoves++;
         }
     }
 
-    public void writeFileContent(int generation) {
-        try {
-           moveWriter = new FileWriter(PacmanDataPath +"/Gens/PacGen_" + generation);
-        } catch (Exception ex) {
-            System.out.println("Error creating move writer");
-        }
-
-        // Write the file content to the file
-        try {
-            moveWriter.write(fileContent);
-            moveWriter.close();
-        } catch (IOException ex) {}
-    }
-
-    public int getPacmanFitness() {
-        return pacman.fitness;
+    public int getPacmanAverageFitness() {
+        return ((pacman.fitness + pacman.fitness2 + pacman.fitness3) / 3);
     }
 
     private void createMap() {
@@ -133,10 +132,132 @@ public class PacmanGame {
         }
     }
 
+    private void simulateTurn(int round) {
+        pacman.move(map, inky.x, inky.y, inkyTwo.x, inkyTwo.y, is);
+        checkStates(round);
+        inky.move(map, pacman.x, pacman.y, is);
+        checkStates(round);
+        inkyTwo.move(map, pacman.x, pacman.y, is);
+        checkStates(round);
+    }
+
+    private void checkStates(int round) {
+        if (gameMoves - scaredStart == poweredMoves) {
+            pacman.powered = false;
+            inky.scared = false;
+            inkyTwo.scared = false;
+        }
+
+        // Interaction when Pacman and Inky Collide
+        if (pacman.x == inky.x && pacman.y == inky.y) {
+            if (!pacman.powered) {
+                pacman.alive = false;
+                pacman.addFitness(pacEaten, round);
+                pacman.lives--;
+                inky.addFitness(eatPacman, round);
+                inky.respawn(); // Inky respawns to stop it from camping pacmans spawn
+                inkyTwo.respawn();
+            } else {
+                inky.alive = false;
+                pacman.addFitness(eatGhost, round);
+                inky.addFitness(inkyEaten, round);
+            }
+        }
+
+        if (pacman.x == inkyTwo.x && pacman.y == inkyTwo.y) {
+            if (!pacman.powered) {
+                pacman.alive = false;
+                pacman.addFitness(pacEaten, round);
+                pacman.lives--;
+                inkyTwo.addFitness(eatPacman, round);
+                inkyTwo.respawn(); // Inky respawns to stop it from camping pacmans spawn
+                inky.respawn();
+            } else {
+                inkyTwo.alive = false;
+                pacman.addFitness(eatGhost, round);
+                inkyTwo.addFitness(inkyEaten, round);
+            }
+        }
+
+        // Pacman on a pellet
+        if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
+            pacman.powered = true;
+            inky.scared = true;
+            inkyTwo.scared = true;
+            pacman.addFitness(poweredScore, round);
+            map[pacman.y][pacman.x].eaten = true;
+            scaredStart = gameMoves;
+        } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
+            pacman.addFitness(pelletScore, round);
+            map[pacman.y][pacman.x].eaten = true;
+            numPellets++;
+        }
+
+        // Inky in proximity to pacman (within 2 tiles)
+        if (inky.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inky.addFitness(nearPacman, round);
+        if (inkyTwo.distanceFromPac(pacman.x, pacman.y) <= Math.sqrt(5.0)) inkyTwo.addFitness(nearPacman, round);
+    }
+
+    public Inky getBestInky(){
+        double xAvg = (inky.fitness + inky.fitness2 + inky.fitness3) / 3;
+        double yAvg = (inkyTwo.fitness + inkyTwo.fitness2 + inkyTwo.fitness3) / 3;
+
+        if (xAvg < yAvg) return inkyTwo;
+        else if (xAvg > yAvg) return inky;
+        return inky;
+    }
+
+    public int getBestInkyAverageFitness() {
+        Inky tempI = getBestInky();
+        return ((tempI.fitness + tempI.fitness2 + tempI.fitness3) / 3);
+    }
+
+    public InfoStorage getIs() {
+        return is;
+    }
+
+    public static void saveInformation(InfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {
+
+        try {
+            // Write the InformationStorage into the file
+            oos.writeObject(infoStorage);
+            oos.flush();
+            // Catch errors
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
+        ArrayList<InfoStorage> objects = new ArrayList<>();
+        InputStream is = null;
+        try {
+            is = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(is);
+            while (true) {
+                try {
+                    InfoStorage object = (InfoStorage) ois.readObject();
+                    objects.add(object);
+                } catch (EOFException ex) {
+                    break;
+                }
+            }
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+        return objects;
+    }
+
     private void printMap() {
         for (int y = 0; y < 31; y++) {
             for (int x = 0; x < 28; x++) {
                 if (x == pacman.x && y == pacman.y) System.out.print("C\t");
+                else if (x == inky.x && y == inky.y) System.out.print("8\t");
+                else if (x == inkyTwo.x && y == inkyTwo.y) System.out.print("8\t");
                 else if (map[y][x].wall) System.out.print("0\t");
                 else if (map[y][x].eaten) System.out.print("\t");
                 else if (map[y][x].dot) System.out.print("-\t");
@@ -146,52 +267,6 @@ public class PacmanGame {
         }
         System.out.println("\n\n");
     }
-
-    private void simulateTurn() {
-
-        if (!moveCheckerOn && pacman.fitness > 450) moveCheckerOn = true;
-        prevX = pacman.x;
-        prevY = pacman.y;
-
-        if (repeatMoves == 7) {
-            pacman.newMove(map, pacman.getDir());
-            repeatMoves = 0;
-        } else pacman.move(map);
-
-        if (moveCheckerOn && (pacman.x == prevX) && (pacman.y == prevY)) repeatMoves++;
-
-        checkStates();
-    }
-
-    private void checkStates() {
-        if (gameMoves - scaredStart == poweredMoves) {
-            pacman.powered = false;
-        }
-        // Pacman on a pellet
-        if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
-            pacman.powered = true;
-            pacman.addFitness(poweredScore);
-            map[pacman.y][pacman.x].eaten = true;
-            scaredStart = gameMoves;
-        } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
-            pacman.addFitness(pelletScore);
-            map[pacman.y][pacman.x].eaten = true;
-            numPellets++;
-        }
-    }
-
-    public void WriteObjectToFile(Object serObj, int generation) {
-
-        try {
-
-            FileOutputStream fileOut = new FileOutputStream(PacmanDataPath +"/Gens/InkGenes_" + generation);
-            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-            objectOut.writeObject(serObj);
-            objectOut.close();
-            System.out.println("The Object  was succesfully written to a file");
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }
+
+

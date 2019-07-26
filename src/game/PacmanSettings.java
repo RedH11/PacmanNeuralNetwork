@@ -65,6 +65,14 @@ public class PacmanSettings extends Pane {
         TextField mutateTF = new TextField();
         mutateTF.setPromptText("Mutation Chance");
 
+        Label topGhosts = new Label("Top Ghosts");
+        TextField topGhostsTF = new TextField();
+        topGhostsTF.setPromptText("How Many Top Ghosts to Keep");
+
+        Label lowerGhosts = new Label("Lower Ghosts");
+        TextField lowerGhostsTF = new TextField();
+        lowerGhostsTF.setPromptText("How Many Worse Ghosts to Keep");
+
         Label lowerPac = new Label("Lower Pacman");
         TextField lowerPacmanTF = new TextField();
         lowerPacmanTF.setPromptText("How Many Worse Pacman to Keep");
@@ -80,7 +88,8 @@ public class PacmanSettings extends Pane {
                     GeneticAlgorithm ga = new GeneticAlgorithm(
                             PacmanDataPath, Integer.parseInt(popTF.getText()),
                             Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
-                            Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText())
+                            Integer.parseInt(lowerGhostsTF.getText()), Integer.parseInt(topGhostsTF.getText()),
+                            Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), gc
                     );
 
                     ga.makeGenerations();
@@ -124,7 +133,7 @@ public class PacmanSettings extends Pane {
             fileList.add(listOfFiles[i]);
         }
 
-       /* Collections.sort(fileList, new Comparator<File>() {
+        Collections.sort(fileList, new Comparator<File>() {
             @Override
             public int compare(File s1, File s2) {
                 int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
@@ -132,8 +141,6 @@ public class PacmanSettings extends Pane {
                 else return 0;
             }
         });
-
-        */
 
         for (int i = 1; i < fileList.size() - 1; i++) {
             possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");
@@ -148,14 +155,19 @@ public class PacmanSettings extends Pane {
         TextField genNum = new TextField();
         genNum.setPromptText("Insert Generation Number");
 
-        Label gameType = new Label("Pacman");
+        Button gameType = new Button("Pacman");
+        gameType.setOnAction(ev -> {
+            if (gameType.getText().contains("Pacman")) gameType.setText("Inky");
+            else gameType.setText("Pacman");
+        });
 
         Button showGame = new Button("Show Game");
         showGame.setOnAction(ev -> {
             Thread showing = new Thread(() -> {
                 try {
                     if (vg != null) vg.stop();
-                    InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), true);
+                    boolean pacmanGame = gameType.getText().contains("Pacman");
+                    InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
                     vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 8);
                 } catch (Exception ex) {}
             });
@@ -164,7 +176,7 @@ public class PacmanSettings extends Pane {
 
         BorderPane root = new BorderPane();
 
-        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve, clearDisplay);
+        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topGhosts, topGhostsTF, lowerGhosts, lowerGhostsTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve, clearDisplay);
         viewer.getChildren().addAll(viewLabel, possibleGames, gameNum, genNum, gameType, showGame);
         root.setCenter(gameCanvas);
         root.setLeft(settings);
