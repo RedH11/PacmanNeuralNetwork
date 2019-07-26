@@ -52,21 +52,6 @@ public class Pacman {
         return highestDir;
     }
 
-    private int think(double[] input, int prevDir){
-
-        double[] outputs = brain.calculate(input);
-
-        //double up, down, left, right;
-        int highestDir = 0;
-
-        // Pacman isn't restricted to always be moving like the ghosts are
-        for (int i = highestDir + 1; i < outputs.length; i++) {
-            if (outputs[highestDir] < outputs[i] && i != prevDir) { highestDir = i; }
-        }
-
-        return highestDir;
-    }
-
     // Print direction
     private void outputDecision(int highestDir) {
         if (highestDir == 0) System.out.println("Up output");
