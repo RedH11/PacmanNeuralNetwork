@@ -124,7 +124,7 @@ public class PacmanSettings extends Pane {
             fileList.add(listOfFiles[i]);
         }
 
-        Collections.sort(fileList, new Comparator<File>() {
+       /* Collections.sort(fileList, new Comparator<File>() {
             @Override
             public int compare(File s1, File s2) {
                 int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
@@ -132,6 +132,8 @@ public class PacmanSettings extends Pane {
                 else return 0;
             }
         });
+
+        */
 
         for (int i = 1; i < fileList.size() - 1; i++) {
             possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");

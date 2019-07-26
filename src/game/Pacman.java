@@ -15,7 +15,7 @@ public class Pacman {
     NeuralNetwork brain;
 
     // Neural Network Settings
-    final int INPUTS = 9;
+    final int INPUTS = 8;
     final int HIDDEN_ONE = 30;
     //final int HIDDEN_TWO = 30;
     final int OUTPUTS = 4;
@@ -85,21 +85,36 @@ public class Pacman {
 
     private double[] see(Tile[][] map) {
 
-        int visionDistance = 1;
+      //  int visionDistance = 1;
 
         // The inputs are the size of all of the tiles around packman depending on the vision distance and whether or not he is powered
-        double[] inputs = new double[(int) (Math.pow(2, visionDistance + 2) + 1)];
+        double[] inputs = new double[8];
+        inputs[0] = distWallUp(map);
+        inputs[1] = numPUp(map);
+        inputs[2] = distWallDown(map);
+        inputs[3] = numPDown(map);
+        inputs[4] = distWallLeft(map);
+        inputs[5] = numPLeft(map);
+        inputs[6] = distWallRight(map);
+        inputs[7] = numPRight(map);
+      //  lookAround(map, inputs, visionDistance);
 
-        lookAround(map, inputs, visionDistance);
-
-        if (powered) inputs[inputs.length - 1] = 1;
-        else inputs[inputs.length - 1] = 0;
+     //   if (powered) inputs[inputs.length - 1] = 1;
+       // else inputs[inputs.length - 1] = 0;
 
         return inputs;
     }
 
     private void lookAround(Tile[][] map, double[] inputs,  int visionDist) {
-
+        inputs[0] = distWallUp(map);
+        inputs[1] = numPUp(map);
+        inputs[2] = distWallDown(map);
+        inputs[3] = numPDown(map);
+        inputs[4] = distWallLeft(map);
+        inputs[5] = numPLeft(map);
+        inputs[6] = distWallRight(map);
+        inputs[7] = numPRight(map);
+    /*
         int inputsIndex = 0;
 
         for (int j = -1; j < visionDist + 1; j++) {
@@ -113,6 +128,7 @@ public class Pacman {
                 }
             }
         }
+        */
     }
 
     public void newMove(Tile[][] map, int prevDir) {
@@ -220,6 +236,7 @@ public class Pacman {
     public int getDir() {
         return dir;
     }
+    //up
     public int distWallUp(Tile [][]map){
         int dist = 0;
         for(int i = 0; i < 26; i ++){
@@ -245,10 +262,11 @@ public class Pacman {
 
         return numP;
     }
+    //down
     public int distWallDown(Tile [][]map){
         int dist = 0;
         for(int i = 0; i < 26; i ++){
-            if(map[y-i][x].wall){
+            if(map[i-y][x].wall){
                 dist = i;
                 break;
             }
@@ -260,6 +278,58 @@ public class Pacman {
         for(int i = y; i < 26; i++) {
             if (!map[i][x].wall) {
                 if (map[i][x].dot) {
+                    numP++;
+                }
+            }
+            else{
+                break;
+            }
+        }
+
+        return numP;
+    }
+    //left
+    public int distWallLeft(Tile [][]map){
+        int dist = 0;
+        for(int i = 0; i < 26; i ++){
+            if(map[y][x-i].wall){
+                dist = i;
+                break;
+            }
+        }
+        return dist;
+    }
+    public int numPLeft(Tile[][]map){
+        int numP = 0;
+        for(int i = y; i > 1; i--) {
+            if (!map[y][i].wall) {
+                if (map[y][i].dot) {
+                    numP++;
+                }
+            }
+            else{
+                break;
+            }
+        }
+
+        return numP;
+    }
+    //right
+    public int distWallRight(Tile [][]map){
+        int dist = 0;
+        for(int i = 0; i < 26; i ++){
+            if(map[y][i-x].wall){
+                dist = i;
+                break;
+            }
+        }
+        return dist;
+    }
+    public int numPRight(Tile[][]map){
+        int numP = 0;
+        for(int i = y; i < 26; i++) {
+            if (!map[y][i].wall) {
+                if (map[x][i].dot) {
                     numP++;
                 }
             }
