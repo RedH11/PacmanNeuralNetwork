@@ -239,9 +239,9 @@ public class Pacman {
     //up
     public int distWallUp(Tile [][]map){
         int dist = 0;
-        for(int i = 0; i < 26; i ++){
+        for(int i = 1; i < 26; i ++){
             if(map[y-i][x].wall){
-                dist = i;
+                dist = i-1;
                 break;
             }
         }
@@ -265,9 +265,9 @@ public class Pacman {
     //down
     public int distWallDown(Tile [][]map){
         int dist = 0;
-        for(int i = 0; i < 26; i ++){
-            if(map[i-y][x].wall){
-                dist = i;
+        for(int i = 1; i < 26; i ++){
+            if(map[y+i][x].wall){
+                dist = i-1;
                 break;
             }
         }
@@ -291,9 +291,9 @@ public class Pacman {
     //left
     public int distWallLeft(Tile [][]map){
         int dist = 0;
-        for(int i = 0; i < 26; i ++){
+        for(int i = 1; i < 26; i ++){
             if(map[y][x-i].wall){
-                dist = i;
+                dist = i-1;
                 break;
             }
         }
@@ -301,7 +301,7 @@ public class Pacman {
     }
     public int numPLeft(Tile[][]map){
         int numP = 0;
-        for(int i = y; i > 1; i--) {
+        for(int i = x; i > 1; i--) {
             if (!map[y][i].wall) {
                 if (map[y][i].dot) {
                     numP++;
@@ -317,9 +317,9 @@ public class Pacman {
     //right
     public int distWallRight(Tile [][]map){
         int dist = 0;
-        for(int i = 0; i < 26; i ++){
-            if(map[y][i-x].wall){
-                dist = i;
+        for(int i = 1; i < 26; i ++){
+            if(map[y][x-i].wall){
+                dist = i-1;
                 break;
             }
         }
@@ -327,9 +327,9 @@ public class Pacman {
     }
     public int numPRight(Tile[][]map){
         int numP = 0;
-        for(int i = y; i < 26; i++) {
+        for(int i = x; i < 26; i++) {
             if (!map[y][i].wall) {
-                if (map[x][i].dot) {
+                if (map[y][i].dot) {
                     numP++;
                 }
             }
