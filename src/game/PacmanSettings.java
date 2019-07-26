@@ -2,8 +2,6 @@ package game;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
@@ -11,18 +9,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class PacmanSettings extends Pane {
 
@@ -54,31 +49,31 @@ public class PacmanSettings extends Pane {
         Label evolLabel = new Label("Evolution Settings");
 
         Label popLbl = new Label("Population");
-        TextField popTF = new TextField();
+        TextField popTF = new TextField("400");
         popTF.setPromptText("Population Size");
 
         Label genLbl = new Label("Generations");
-        TextField gensTF = new TextField();
+        TextField gensTF = new TextField("100");
         gensTF.setPromptText("Total Generations");
 
         Label mutateLbl = new Label("Mutation");
-        TextField mutateTF = new TextField();
+        TextField mutateTF = new TextField(".65");
         mutateTF.setPromptText("Mutation Chance");
 
         Label topGhosts = new Label("Top Ghosts");
-        TextField topGhostsTF = new TextField();
+        TextField topGhostsTF = new TextField("0");
         topGhostsTF.setPromptText("How Many Top Ghosts to Keep");
 
         Label lowerGhosts = new Label("Lower Ghosts");
-        TextField lowerGhostsTF = new TextField();
+        TextField lowerGhostsTF = new TextField("0");
         lowerGhostsTF.setPromptText("How Many Worse Ghosts to Keep");
 
         Label lowerPac = new Label("Lower Pacman");
-        TextField lowerPacmanTF = new TextField();
+        TextField lowerPacmanTF = new TextField("6");
         lowerPacmanTF.setPromptText("How Many Worse Pacman to Keep");
 
         Label topPac = new Label ("Top Pacman");
-        TextField topPacmanTF = new TextField();
+        TextField topPacmanTF = new TextField("40");
         topPacmanTF.setPromptText("How Many Top Pacman to Keep");
 
         Button evolve = new Button("Evolve");
@@ -95,7 +90,7 @@ public class PacmanSettings extends Pane {
                     ga.makeGenerations();
 
                 } catch (IOException ex) {
-                    // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
+                    // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
                     Platform.runLater(() -> {
                         invalAlert.setTitle("Error Evolving" + ex);
                         invalAlert.show();
