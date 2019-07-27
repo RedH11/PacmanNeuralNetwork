@@ -6,19 +6,26 @@ public class Pacman {
     Random num = new Random();
     int x;
     int y;
-    private int dir = num.nextInt(4); // Start pacman in a random direction
+    private int []dir = {num.nextInt(4), 0};
+
     int fitness = 0;
     // Accessible traits
     boolean powered = false;
     boolean alive = true;
-
+    int repeat=0;
+    final int ALLOWED_REP = 5;
+    // Start pacman in a random direction
     NeuralNetwork brain;
 
     // Neural Network Settings
     final int INPUTS = 8;
-    final int HIDDEN_ONE = 30;
+    final int HIDDEN_ONE = 20;
+    int prevDir = 0;
     //final int HIDDEN_TWO = 30;
     final int OUTPUTS = 4;
+    int counter = 0;
+    int prevX=0;
+    int prevY=0;
 
     public Pacman() {
         brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
@@ -37,19 +44,22 @@ public class Pacman {
         alive = true;
     }
 
-    private int think(double[] input,InfoStorage is){
+    private int[] think(double[] input,InfoStorage is, Tile [][]map){
 
         double[] outputs = brain.calculate(input);
         is.setNNOutputs(outputs);
         //double up, down, left, right;
         int highestDir = 0;
+        int secondHigh=0;
 
         // Pacman isn't restricted to always be moving like the ghosts are
         for (int i = highestDir + 1; i < outputs.length; i++) {
-            if (outputs[highestDir] < outputs[i]) { highestDir = i; }
+            if (outputs[highestDir] < outputs[i]) {
+                    secondHigh = highestDir;
+                    highestDir = i; }
         }
-
-        return highestDir;
+        int rtDir[]={highestDir, secondHigh};
+        return  rtDir;
     }
 
     // Print direction
@@ -119,27 +129,47 @@ public class Pacman {
     public void newMove(Tile[][] map, InfoStorage is) {
         if (!alive) respawn();
 
-        dir = think(see(map), is);
+         int []dir = think(see(map), is, map);
 
-        int prevX = x;
-        int prevY = y;
+
+        if(counter == 0) {
+           prevX = x;
+           prevY = y;
+           counter = 1;
+        }
+        else if(counter ==1){
+            counter = 0;
+        }
 
         // map[x][y]
 
         // 0: Up / 1: Left / 2: Right / 3: Down
-        switch (dir) {
+        prevDir = dir[0];
+        switch (dir[0]) {
             case 0:
                 if (!wallInWay(0, map)) y--;
+                else moveRep(map, dir[1]);
                 break;
             case 1:
                 if (!wallInWay(1, map)) x--;
+                else moveRep(map, dir[1]);
                 break;
             case 2:
                 if (!wallInWay(2, map)) x++;
+                else moveRep(map, dir[1]);
                 break;
             case 3:
                 if (!wallInWay(3, map)) y++;
+                else moveRep(map, dir[1]);
                 break;
+        }
+        if(repeat == ALLOWED_REP){
+            moveRep(map, prevDir);
+            addFitness(-30);
+            repeat = 0;
+        }
+        if(x==prevX&&y==prevY){
+            repeat++;
         }
 
         // Can't move twice in a turn
@@ -149,17 +179,9 @@ public class Pacman {
         else if (prevY - y == -2) y--;
     }
 
-    public void move(Tile[][] map) {
+    public void moveRep(Tile[][] map, int dir) {
         if (!alive) respawn();
-
-        dir = think(see(map), new InfoStorage(0));
-
-        int prevX = x;
-        int prevY = y;
-
-        // map[x][y]
-
-        // 0: Up / 1: Left / 2: Right / 3: Down
+        prevDir = dir;
         switch (dir) {
             case 0:
                 if (!wallInWay(0, map)) y--;
@@ -219,7 +241,7 @@ public class Pacman {
 
 
     public int getDir() {
-        return dir;
+        return dir[0];
     }
     //up
     public int distWallUp(Tile [][]map){

@@ -34,7 +34,7 @@ public class GeneticAlgorithm {
     private NeuralNetwork parent1;
     private NeuralNetwork parent2;
 
-    private final int MAXMOVES = 400;
+    private int MAXMOVES = 150;
     private boolean lastRoundRobin = false;
 
     private int fitnessX = 10;
@@ -48,7 +48,7 @@ public class GeneticAlgorithm {
 
     // How many of the population are mutated when plateuing
     private int mutateOccurance = 3;
-    private double mutateIncrease = 1;
+    private double mutateIncrease = 2;
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -175,7 +175,7 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        if((topPac.pacman.fitness < 500)&&(generation == 500)){
+        if((topPac.pacman.fitness <300)&&(generation == 500)){
             ValidGen = false;
         }
 
@@ -188,6 +188,7 @@ public class GeneticAlgorithm {
 
             } catch (Exception ex) {
             }
+
 
             if (prevFitness == topPac.pacman.fitness) plateuCounter++;
 
