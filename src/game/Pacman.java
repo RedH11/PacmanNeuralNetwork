@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Pacman {
@@ -26,6 +27,7 @@ public class Pacman {
     int counter = 0;
     int prevX=0;
     int prevY=0;
+    int stuckCheck = 0;
 
     public Pacman() {
         brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
@@ -48,17 +50,36 @@ public class Pacman {
 
         double[] outputs = brain.calculate(input);
         is.setNNOutputs(outputs);
+        ArrayList<Double> directions = new ArrayList<>();
         //double up, down, left, right;
+
         int highestDir = 0;
         int secondHigh=0;
+        int thirdHigh = 0;
+        int lastHigh = 0;
 
         // Pacman isn't restricted to always be moving like the ghosts are
-        for (int i = highestDir + 1; i < outputs.length; i++) {
-            if (outputs[highestDir] < outputs[i]) {
-                    secondHigh = highestDir;
-                    highestDir = i; }
+        for (int i = 0; i < outputs.length; i++) {
+            directions.add(outputs[i]);
         }
-        int rtDir[]={highestDir, secondHigh};
+        directions.sort(Double::compareTo);
+        for(int j = 0; j < outputs.length; j++){
+            if(directions.get(3)==outputs[j]){
+                highestDir = j;
+            }
+            else if(directions.get(2)== outputs[j]){
+                secondHigh = j;
+            }
+            else if(directions.get(1)== outputs[j]){
+                thirdHigh = j;
+            }
+            else if(directions.get(0) == outputs[j]){
+                lastHigh = j;
+            }
+        }
+
+
+        int rtDir[]={highestDir, secondHigh, thirdHigh, lastHigh};
         return  rtDir;
     }
 
@@ -142,34 +163,76 @@ public class Pacman {
         }
 
         // map[x][y]
+        if(stuckCheck == 1 && repeat == ALLOWED_REP){
+            repeat = 0;
+            moveRep(map, prevDir);
 
-        // 0: Up / 1: Left / 2: Right / 3: Down
-        prevDir = dir[0];
-        switch (dir[0]) {
-            case 0:
-                if (!wallInWay(0, map)) y--;
-                else moveRep(map, dir[1]);
-                break;
-            case 1:
-                if (!wallInWay(1, map)) x--;
-                else moveRep(map, dir[1]);
-                break;
-            case 2:
-                if (!wallInWay(2, map)) x++;
-                else moveRep(map, dir[1]);
-                break;
-            case 3:
-                if (!wallInWay(3, map)) y++;
-                else moveRep(map, dir[1]);
-                break;
         }
-        if(repeat == ALLOWED_REP){
+        // 0: Up / 1: Left / 2: Right / 3: Down
+        if(repeat == ALLOWED_REP&&stuckCheck == 0){
             moveRep(map, prevDir);
             addFitness(-30);
-            repeat = 0;
+
+            stuckCheck = 0;
         }
+       else{
+           for(int i = 0; i < dir.length; i ++){
+               if(!wallInWay(dir[i], map)){
+                   prevDir = dir[i];
+                   switch (dir[i]) {
+                       case 0:
+                           if (!wallInWay(0, map)) y--;
+
+                           break;
+                       case 1:
+                           if (!wallInWay(1, map)) x--;
+
+                           break;
+                       case 2:
+                           if (!wallInWay(2, map)) x++;
+
+                           break;
+                       case 3:
+                           if (!wallInWay(3, map)) y++;
+
+                           break;
+                   }
+                   break;
+               }
+           }
+           /*
+            prevDir = dir[0];
+            switch (dir[0]) {
+                case 0:
+                    if (!wallInWay(0, map)) y--;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 1:
+                    if (!wallInWay(1, map)) x--;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 2:
+                    if (!wallInWay(2, map)) x++;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 3:
+                    if (!wallInWay(3, map)) y++;
+                    else moveRep(map, dir[1]);
+                    break;
+            }
+
+            */
+        }
+
+
         if(x==prevX&&y==prevY){
             repeat++;
+        }
+        if(stuckCheck == 0){
+            stuckCheck = 1;
+        }
+        if(stuckCheck == 1){
+            stuckCheck = 0;
         }
 
         // Can't move twice in a turn

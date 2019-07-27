@@ -48,7 +48,7 @@ public class GeneticAlgorithm {
     private double mutationBump = 0;
 
     // How many of the population are mutated when plateuing
-    private int mutateOccurance = 3;
+    private int mutateOccurance = 1;
     private double mutateIncrease = 2;
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
@@ -199,8 +199,8 @@ public class GeneticAlgorithm {
             }
 
             if (isAPlateu && plateuCounter % 10 == 0) {
-                System.out.println("Mutation Increased to"  + mutationChance + mutationBump);
-                mutationBump += 0.5;
+                System.out.println("Mutation Increased to "  + (mutationChance + mutationBump));
+                mutationBump += 0.05;
             }
 
             if (!isAPlateu) prevFitness = topPac.pacman.fitness;
