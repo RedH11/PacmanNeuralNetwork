@@ -45,6 +45,7 @@ public class GeneticAlgorithm {
     private int prevFitness = 0;
     private int plateuLimit = 10;
     private boolean isAPlateu = false;
+    private double mutationBump = 0;
 
     // How many of the population are mutated when plateuing
     private int mutateOccurance = 3;
@@ -197,11 +198,17 @@ public class GeneticAlgorithm {
                 System.out.println("Is a plateau");
             }
 
+            if (isAPlateu && plateuCounter % 10 == 0) {
+                System.out.println("Mutation Increased to"  + mutationChance + mutationBump);
+                mutationBump += 0.5;
+            }
+
             if (!isAPlateu) prevFitness = topPac.pacman.fitness;
             else if (prevFitness != topPac.pacman.fitness) {
                 plateuCounter = 0;
                 System.out.println("Plateau Ended");
                 isAPlateu = false;
+                mutationBump = 0;
             }
 
             recordFitness();
@@ -226,7 +233,7 @@ public class GeneticAlgorithm {
     public void mutate() {
         // Mutate some pacman babies
         for (int i = 0; i < pacmanBabys.size(); i++) {
-            if (isAPlateu && i % mutateOccurance == 0) pacmanBabys.get(i).pacman.brain.mutate(mutationChance + mutateIncrease);
+            if (isAPlateu && i % mutateOccurance == 0) pacmanBabys.get(i).pacman.brain.mutate(mutationChance + mutationBump);
             else pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
         }
     }
