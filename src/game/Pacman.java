@@ -29,6 +29,8 @@ public class Pacman {
     int prevY=0;
     int stuckCheck = 0;
 
+    boolean escapingCorner = false;
+
     public Pacman() {
         brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
         respawn();
@@ -150,8 +152,9 @@ public class Pacman {
     public void newMove(Tile[][] map, InfoStorage is) {
         if (!alive) respawn();
 
-         int []dir = think(see(map), is, map);
+         int[] dir = think(see(map), is, map);
 
+        cornerEscape(dir);
 
         if(counter == 0) {
            prevX = x;
@@ -172,9 +175,9 @@ public class Pacman {
         if(repeat == ALLOWED_REP&&stuckCheck == 0){
             moveRep(map, prevDir);
             addFitness(-30);
-
             stuckCheck = 0;
         }
+
        else{
            for(int i = 0; i < dir.length; i ++){
                if(!wallInWay(dir[i], map)){
@@ -240,6 +243,20 @@ public class Pacman {
         else if (prevX - x == -2) x--;
         else if (prevY - y == 2) y++;
         else if (prevY - y == -2) y--;
+    }
+
+    public void cornerEscape(int[] dir) {
+        // Bottom Right escape
+        if (x == 26 && y == 29) dir[0] = 0;
+        else if (x == 26 && y == 28) dir[0] = 0;
+        else if (x == 26 && y == 27) dir[0] = 0;
+        else if (x == 26 && y == 26) dir[0] = 1;
+        // Bottom Left escape
+        else if (x == 1 && y == 29) dir[0] = 0;
+        else if (x == 1 && y == 28) dir[0] = 0;
+        else if (x == 1 && y == 27) dir[0] = 0;
+        else if (x == 1 && y == 26) dir[0] = 2;
+
     }
 
     public void moveRep(Tile[][] map, int dir) {
