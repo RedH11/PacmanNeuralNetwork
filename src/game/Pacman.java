@@ -13,12 +13,14 @@ public class Pacman {
     // Accessible traits
     boolean powered = false;
     boolean alive = true;
+    int repeat=0;
+    final int ALLOWED_REP = 5;
     // Start pacman in a random direction
     NeuralNetwork brain;
 
     // Neural Network Settings
     final int INPUTS = 8;
-    final int HIDDEN_ONE = 40;
+    final int HIDDEN_ONE = 20;
     int prevDir = 0;
     //final int HIDDEN_TWO = 30;
     final int OUTPUTS = 4;
@@ -148,31 +150,89 @@ public class Pacman {
     public void newMove(Tile[][] map, InfoStorage is) {
         if (!alive) respawn();
 
-        int[] dir = think(see(map), is, map);
+         int []dir = think(see(map), is, map);
 
-        //cornerEscape();
 
-        for(int i = 0; i < dir.length; i ++) {
-            if (!wallInWay(dir[i], map)) {
-                prevDir = dir[i];
-                switch (dir[i]) {
-                    case 0:
-                        if (!wallInWay(0, map)) y--;
+        if(counter == 0) {
+           prevX = x;
+           prevY = y;
+           counter = 1;
+        }
+        else if(counter ==1){
+            counter = 0;
+        }
 
-                        break;
-                    case 1:
-                        if (!wallInWay(1, map)) x--;
+        // map[x][y]
+        if(stuckCheck == 1 && repeat == ALLOWED_REP){
+            repeat = 0;
+            moveRep(map, prevDir);
 
-                        break;
-                    case 2:
-                        if (!wallInWay(2, map)) x++;
+        }
+        // 0: Up / 1: Left / 2: Right / 3: Down
+        if(repeat == ALLOWED_REP&&stuckCheck == 0){
+            moveRep(map, prevDir);
+            addFitness(-30);
 
-                        break;
-                    case 3:
-                        if (!wallInWay(3, map)) y++;
-                        break;
-                }
+            stuckCheck = 0;
+        }
+       else{
+           for(int i = 0; i < dir.length; i ++){
+               if(!wallInWay(dir[i], map)){
+                   prevDir = dir[i];
+                   switch (dir[i]) {
+                       case 0:
+                           if (!wallInWay(0, map)) y--;
+
+                           break;
+                       case 1:
+                           if (!wallInWay(1, map)) x--;
+
+                           break;
+                       case 2:
+                           if (!wallInWay(2, map)) x++;
+
+                           break;
+                       case 3:
+                           if (!wallInWay(3, map)) y++;
+
+                           break;
+                   }
+                   break;
+               }
+           }
+           /*
+            prevDir = dir[0];
+            switch (dir[0]) {
+                case 0:
+                    if (!wallInWay(0, map)) y--;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 1:
+                    if (!wallInWay(1, map)) x--;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 2:
+                    if (!wallInWay(2, map)) x++;
+                    else moveRep(map, dir[1]);
+                    break;
+                case 3:
+                    if (!wallInWay(3, map)) y++;
+                    else moveRep(map, dir[1]);
+                    break;
             }
+
+            */
+        }
+
+
+        if(x==prevX&&y==prevY){
+            repeat++;
+        }
+        if(stuckCheck == 0){
+            stuckCheck = 1;
+        }
+        if(stuckCheck == 1){
+            stuckCheck = 0;
         }
 
         // Can't move twice in a turn
@@ -180,18 +240,6 @@ public class Pacman {
         else if (prevX - x == -2) x--;
         else if (prevY - y == 2) y++;
         else if (prevY - y == -2) y--;
-    }
-
-    public void cornerEscape() {
-        // Bottom corners escape goes up
-        while ((x == 28 || x == 1) && y > 28) {
-            dir[0] = 0;
-        }
-
-        // Top corners escape goes down
-        if ((x == 1 || x == 30) && y < 4) {
-            dir[0] = 3;
-        }
     }
 
     public void moveRep(Tile[][] map, int dir) {

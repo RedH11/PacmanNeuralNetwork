@@ -1,6 +1,7 @@
 package game;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class InfoStorage implements Serializable {
 
