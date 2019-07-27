@@ -41,11 +41,6 @@ public class GeneticAlgorithm {
     private GraphicsContext gc;
     private int coordinateW = 5;
     private boolean ValidGen = true;
-    private int plateuCounter = 0;
-    private int prevFitness = 0;
-    private int plateuLimit = 10;
-    private boolean isAPlateu = false;
-    private double mutationBump = 0;
 
     // How many of the population are mutated when plateuing
     private int mutateOccurance = 1;
@@ -176,7 +171,7 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        if((topPac.pacman.fitness <300)&&(generation == 500)){
+        if((topPac.pacman.fitness < 300)&&(generation == 500)){
             ValidGen = false;
         }
 
@@ -190,26 +185,6 @@ public class GeneticAlgorithm {
             } catch (Exception ex) {
             }
 
-
-            if (prevFitness == topPac.pacman.fitness) plateuCounter++;
-
-            if (plateuCounter == plateuLimit) {
-                isAPlateu = true;
-                System.out.println("Is a plateau");
-            }
-
-            if (isAPlateu && plateuCounter % 10 == 0) {
-                System.out.println("Mutation Increased to "  + (mutationChance + mutationBump));
-                mutationBump += 0.05;
-            }
-
-            if (!isAPlateu) prevFitness = topPac.pacman.fitness;
-            else if (prevFitness != topPac.pacman.fitness) {
-                plateuCounter = 0;
-                System.out.println("Plateau Ended");
-                isAPlateu = false;
-                mutationBump = 0;
-            }
 
             recordFitness();
 
@@ -233,8 +208,7 @@ public class GeneticAlgorithm {
     public void mutate() {
         // Mutate some pacman babies
         for (int i = 0; i < pacmanBabys.size(); i++) {
-            if (isAPlateu && i % mutateOccurance == 0) pacmanBabys.get(i).pacman.brain.mutate(mutationChance + mutationBump);
-            else pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
+            pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
         }
     }
 
