@@ -1,52 +1,41 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.Random;
 
-public class Pacman {
+public class Ghost {
+    NeuralNetwork brain;
     Random num = new Random();
+    boolean alive = true;
+    boolean scared = false;
+    int fitness;
     int x;
     int y;
-    // The cardinal direction that pacman is currently travelling
-    private int dir = 1; // Starts going west
-    // 0: Left Turn, 1: Right Turn
+    private int dir = 1;
+    final int INPUTS= 16;
+    final int HIDDEN_ONE=20;
+    final int HIDDEN_TWO=10;
+    final int OUTPUTS= 2;
     int moveChoice = 0;
-
-    int fitness = 0;
-    boolean powered = false;
-    boolean alive = true;
-    NeuralNetwork brain;
-
-    // Neural Network Settings
-    final int INPUTS = 16;
-    final int HIDDEN_ONE = 40;
-    final int OUTPUTS = 2; // Left, Right, Back are the possible outputs
-    int lives = 3;
-
-
-    public Pacman() {
+    public Ghost(){
         brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
         respawn();
     }
-
-    public Pacman(NeuralNetwork brain) {
+    public Ghost(NeuralNetwork brain){
         this.brain = brain;
         respawn();
     }
-
-    public void respawn() {
+    public void respawn(){
         x = 13;
-        y = 17;
-        powered = false;
+        y= 17;
+        scared = false;
         alive = true;
     }
-
-    private int think(double[] input, InfoStorage is, Tile[][] map){
+    private int think(double[] input){
 
         // Calculate the outputs
         double[] outputs = brain.calculate(input);
         // Save the outputs to the info storage
-        is.setNNOutputs(outputs);
+//        is.setNNOutputs(outputs);
 
         // Find the highest output
         int highestIndex = 0;
@@ -57,22 +46,23 @@ public class Pacman {
         return highestIndex;
     }
 
-    private double[] see(Tile[][] map) {
+    private double[] see(Tile[][] map, int px, int py) {
 
         double[] inputs = new double[INPUTS];
 
         // First 8 inputs are the distance from pacman to the walls around him
         //  as well as how many pellets are between him and the wall in the direction he is looking
         inputs[0] = distWallUp(map);
-        inputs[1] = numPUp(map);
-        inputs[2] = distWallDown(map);
-        inputs[3] = numPDown(map);
-        inputs[4] = distWallLeft(map);
-        inputs[5] = numPLeft(map);
-        inputs[6] = distWallRight(map);
-        inputs[7] = numPRight(map);
+
+        inputs[1] = distWallDown(map);
+
+        inputs[2] = distWallLeft(map);
+
+        inputs[3] = distWallRight(map);
+        inputs[4] = distFromPac(px, py);
+        inputs[5] = angleFromPac(px, py);
         // Gives Pacman a view of each tile around him
-        lookAround(map, inputs);
+       // lookAround(map, inputs);
 
         return inputs;
     }
@@ -95,26 +85,26 @@ public class Pacman {
         }
     }
 
-    public void move(Tile[][] map, InfoStorage is) {
+    public void move(Tile[][] map, InfoStorage is, int px, int py) {
         if (!alive) respawn();
 
-        moveChoice = think(see(map), is, map);
+        moveChoice = think(see(map, px, py));
 
         makeTurn(map);
 
         switch (dir) {
-           case 0:
-               if (!wallInWay(0, map)) y--;
-               break;
-           case 1:
-               if (!wallInWay(1, map)) x--;
-               break;
-           case 2:
-               if (!wallInWay(2, map)) x++;
-               break;
-           case 3:
-               if (!wallInWay(3, map)) y++;
-               break;
+            case 0:
+                if (!wallInWay(0, map)) y--;
+                break;
+            case 1:
+                if (!wallInWay(1, map)) x--;
+                break;
+            case 2:
+                if (!wallInWay(2, map)) x++;
+                break;
+            case 3:
+                if (!wallInWay(3, map)) y++;
+                break;
         }
 
         /*
@@ -129,19 +119,19 @@ public class Pacman {
     private void makeTurn(Tile[][] map) {
         // If travelling west, wants to turn left, and there is no wall below allow it to go down
         if (dir == 1 && moveChoice == 0 && !wallInWay(3, map)) dir = 3;
-        // If travelling west, wants to turn right, and there is no wall above allow it to go up
+            // If travelling west, wants to turn right, and there is no wall above allow it to go up
         else if (dir == 1 && moveChoice == 1 && !wallInWay(0, map)) dir = 0;
-        // If travelling east, wants to turn left, and there is no wall above allow it to go up
+            // If travelling east, wants to turn left, and there is no wall above allow it to go up
         else if (dir == 2 && moveChoice == 0 && !wallInWay(0, map)) dir = 0;
-        // If travelling east, wants to turn right, and there is no wall below allow it to go down
+            // If travelling east, wants to turn right, and there is no wall below allow it to go down
         else if (dir == 2 && moveChoice == 1 && !wallInWay(3, map)) dir = 3;
-        // If travelling south, wants to turn left, and there is no wall to the east allow it to go east
+            // If travelling south, wants to turn left, and there is no wall to the east allow it to go east
         else if (dir == 3 && moveChoice == 0 && !wallInWay(2, map)) dir = 2;
-        // If travelling south, wants to turn right, and there is no wall to it's left allow it to go west
+            // If travelling south, wants to turn right, and there is no wall to it's left allow it to go west
         else if (dir == 3 && moveChoice == 1 && !wallInWay(1, map)) dir = 1;
-        // If travelling up, wants to turn left, and there is no wall to the left allow it to go west
+            // If travelling up, wants to turn left, and there is no wall to the left allow it to go west
         else if (dir == 0 && moveChoice == 0 && !wallInWay(1, map)) dir = 1;
-        // If travelling up, wants to turn right, and there is no wall to the right allow it to go east
+            // If travelling up, wants to turn right, and there is no wall to the right allow it to go east
         else if (dir == 0 && moveChoice == 1 && !wallInWay(2, map)) dir = 2;
     }
 
@@ -291,7 +281,12 @@ public class Pacman {
 
         return numP;
     }
-
+    private double distFromPac(int px, int py){
+        return Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
+    }
+    private double angleFromPac(int px, int py){
+        return Math.asin((y-py)/distFromPac(px, py));
+    }
     // Debugging Methods
     // Print direction
     private void outputDecision(int highestDir) {

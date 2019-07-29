@@ -25,7 +25,7 @@ public class PacmanSettings extends Pane {
     String PacmanDataPath;
     VisualGame vg = null;
 
-    public PacmanSettings(Stage stage, String PacmanDataPath, GraphicsContext gameGC) {
+    public PacmanSettings( String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
 
         // The canvas for the pacman game
@@ -179,6 +179,7 @@ public class PacmanSettings extends Pane {
 
         getChildren().add(root);
     }
+
 
     private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
         ArrayList<InfoStorage> objects = new ArrayList<>();

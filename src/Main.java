@@ -54,7 +54,7 @@ public class Main extends Application {
         PacmanDataPath = PacmanData.getPath();
         if (!PacmanData.exists()) PacmanData.mkdir();
 
-        stage.setScene(new Scene(new PacmanSettings(stage, PacmanDataPath, gameGC), stageW, stageH + 20));
+        stage.setScene(new Scene(new PacmanSettings( PacmanDataPath, gameGC), stageW, stageH + 20));
     }
 
     public void createGameStage() {

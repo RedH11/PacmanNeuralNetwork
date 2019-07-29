@@ -6,6 +6,10 @@ import java.util.ArrayList;
 public class PacmanGame implements Serializable {
 
     Pacman pacman;
+    Ghost ghostOne;
+    Ghost ghostTwo;
+    Ghost ghostThree;
+    Ghost ghostFour;
 
     int numPellets;
     final int MAX_PELLETS = 258;
@@ -68,24 +72,43 @@ public class PacmanGame implements Serializable {
         is = new InfoStorage(MAXMOVES);
         createMap();
         pacman = new Pacman();
+        ghostOne = new Ghost();
+        ghostTwo = new Ghost();
+        ghostThree = new Ghost();
+        ghostFour = new Ghost();
     }
 
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, NeuralNetwork ghostBrain) {
+        this.MAXMOVES = MAXMOVES;
+        this.PacmanDataPath = PacmanDataPath;
+        createMap();
+        is = new InfoStorage(MAXMOVES);
+        pacman = new Pacman(pacmanBrain);
+        ghostOne = new Ghost(ghostBrain);
+        ghostTwo = new Ghost(ghostBrain);
+        ghostThree = new Ghost(ghostBrain);
+        ghostFour = new Ghost(ghostBrain);
+    }
     public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
         createMap();
         is = new InfoStorage(MAXMOVES);
         pacman = new Pacman(pacmanBrain);
+        ghostOne = new Ghost();
+        ghostTwo = new Ghost();
+        ghostThree = new Ghost();
+        ghostFour = new Ghost();
     }
 
 
     public void simulateGame() {
         gameMoves = 0;
-        while ((numPellets < MAX_PELLETS) &&  (gameMoves < MAXMOVES)) {
+        while ((numPellets < MAX_PELLETS) &&  (gameMoves < MAXMOVES)&&pacman.lives > 0) {
             // Add all of the game information
             simulateTurn();
-            is.addAllCoords(pacman.x, pacman.y);
-            is.addAllInfo(pacman.moveChoice, pacman.getDir(), pacman.fitness, pacman.powered);
+            is.addAllCoords(pacman.x, pacman.y, ghostOne.x, ghostOne.y, ghostTwo.x, ghostTwo.y, ghostThree.x, ghostThree.y, ghostFour.x, ghostFour.y);
+            is.addAllInfo(pacman.moveChoice, ghostOne.moveChoice, ghostTwo.moveChoice, ghostThree.moveChoice, ghostFour.moveChoice, pacman.getDir(), pacman.fitness,ghostOne.fitness, ghostTwo.fitness, ghostThree.fitness, ghostFour.fitness, pacman.powered);
             gameMoves++;
         }
     }
@@ -118,6 +141,14 @@ public class PacmanGame implements Serializable {
     private void simulateTurn() {
         pacman.move(map, is);
         checkStates();
+        ghostOne.move(map, is, pacman.x, pacman.y);
+        checkStates();
+        ghostTwo.move(map, is, pacman.x, pacman.y);
+        checkStates();
+        ghostThree.move(map, is, pacman.x, pacman.y);
+        checkStates();
+        ghostThree.move(map, is, pacman.x, pacman.y);
+        checkStates();
     }
 
     private void checkStates() {
@@ -135,10 +166,89 @@ public class PacmanGame implements Serializable {
             map[pacman.y][pacman.x].eaten = true;
             numPellets++;
         }
+        if((pacman.x == ghostOne.x)&&(pacman.y == ghostOne.y)){
+            if(pacman.powered){
+                ghostOne.addFitness(-20);
+                ghostOne.respawn();
+
+            }
+            else{
+                ghostOne.addFitness(100);
+                pacman.addFitness(-100);
+                pacman.lives--;
+                pacman.respawn();
+                ghostOne.respawn();
+                ghostTwo.respawn();
+                ghostThree.respawn();
+                ghostFour.respawn();
+            }
+        }
+        if((pacman.x == ghostTwo.x)&&(pacman.y == ghostTwo.y)){
+            if(pacman.powered){
+                ghostTwo.addFitness(-20);
+                ghostTwo.respawn();
+
+            }
+            else{
+                ghostTwo.addFitness(100);
+                pacman.addFitness(-100);
+                pacman.lives--;
+                pacman.respawn();
+                ghostOne.respawn();
+                ghostTwo.respawn();
+                ghostThree.respawn();
+                ghostFour.respawn();
+            }
+        }
+        if((pacman.x == ghostThree.x)&&(pacman.y == ghostThree.y)){
+            if(pacman.powered){
+                ghostThree.addFitness(-20);
+                ghostThree.respawn();
+
+            }
+            else{
+                ghostThree.addFitness(100);
+                pacman.addFitness(-100);
+                pacman.lives--;
+                pacman.respawn();
+                ghostOne.respawn();
+                ghostTwo.respawn();
+                ghostThree.respawn();
+                ghostFour.respawn();
+            }
+        }
+        if((pacman.x == ghostFour.x)&&(pacman.y == ghostFour.y)){
+            if(pacman.powered){
+                ghostFour.addFitness(-20);
+                ghostFour.respawn();
+
+            }
+            else{
+                ghostFour.addFitness(100);
+                pacman.addFitness(-100);
+                pacman.lives--;
+                pacman.respawn();
+                ghostOne.respawn();
+                ghostTwo.respawn();
+                ghostThree.respawn();
+                ghostFour.respawn();
+            }
+        }
     }
 
     public InfoStorage getIs() {
         return is;
+    }
+    public Ghost getBestGhost(){
+        Ghost[]temp = {ghostOne, ghostTwo, ghostThree, ghostFour};
+        for(int i = 0; i < 3; i++){
+            if(temp[i+1].fitness < temp[i].fitness){
+                Ghost flip = temp[i];
+                temp[i] = temp[i+1];
+                temp[i+1] =flip;
+            }
+        }
+        return temp[3];
     }
 
     public static void saveInformation(InfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {

@@ -11,8 +11,8 @@ class PacmanFitnessComparator implements Comparator<PacmanGame> {
                   0 when o1 == o2
         */
 
-        double xAvg = x.pacman.fitness;
-        double yAvg = y.pacman.fitness;
+        double xAvg = x.getBestGhost().fitness;
+        double yAvg = y.getBestGhost().fitness;
 
         if (xAvg < yAvg) return -1;
         else if (xAvg > yAvg) return 1;
