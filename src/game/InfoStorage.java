@@ -1,7 +1,6 @@
 package game;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class InfoStorage implements Serializable {
 
@@ -14,7 +13,8 @@ public class InfoStorage implements Serializable {
      */
     private int MAXMOVES;
     private int[][] pacCoords;
-    private int[] pDirs;
+    int[] pDirs;
+    private int[] choices;
     private int[] pFits;
     private boolean[] pPowered;
 
@@ -35,6 +35,7 @@ public class InfoStorage implements Serializable {
         this.MAXMOVES = MAXMOVES;
         pacCoords = new int[MAXMOVES][2];
         pDirs = new int[MAXMOVES];
+        choices = new int[MAXMOVES];
         pFits = new int[MAXMOVES];
         pPowered = new boolean[MAXMOVES];
         outputs = new double[MAXMOVES][4];
@@ -44,20 +45,18 @@ public class InfoStorage implements Serializable {
         weights = new double[weightsLength];
         biases = new double[biasLength];
     }
-
     
     public void addAllCoords(int px, int py) {
         pacCoords[totalCoords][0] = px;
         pacCoords[totalCoords][1] = py;
-
         totalCoords++;
     }
 
-    public void addAllInfo(int dir, int fit, boolean powered) {
+    public void addAllInfo(int choice, int dir, int fit, boolean powered) {
+        choices[totalInfo] = choice;
         pDirs[totalInfo] = dir;
         pFits[totalInfo] = fit;
         pPowered[totalInfo] = powered;
-
         totalInfo++;
     }
 
@@ -93,8 +92,6 @@ public class InfoStorage implements Serializable {
         return outputs;
     }
 
-
-
     public int[] getGhostTopTenFitnesses() {
         return ghostTopTenFitnesses;
     }
@@ -103,15 +100,11 @@ public class InfoStorage implements Serializable {
         return pacTopTenFitnesses;
     }
 
-    public int[] getpDirs() {
-        return pDirs;
-    }
+    public int[] getChoices() { return choices; }
 
     public int[] getpFits() {
         return pFits;
     }
-
-
 
     public int[][] getPacCoords() {
         return pacCoords;
@@ -125,5 +118,7 @@ public class InfoStorage implements Serializable {
         return MAXMOVES;
     }
 
-
+    public int[] getpDirs() {
+        return pDirs;
+    }
 }

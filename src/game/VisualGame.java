@@ -1,12 +1,7 @@
 package game;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class VisualGame {
 
@@ -17,6 +12,7 @@ public class VisualGame {
 
     int MAXMOVES;
     int[][] pCoords;
+    int[] choices;
     int[] pDirs;
     int[] pFits;
     boolean pPowered[];
@@ -61,6 +57,7 @@ public class VisualGame {
     public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
+        this.choices = is.getChoices();
         this.pDirs = is.getpDirs();
         this.pFits = is.getpFits();
         this.pPowered = is.getpPowered();
@@ -80,6 +77,9 @@ public class VisualGame {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException ex) {}
+
+        gc.setFill(Color.BLACK);
+        gc.clearRect(0, 0, 1000, 1000);
     }
 
     public void stop() {
@@ -158,7 +158,7 @@ public class VisualGame {
         int pacX = pC * rectW + startX  + 9;
         int pacY = pR * rectW + startY + 9;
 
-        drawArrows(pacX, pacY, moves, pDirs, arrowLength);
+        drawArrows(pacX, pacY, moves, arrowLength);
 
         if (pPowered[moves]) {
             gc.setFill(Color.LIGHTGOLDENRODYELLOW);
@@ -177,7 +177,7 @@ public class VisualGame {
         }
     }
 
-    public void drawArrows (int x, int y, int moves, int[] dirs, int length) {
+    public void drawArrows (int x, int y, int moves, int length) {
         gc.setStroke(Color.GRAY);
         // Up arrow
         gc.strokeLine(x, y, x, y - length);
@@ -189,10 +189,14 @@ public class VisualGame {
         gc.strokeLine(x, y, x, y + length);
 
         gc.setStroke(Color.RED);
-        // Set the direction arrow to be red while the others are grey
-        if (dirs[moves] == 0) gc.strokeLine(x, y, x, y - length);
-        else if (dirs[moves] == 1) gc.strokeLine(x, y, x - length, y);
-        else if (dirs[moves] == 2) gc.strokeLine(x, y, x + length, y);
-        else if (dirs[moves] == 3) gc.strokeLine(x, y, x, y + length);
+        // Set the direction arrow to be red while the others are grey (oriented for direction travelling)
+        if (pDirs[moves] == 0 && choices[moves] == 0) gc.strokeLine(x, y, x + length, y);
+        else if (pDirs[moves] == 0 && choices[moves] == 1) gc.strokeLine(x, y, x - length, y);
+        else if (pDirs[moves] == 1 && choices[moves] == 0) gc.strokeLine(x, y, x, y - length);
+        else if (pDirs[moves] == 1 && choices[moves] == 1) gc.strokeLine(x, y, x, y + length);
+        else if (pDirs[moves] == 2 && choices[moves] == 0) gc.strokeLine(x, y, x, y - length);
+        else if (pDirs[moves] == 2 && choices[moves] == 1) gc.strokeLine(x, y, x, y + length);
+        else if (pDirs[moves] == 3 && choices[moves] == 0) gc.strokeLine(x, y, x - length, y);
+        else if (pDirs[moves] == 3 && choices[moves] == 1) gc.strokeLine(x, y, x + length, y);
     }
 }

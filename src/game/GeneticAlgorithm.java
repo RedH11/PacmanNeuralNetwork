@@ -25,7 +25,6 @@ public class GeneticAlgorithm {
 
     Random random = new Random();
     String PacmanDataPath;
-    int round = 0;
 
     private FileWriter pacWriter;
     private String pacFitnessStr;
@@ -34,22 +33,13 @@ public class GeneticAlgorithm {
     private NeuralNetwork parent1;
     private NeuralNetwork parent2;
 
-    private int MAXMOVES = 150;
-    private boolean lastRoundRobin = false;
-
+    // Settings for graphing the fitness
     private int fitnessX = 10;
     private GraphicsContext gc;
     private int coordinateW = 5;
-    private boolean ValidGen = true;
-    private int plateuCounter = 0;
-    private int prevFitness = 0;
-    private int plateuLimit = 10;
-    private boolean isAPlateu = false;
-    private double mutationBump = 0;
 
-    // How many of the population are mutated when plateuing
-    private int mutateOccurance = 1;
-    private double mutateIncrease = 2;
+    private int MAXMOVES = 200;
+
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -118,23 +108,10 @@ public class GeneticAlgorithm {
         while (generation < totalGens) {
             test();
             sort();
-            if(ValidGen) {
-                mutate();
-                clear();
-                breedPopulation();
-                generation++;
-                lastRoundRobin = false;
-
-            }
-            else{
-                ValidGen = true;
-                pacmanBabys.clear();
-                gamePopulation.clear();
-                generation = 0;
-
-               makePopulation();
-
-            }
+            mutate();
+            clear();
+            breedPopulation();
+            generation++;
         }
 
         // Write all fitness records to file
@@ -159,7 +136,7 @@ public class GeneticAlgorithm {
     // Test inkys and pacmans in games
     public void test() {
         for (PacmanGame game : gamePopulation) {
-            game.simulateGame(round);
+            game.simulateGame();
         }
     }
 
@@ -176,68 +153,44 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        if((topPac.pacman.fitness <300)&&(generation == 500)){
-            ValidGen = false;
+
+        // Save the top Pacman's weights and biases
+        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+
+        try {
+            // Make file records of the best Pacman/Inky
+            pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
+
+        } catch (Exception ex) {}
+
+
+        recordFitness();
+
+        // Remove non top pacman
+        while (pacmanBabys.size() > topPacman) {
+            pacmanBabys.remove(0);
         }
 
-        if(ValidGen) {
-            topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+        // Get a set number of lower scoring ghosts/pacmen to be kept alive
+        ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
 
-            try {
-                // Make file records of the best Pacman/Inky
-                pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
-
-            } catch (Exception ex) {
-            }
-
-
-            if (prevFitness == topPac.pacman.fitness) plateuCounter++;
-
-            if (plateuCounter == plateuLimit) {
-                isAPlateu = true;
-                System.out.println("Is a plateau");
-            }
-
-            if (isAPlateu && plateuCounter % 10 == 0) {
-                System.out.println("Mutation Increased to "  + (mutationChance + mutationBump));
-                mutationBump += 0.05;
-            }
-
-            if (!isAPlateu) prevFitness = topPac.pacman.fitness;
-            else if (prevFitness != topPac.pacman.fitness) {
-                plateuCounter = 0;
-                System.out.println("Plateau Ended");
-                isAPlateu = false;
-                mutationBump = 0;
-            }
-
-            recordFitness();
-
-            // Remove non top pacman
-            while (pacmanBabys.size() > topPacman) {
-                pacmanBabys.remove(0);
-            }
-
-            // Get a set number of lower scoring ghosts/pacmen to be kept alive
-            ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
-
-            for (int i = 0; i < randPacmen.size(); i++) {
-                pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
-            }
-
-            // Sort inkys and pacmen
-            pacmanBabys.sort(new PacmanFitnessComparator());
+        for (int i = 0; i < randPacmen.size(); i++) {
+            pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
         }
+
+        // Sort inkys and pacmen
+        pacmanBabys.sort(new PacmanFitnessComparator());
+
     }
 
     public void mutate() {
         // Mutate some pacman babies
         for (int i = 0; i < pacmanBabys.size(); i++) {
-            if (isAPlateu && i % mutateOccurance == 0) pacmanBabys.get(i).pacman.brain.mutate(mutationChance + mutationBump);
-            else pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
+            pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
         }
     }
 
+    // The lighter the color the lower the mutation rate
     private void recordFitness() {
 
         if (mutationChance <= 0.5) gc.setFill(Color.rgb(204, 229, 255));
@@ -247,7 +200,7 @@ public class GeneticAlgorithm {
         else if (mutationChance <= 0.9) gc.setFill(Color.rgb(0, 128, 255));
         else gc.setFill(Color.rgb(0, 102, 204));
 
-        System.out.println("Gen " + generation + " " + pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness);
+        if (generation % 10 == 0) System.out.println("Gen " + generation + " " + pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness);
         if (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness == 0) {
             gc.fillOval(fitnessX, 620, coordinateW, coordinateW);
 

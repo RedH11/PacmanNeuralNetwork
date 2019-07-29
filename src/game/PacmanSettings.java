@@ -163,7 +163,7 @@ public class PacmanSettings extends Pane {
                     if (vg != null) vg.stop();
                     boolean pacmanGame = gameType.getText().contains("Pacman");
                     InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 8);
+                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 5);
                 } catch (Exception ex) {}
             });
             showing.start();
