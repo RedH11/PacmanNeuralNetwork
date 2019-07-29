@@ -9,7 +9,6 @@ import java.util.*;
 
 public class GeneticAlgorithm {
 
-    ArrayList<Pacman> pacmen = new ArrayList<>();
     ArrayList<PacmanGame> pacmanBabys = new ArrayList<>();
     ArrayList<PacmanGame> gamePopulation = new ArrayList<>();
     ArrayList<NeuralNetwork> pacmanBrains = new ArrayList<>();
@@ -27,7 +26,7 @@ public class GeneticAlgorithm {
     String PacmanDataPath;
 
     private FileWriter pacWriter;
-    private String pacFitnessStr;
+    private String pacFitnessStr = "";
     private OutputStream opsPac;
     private ObjectOutputStream oosPac = null;
     private NeuralNetwork parent1;
@@ -39,7 +38,6 @@ public class GeneticAlgorithm {
     private int coordinateW = 5;
 
     private int MAXMOVES = 200;
-
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -59,6 +57,7 @@ public class GeneticAlgorithm {
         makePopulation();
     }
 
+    // Creates the file and filewriter class to save the fitness of pacman over generations
     private void createFitnessWriter(int popSize) throws IOException {
         // Gets amount of files int he folder already
         File folder = new File(PacmanDataPath);
@@ -84,7 +83,7 @@ public class GeneticAlgorithm {
 
         // Write in test data to file
         try {
-            pacWriter.write("Pacman - Popsize: " + popSize + "\nMutationChance: " + mutationChance + "\nTopGhosts: " + topPacman + "\nLowerGhosts: " + lowerPacman + "\nNNSizes ");
+            pacWriter.write("Popsize: " + popSize + "\nMutationChance: " + mutationChance + "\nTopGhosts: " + topPacman + "\nLowerGhosts: " + lowerPacman + "\nNNSizes ");
 
             // Write in neural network proportions
             pacWriter.write(new Pacman().INPUTS + " ");
@@ -121,14 +120,9 @@ public class GeneticAlgorithm {
         oosPac.close();
     }
 
-    private void writeAllFitnesses() throws IOException {
-        pacWriter.write(pacFitnessStr);
-    }
-
-    // Make a fresh population of Inkys and Pacmans
+    // Make a fresh population of Pacmans
     public void makePopulation() {
         for (int i = 0; i < populationSize; i++) {
-            // Make a fresh new population
             gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES));
         }
     }
@@ -141,58 +135,99 @@ public class GeneticAlgorithm {
     }
 
     public void sort() {
-
         pacmanBabys.clear();
 
-        // Add all inkies and pacmen to the baby arrays
+        // Add all Pacman to the baby array
         for (int i = 0; i < populationSize; i++) {
             pacmanBabys.add(gamePopulation.get(i));
         }
 
-        // Sort the pacman babies by their fitnesses
+        // Sort the array by fitness (lowest -> highest)
         pacmanBabys.sort(new PacmanFitnessComparator());
 
-        PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-
         // Save the top Pacman's weights and biases
-        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+        //PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
+        //topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
         try {
-            // Make file records of the best Pacman/Inky
-            pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
+            // Save file records of the best Pacman/Inky
+            //pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
 
         } catch (Exception ex) {}
 
-
         recordFitness();
 
-        // Remove non top pacman
+        // Remove non-top pacman
         while (pacmanBabys.size() > topPacman) {
             pacmanBabys.remove(0);
         }
 
-        // Get a set number of lower scoring ghosts/pacmen to be kept alive
+        // Get random lower pacman indexes to allow to live on to the next generation
         ArrayList<Integer> randPacmen = NetworkTools.randomValues(0, populationSize - 1 - topPacman, lowerPacman);
 
+        // Add the random lower pacman to the baby array
         for (int i = 0; i < randPacmen.size(); i++) {
             pacmanBabys.add(gamePopulation.get(randPacmen.get(i)));
         }
 
-        // Sort inkys and pacmen
         pacmanBabys.sort(new PacmanFitnessComparator());
-
     }
 
     public void mutate() {
-        // Mutate some pacman babies
+        // Mutate some pacman babies (change a weight by a random double between -1 and 1)
         for (int i = 0; i < pacmanBabys.size(); i++) {
             pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
         }
     }
 
-    // The lighter the color the lower the mutation rate
-    private void recordFitness() {
+    // Create parents from breeding (crossing over the weights and biases of) the Pacman babies (it is baby incest but....I guess it's for science?)
+    public void breedPopulation() {
+        pacmanBrains.clear();
 
+        // Add in top pacman brains
+        for (int i = 0; i < pacmanBabys.size(); i++) {
+            pacmanBrains.add(pacmanBabys.get(i).pacman.brain);
+        }
+
+        // Choose random parents to breed to make new pacman
+        while (pacmanBrains.size() < populationSize) {
+            parent1 = getRandParent();
+            parent2 = getRandParent();
+            // Make sure the parents aren't the same
+            while (parent2 == parent1) parent2 = getRandParent();
+
+            if (parent1 != null && parent2 != null) pacmanBrains.add(parent1.makeChild(parent2));
+        }
+
+        // Repopulate game population with new inky and pacman brains starting with 0 fitness
+        for (int i = 0; i < populationSize; i++) {
+            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, pacmanBrains.get(i)));
+        }
+    }
+
+    // Gets a random parent based on the probability array (higher chance of the highest fitness parents being chosen)
+    public NeuralNetwork getRandParent() {
+        double randParent = 0;
+        NeuralNetwork parent = null;
+        for (int i = 0; i < probArr.size(); i++) {
+            randParent = random.nextDouble() * 100;
+            if (randParent < probArr.get(i)) {
+                parent = pacmanBabys.get(pacmanBabys.size() - 1 - i).pacman.brain;
+                break;
+            }
+        }
+        return parent;
+    }
+
+    private void writeAllFitnesses() throws IOException {
+        pacWriter.write(pacFitnessStr);
+    }
+
+    public void clear() { gamePopulation.clear(); }
+
+    // Records the fitness of the pacman to a file and prints it out in the console (every 10 generations)
+    private void recordFitness() {
+        // Lighter color is a lower mutation rate on the display
         if (mutationChance <= 0.5) gc.setFill(Color.rgb(204, 229, 255));
         else if (mutationChance <= 0.6) gc.setFill(Color.rgb(153, 204, 255));
         else if (mutationChance <= 0.7) gc.setFill(Color.rgb(102, 178, 255));
@@ -208,41 +243,16 @@ public class GeneticAlgorithm {
             gc.fillOval(fitnessX, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2), coordinateW, coordinateW);
         }
 
+        // The x coordinate of the points that are being graphed to show fitness progression
         fitnessX += 8;
 
         String pacmanFitness = Double.toString(Math.round(pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness));
-        if (pacmanFitness != null) pacFitnessStr += (pacmanFitness + "\n");
+        pacFitnessStr += (pacmanFitness + "\n");
     }
 
-    public void clear() {
-        gamePopulation.clear();
-    }
-
-    public void breedPopulation() {
-
-        // Pacman Breeding
-        pacmanBrains.clear();
-
-        // Add in top pacman brains
-        for (int i = 0; i < pacmanBabys.size(); i++) {
-            pacmanBrains.add(pacmanBabys.get(i).pacman.brain);
-        }
-
-        // Choose random parents to breed to make new pacmen
-        while (pacmanBrains.size() < populationSize) {
-            parent1 = getRandParent();
-            parent2 = getRandParent();
-
-            if (parent1 != null && parent2 != null) pacmanBrains.add(parent1.makeChild(parent2));
-        }
-
-        // Repopulated game population with new inky and pacman brains starting with 0 fitness
-        for (int i = 0; i < populationSize; i++) {
-            gamePopulation.add(new PacmanGame(PacmanDataPath, MAXMOVES, pacmanBrains.get(i)));
-        }
-
-    }
-
+    // Calculates the r value (rate) of the factor that the probability distribution should be decreased in a geometric sequence
+    //  this is how we calculate the probability that the first, second, ... nth parent should be chosen to be bred with a bias towards
+    //      the highest fitness parent
     public double calcRate(int n, double u1) {
         double SumN = 0;
         double r = .01; // default to 2
@@ -272,6 +282,8 @@ public class GeneticAlgorithm {
 
         return r;
     }
+
+    // Fills the probability array based on the rate calculated
     public void fillProbArr(double r, int n, double u1) {
         double tsum = 0;
         // calculate the values for the geomectric sequence
@@ -282,16 +294,5 @@ public class GeneticAlgorithm {
         }
     }
 
-    public NeuralNetwork getRandParent() {
-        double randParent = 0;
-        NeuralNetwork parent = null;
-        for (int i = 0; i < probArr.size(); i++) {
-            randParent = random.nextDouble() * 100;
-            if (randParent < probArr.get(i)) {
-                parent = pacmanBabys.get(pacmanBabys.size() - 1 - i).pacman.brain;
-                break;
-            }
-        }
-        return parent;
-    }
+
 }

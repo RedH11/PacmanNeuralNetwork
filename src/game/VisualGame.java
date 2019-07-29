@@ -15,12 +15,12 @@ public class VisualGame {
     int[] choices;
     int[] pDirs;
     int[] pFits;
-    boolean pPowered[];
     GraphicsContext gc;
     int moves = 0;
 
     private boolean complete = false;
 
+    // The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -60,9 +60,7 @@ public class VisualGame {
         this.choices = is.getChoices();
         this.pDirs = is.getpDirs();
         this.pFits = is.getpFits();
-        this.pPowered = is.getpPowered();
         this.generation = generation;
-
         this.gc = gameGC;
 
         try {
@@ -155,18 +153,20 @@ public class VisualGame {
 
         // Draw pacman and inky and arrows showing their direction
 
-        int pacX = pC * rectW + startX  + 9;
-        int pacY = pR * rectW + startY + 9;
+        //int pacX = pC * rectW + startX  + 9;
+        //int pacY = pR * rectW + startY + 9;
 
-        drawArrows(pacX, pacY, moves, arrowLength);
+        //drawArrows(pacX, pacY, moves, arrowLength);
 
-        if (pPowered[moves]) {
-            gc.setFill(Color.LIGHTGOLDENRODYELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+        if (choices[moves] == 0) {
+            System.out.println("Left");
         } else {
-            gc.setFill(Color.YELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+            System.out.println("Right");
         }
+
+        gc.setFill(Color.YELLOW);
+        gc.fillOval(pC * rectW + startX, pR * rectW + startY, 18, 18);
+
 
         // Show eaten pellets
         if (moves > 0) {

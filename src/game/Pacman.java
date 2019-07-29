@@ -19,12 +19,13 @@ public class Pacman {
 
     // Neural Network Settings
     final int INPUTS = 16;
-    final int HIDDEN_ONE = 40;
+    final int HIDDEN_ONE = 50;
+    final int HIDDEN_TWO = 50;
     final int OUTPUTS = 2; // Left, Right, Back are the possible outputs
 
 
     public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
+        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS);
         respawn();
     }
 
@@ -46,7 +47,8 @@ public class Pacman {
         double[] outputs = brain.calculate(input);
         // Save the outputs to the info storage
         is.setNNOutputs(outputs);
-
+        // Saves the weights and biases to the info storage
+        is.setNNInfo(brain.getArrayWeights(), brain.getArrayBias());
         // Find the highest output
         int highestIndex = 0;
         for (int i = 1; i < outputs.length; i++) {

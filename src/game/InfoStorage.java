@@ -16,8 +16,6 @@ public class InfoStorage implements Serializable {
     int[] pDirs;
     private int[] choices;
     private int[] pFits;
-    private boolean[] pPowered;
-
     private double[] weights;
     private double[] biases;
     private double[][] outputs;
@@ -37,7 +35,6 @@ public class InfoStorage implements Serializable {
         pDirs = new int[MAXMOVES];
         choices = new int[MAXMOVES];
         pFits = new int[MAXMOVES];
-        pPowered = new boolean[MAXMOVES];
         outputs = new double[MAXMOVES][4];
     }
 
@@ -52,11 +49,10 @@ public class InfoStorage implements Serializable {
         totalCoords++;
     }
 
-    public void addAllInfo(int choice, int dir, int fit, boolean powered) {
+    public void addAllInfo(int choice, int dir, int fit) {
         choices[totalInfo] = choice;
         pDirs[totalInfo] = dir;
         pFits[totalInfo] = fit;
-        pPowered[totalInfo] = powered;
         totalInfo++;
     }
 
@@ -80,9 +76,6 @@ public class InfoStorage implements Serializable {
         return totalCoords;
     }
 
-    public boolean[] getpPowered() {
-        return pPowered;
-    }
 
     public double[] getBiases() {
         return biases;

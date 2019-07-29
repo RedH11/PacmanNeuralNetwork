@@ -8,13 +8,12 @@ public class PacmanGame implements Serializable {
     Pacman pacman;
 
     int numPellets;
-    final int MAX_PELLETS = 258;
+    final int MAX_PELLETS = 242;
 
-    // 28 rows, 31 columns
+    // 2D Array that stores the map data
     private Tile[][] map = new Tile[31][28];
 
-    // 0: Pellet / 1: Wall / 6: Empty / 8: Power Pellet
-
+    // The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
     final private int[][] tilesRepresentation = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -53,15 +52,17 @@ public class PacmanGame implements Serializable {
     private int pelletScore = 1;
     private int poweredScore = 1;
 
-    private int poweredMoves = 20;
-
     private int gameMoves = 0;
-    private int scaredStart = 0;
     private int MAXMOVES;
 
     private InfoStorage is;
     static String PacmanDataPath;
 
+    private int repeatMoves = 0;
+    private int prevX = 0;
+    private int prevY = 0;
+
+    // Initializes game with a pacman containing a brain made of random weights and biases
     public PacmanGame(String PacmanDataPath, int MAXMOVES) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
@@ -70,6 +71,7 @@ public class PacmanGame implements Serializable {
         pacman = new Pacman();
     }
 
+    // Initializes game with a pacman containing a brain that is passed in
     public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
@@ -78,20 +80,19 @@ public class PacmanGame implements Serializable {
         pacman = new Pacman(pacmanBrain);
     }
 
-
+    // Simulates a game of pacman while saving the coordinates and choices of the pacman neural network
     public void simulateGame() {
         gameMoves = 0;
         while ((numPellets < MAX_PELLETS) &&  (gameMoves < MAXMOVES)) {
             // Add all of the game information
             simulateTurn();
             is.addAllCoords(pacman.x, pacman.y);
-            is.addAllInfo(pacman.moveChoice, pacman.getDir(), pacman.fitness, pacman.powered);
+            is.addAllInfo(pacman.moveChoice, pacman.getDir(), pacman.fitness);
             gameMoves++;
         }
     }
 
-
-
+    // Initializes the map array based on the game tiles
     private void createMap() {
         // Initialize tiles
         for (int r = 0; r < 31; r++) {
@@ -116,20 +117,23 @@ public class PacmanGame implements Serializable {
     }
 
     private void simulateTurn() {
+        prevX = pacman.x;
+        prevY = pacman.y;
         pacman.move(map, is);
         checkStates();
+
+        // Check if pacman is stuck
+        if (prevX == pacman.x && prevY == pacman.y) repeatMoves++;
+        // If he is stuck for more than 15 moves end the game
+        if (repeatMoves >= 15) gameMoves = MAXMOVES;
     }
 
+    // Checks whether or not pacman has eaten a pellet/power pellet
     private void checkStates() {
-
-        if (gameMoves - scaredStart == poweredMoves) { pacman.powered = false; }
-
         // Pacman on a pellet
         if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
-            pacman.powered = true;
             pacman.addFitness(poweredScore);
             map[pacman.y][pacman.x].eaten = true;
-            scaredStart = gameMoves;
         } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
             pacman.addFitness(pelletScore);
             map[pacman.y][pacman.x].eaten = true;
@@ -141,6 +145,7 @@ public class PacmanGame implements Serializable {
         return is;
     }
 
+    // Saves the information from the InfoStorage to a file
     public static void saveInformation(InfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {
 
         try {
@@ -177,6 +182,7 @@ public class PacmanGame implements Serializable {
         return objects;
     }
 
+    // Debugging feature that prints out the map in the console
     private void printMap() {
         for (int y = 0; y < 31; y++) {
             for (int x = 0; x < 28; x++) {

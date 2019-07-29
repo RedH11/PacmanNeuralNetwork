@@ -36,15 +36,11 @@ public class PacmanSettings extends Pane {
         gc.setFill(Color.rgb(211, 211,211));
         gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
+        // Stores the pacman evolution settings
         VBox settings = new VBox();
         settings.setPadding(new Insets(5, 10, 5, 10));
         settings.setSpacing(10);
         settings.setPrefWidth(250);
-        VBox viewer = new VBox();
-        viewer.setPadding(new Insets(5, 10, 5, 10));
-        viewer.setSpacing(10);
-        viewer.setPrefWidth(250);
-        // SETTINGS
 
         Label evolLabel = new Label("Evolution Settings");
 
@@ -79,22 +75,26 @@ public class PacmanSettings extends Pane {
         Button evolve = new Button("Evolve");
         evolve.setOnAction(ev -> {
             Thread tests = new Thread(() -> {
-                try {
-                    GeneticAlgorithm ga = new GeneticAlgorithm(
-                            PacmanDataPath, Integer.parseInt(popTF.getText()),
-                            Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
-                            Integer.parseInt(lowerGhostsTF.getText()), Integer.parseInt(topGhostsTF.getText()),
-                            Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), gc
-                    );
+                int counter = 0;
+                while (counter < 20) {
+                    try {
+                        GeneticAlgorithm ga = new GeneticAlgorithm(
+                                PacmanDataPath, Integer.parseInt(popTF.getText()),
+                                Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
+                                Integer.parseInt(lowerGhostsTF.getText()), Integer.parseInt(topGhostsTF.getText()),
+                                Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), gc
+                        );
 
-                    ga.makeGenerations();
+                        ga.makeGenerations();
 
-                } catch (IOException ex) {
-                    // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
-                    Platform.runLater(() -> {
-                        invalAlert.setTitle("Error Evolving" + ex);
-                        invalAlert.show();
-                    });
+                    } catch (IOException ex) {
+                        // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
+                        Platform.runLater(() -> {
+                            invalAlert.setTitle("Error Evolving" + ex);
+                            invalAlert.show();
+                        });
+                    }
+                    counter++;
                 }
             });
 
@@ -111,8 +111,13 @@ public class PacmanSettings extends Pane {
             gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
         });
 
-        // VIEWER
-        Label viewLabel = new Label("Evolution Settings");
+        // Viewer Settings Creator
+        VBox viewer = new VBox();
+        viewer.setPadding(new Insets(5, 10, 5, 10));
+        viewer.setSpacing(10);
+        viewer.setPrefWidth(250);
+
+        Label viewLabel = new Label("Viewer Settings");
 
         TextField gameNum = new TextField();
         gameNum.setPromptText("Insert Game Number");
@@ -163,7 +168,7 @@ public class PacmanSettings extends Pane {
                     if (vg != null) vg.stop();
                     boolean pacmanGame = gameType.getText().contains("Pacman");
                     InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 5);
+                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 1);
                 } catch (Exception ex) {}
             });
             showing.start();
