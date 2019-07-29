@@ -107,9 +107,9 @@ public class GeneticAlgorithm {
         while (generation < totalGens) {
             test();
             sort();
-            mutate();
             clear();
             breedPopulation();
+            mutate();
             generation++;
         }
 
@@ -176,7 +176,7 @@ public class GeneticAlgorithm {
     public void mutate() {
         // Mutate some pacman babies (change a weight by a random double between -1 and 1)
         for (int i = 0; i < pacmanBabys.size(); i++) {
-            pacmanBabys.get(i).pacman.brain.mutate(mutationChance);
+            gamePopulation.get(i).pacman.brain.mutate(mutationChance);
         }
     }
 
