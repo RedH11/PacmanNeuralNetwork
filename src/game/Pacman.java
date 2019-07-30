@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Pacman {
@@ -18,13 +19,13 @@ public class Pacman {
 
     // Neural Network Settings
     final int INPUTS = 16;
-    final int HIDDEN_ONE = 40;
+    final int HIDDEN_ONE = 50;
     final int HIDDEN_TWO = 50;
     final int OUTPUTS = 2; // Left, Right, Back are the possible outputs
 
 
     public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE,  OUTPUTS);
+        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS);
         respawn();
     }
 
