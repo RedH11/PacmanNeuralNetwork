@@ -66,15 +66,16 @@ public class GeneticAlgorithm {
         // Make file to hold the Game Data
         int fileNum = listOfFiles.length;
         new File(PacmanDataPath + "/Game" + fileNum).mkdir();
-        this.PacmanDataPath += "/Game" + fileNum;
+
+      //  this.PacmanDataPath += "/Game" + fileNum;
 
         // Make new file to store the generation game tracker
         new File(this.PacmanDataPath + "/Gens").mkdir();
 
         // Create test data file writer
         try {
-            pacWriter = new FileWriter(this.PacmanDataPath + "/pacFits" + fileNum + ".txt");
-            opsPac = new FileOutputStream(PacmanDataPath + "/Gens/PacGens");
+            pacWriter = new FileWriter(this.PacmanDataPath + "/Game" + fileNum + "/pacFits" + fileNum + ".txt" );
+            opsPac = new FileOutputStream(PacmanDataPath + "/PacBrains");
             oosPac = new ObjectOutputStream(opsPac);
 
         } catch (FileNotFoundException ex) {
@@ -146,12 +147,14 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         // Save the top Pacman's weights and biases
-        //PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        //topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+        PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
+        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
         try {
-            // Save file records of the best Pacman/Inky
-            //pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
+            if(generation ==99 && topPac.pacman.fitness >= 120) {
+                // Save file records of the best Pacman/Inky
+                pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
+            }
 
         } catch (Exception ex) {}
 

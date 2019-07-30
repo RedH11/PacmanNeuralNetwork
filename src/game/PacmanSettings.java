@@ -128,7 +128,7 @@ public class PacmanSettings extends Pane {
         File[] listOfFiles = folder.listFiles();
         ArrayList<File> fileList = new ArrayList<>();
 
-        // Starts at one to skip DS.Store file
+     /*   // Starts at one to skip DS.Store file
         for (int i = 1; i < listOfFiles.length; i++) {
             fileList.add(listOfFiles[i]);
         }
@@ -141,6 +141,8 @@ public class PacmanSettings extends Pane {
                 else return 0;
             }
         });
+
+      */
 
         for (int i = 1; i < fileList.size() - 1; i++) {
             possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");
