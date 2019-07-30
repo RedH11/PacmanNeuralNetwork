@@ -151,7 +151,6 @@ public class PacmanGame implements Serializable {
         try {
             // Write the InformationStorage into the file
             oos.writeObject(infoStorage);
-            oos.flush();
             // Catch errors
         } catch (FileNotFoundException e) {
             e.printStackTrace();
