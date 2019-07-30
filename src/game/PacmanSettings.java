@@ -1,6 +1,6 @@
 package game;
 
-import javafx.application.Platform;
+import game.NEAT.*;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,12 +12,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 public class PacmanSettings extends Pane {
 
@@ -25,8 +25,15 @@ public class PacmanSettings extends Pane {
     String PacmanDataPath;
     VisualGame vg = null;
 
+    Counter nodeInnovation = new Counter();
+    Counter connectionInnovation = new Counter();
+
+    Genome genome = new Genome(6);
+
     public PacmanSettings( String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
+
+        setupGenome();
 
         // The canvas for the pacman game
         Canvas gameCanvas = new Canvas(950, 620);
@@ -56,48 +63,12 @@ public class PacmanSettings extends Pane {
         TextField gensTF = new TextField("100");
         gensTF.setPromptText("Total Generations");
 
-        Label mutateLbl = new Label("Mutation");
-        TextField mutateTF = new TextField(".65");
-        mutateTF.setPromptText("Mutation Chance");
-
-        Label topGhosts = new Label("Top Ghosts");
-        TextField topGhostsTF = new TextField("0");
-        topGhostsTF.setPromptText("How Many Top Ghosts to Keep");
-
-        Label lowerGhosts = new Label("Lower Ghosts");
-        TextField lowerGhostsTF = new TextField("0");
-        lowerGhostsTF.setPromptText("How Many Worse Ghosts to Keep");
-
-        Label lowerPac = new Label("Lower Pacman");
-        TextField lowerPacmanTF = new TextField("6");
-        lowerPacmanTF.setPromptText("How Many Worse Pacman to Keep");
-
-        Label topPac = new Label ("Top Pacman");
-        TextField topPacmanTF = new TextField("40");
-        topPacmanTF.setPromptText("How Many Top Pacman to Keep");
-
         Button evolve = new Button("Evolve");
         evolve.setOnAction(ev -> {
             Thread tests = new Thread(() -> {
-                try {
-                    GeneticAlgorithm ga = new GeneticAlgorithm(
-                            PacmanDataPath, Integer.parseInt(popTF.getText()),
-                            Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
-                            Integer.parseInt(lowerGhostsTF.getText()), Integer.parseInt(topGhostsTF.getText()),
-                            Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), gc
-                    );
-
-                    ga.makeGenerations();
-
-                } catch (IOException ex) {
-                    // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
-                    Platform.runLater(() -> {
-                        invalAlert.setTitle("Error Evolving" + ex);
-                        invalAlert.show();
-                    });
-                }
+                GA ga = new GA(PacmanDataPath, Integer.parseInt(popTF.getText()), Integer.parseInt(gensTF.getText()), genome);
+                ga.evolveGhosts();
             });
-
             tests.start();
             try {
                 tests.join();
@@ -171,7 +142,7 @@ public class PacmanSettings extends Pane {
 
         BorderPane root = new BorderPane();
 
-        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topGhosts, topGhostsTF, lowerGhosts, lowerGhostsTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve, clearDisplay);
+        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF,  evolve, clearDisplay);
         viewer.getChildren().addAll(viewLabel, possibleGames, gameNum, genNum, gameType, showGame);
         root.setCenter(gameCanvas);
         root.setLeft(settings);
@@ -221,5 +192,36 @@ public class PacmanSettings extends Pane {
             invalAlert.show();
         }
         return null;
+    }
+
+    // Setting up the start genome for the NEAT evolution
+    public void setupGenome() {
+        Random random = new Random();
+
+        // Input layer and single output node
+        int[] inputNodes = new int[6];
+        int outputNode;
+
+        // Add the input nodes to the genome as well as giving them unique innovation numbers
+        for (int i = 0; i < inputNodes.length; i++) {
+            inputNodes[i] = nodeInnovation.getInnovation();
+            genome.addNodeGene(new NodeGene(NodeGene.TYPE.INPUT, inputNodes[i]));
+        }
+
+        // Add the output node to the genome
+        outputNode = nodeInnovation.getInnovation();
+        genome.addNodeGene(new NodeGene(NodeGene.TYPE.OUTPUT, outputNode));
+
+        // Create two random connections from an input node to the output
+        int c1 = connectionInnovation.getInnovation();
+        int c2 = connectionInnovation.getInnovation();
+
+        int randNodeOne = random.nextInt(inputNodes.length);
+        int randNodeTwo = random.nextInt(inputNodes.length);
+
+        while (randNodeOne == randNodeTwo) randNodeTwo = random.nextInt(inputNodes.length);
+
+        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeOne], outputNode, 0.5, true, c1));
+        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeTwo], outputNode, 0.5, true, c2));
     }
 }

@@ -1,15 +1,14 @@
 package game;
 
+import game.NEAT.Genome;
+
 import java.io.*;
 import java.util.ArrayList;
 
 public class PacmanGame implements Serializable {
-
     Pacman pacman;
     Ghost ghostOne;
     Ghost ghostTwo;
-    Ghost ghostThree;
-    Ghost ghostFour;
 
     int numPellets;
     final int MAX_PELLETS = 258;
@@ -66,39 +65,15 @@ public class PacmanGame implements Serializable {
     private InfoStorage is;
     static String PacmanDataPath;
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES) {
-        this.MAXMOVES = MAXMOVES;
-        this.PacmanDataPath = PacmanDataPath;
-        is = new InfoStorage(MAXMOVES);
-        createMap();
-        pacman = new Pacman();
-        ghostOne = new Ghost();
-        ghostTwo = new Ghost();
-        ghostThree = new Ghost();
-        ghostFour = new Ghost();
-    }
+    int INPUTS;
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, NeuralNetwork ghostBrain) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, Genome g1, Genome g2, int INPUTS) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
-        createMap();
         is = new InfoStorage(MAXMOVES);
-        pacman = new Pacman(pacmanBrain);
-        ghostOne = new Ghost(ghostBrain);
-        ghostTwo = new Ghost(ghostBrain);
-        ghostThree = new Ghost(ghostBrain);
-        ghostFour = new Ghost(ghostBrain);
-    }
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain) {
-        this.MAXMOVES = MAXMOVES;
-        this.PacmanDataPath = PacmanDataPath;
         createMap();
-        is = new InfoStorage(MAXMOVES);
-        pacman = new Pacman(pacmanBrain);
-        ghostOne = new Ghost();
-        ghostTwo = new Ghost();
-        ghostThree = new Ghost();
-        ghostFour = new Ghost();
+        ghostOne = new Ghost(g1, INPUTS);
+        ghostTwo = new Ghost(g2, INPUTS);
     }
 
 
@@ -107,13 +82,11 @@ public class PacmanGame implements Serializable {
         while ((numPellets < MAX_PELLETS) &&  (gameMoves < MAXMOVES)&&pacman.lives > 0) {
             // Add all of the game information
             simulateTurn();
-            is.addAllCoords(pacman.x, pacman.y, ghostOne.x, ghostOne.y, ghostTwo.x, ghostTwo.y, ghostThree.x, ghostThree.y, ghostFour.x, ghostFour.y);
-            is.addAllInfo(pacman.moveChoice, ghostOne.moveChoice, ghostTwo.moveChoice, ghostThree.moveChoice, ghostFour.moveChoice, pacman.getDir(), pacman.fitness,ghostOne.fitness, ghostTwo.fitness, ghostThree.fitness, ghostFour.fitness, pacman.powered);
+            is.addAllCoords(pacman.x, pacman.y, ghostOne.x, ghostOne.y, ghostTwo.x, ghostTwo.y);
+            is.addAllInfo(pacman.moveChoice, ghostOne.moveChoice, ghostTwo.moveChoice, pacman.getDir(), pacman.fitness,ghostOne.fitness, ghostTwo.fitness, pacman.powered);
             gameMoves++;
         }
     }
-
-
 
     private void createMap() {
         // Initialize tiles
@@ -145,10 +118,6 @@ public class PacmanGame implements Serializable {
         checkStates();
         ghostTwo.move(map, is, pacman.x, pacman.y);
         checkStates();
-        ghostThree.move(map, is, pacman.x, pacman.y);
-        checkStates();
-        ghostThree.move(map, is, pacman.x, pacman.y);
-        checkStates();
     }
 
     private void checkStates() {
@@ -166,7 +135,8 @@ public class PacmanGame implements Serializable {
             map[pacman.y][pacman.x].eaten = true;
             numPellets++;
         }
-        if((pacman.x == ghostOne.x)&&(pacman.y == ghostOne.y)){
+
+        /*if((pacman.x == ghostOne.x)&&(pacman.y == ghostOne.y)){
             if(pacman.powered){
                 ghostOne.addFitness(-20);
                 ghostOne.respawn();
@@ -179,8 +149,7 @@ public class PacmanGame implements Serializable {
                 pacman.respawn();
                 ghostOne.respawn();
                 ghostTwo.respawn();
-                ghostThree.respawn();
-                ghostFour.respawn();
+
             }
         }
         if((pacman.x == ghostTwo.x)&&(pacman.y == ghostTwo.y)){
@@ -196,51 +165,17 @@ public class PacmanGame implements Serializable {
                 pacman.respawn();
                 ghostOne.respawn();
                 ghostTwo.respawn();
-                ghostThree.respawn();
-                ghostFour.respawn();
-            }
-        }
-        if((pacman.x == ghostThree.x)&&(pacman.y == ghostThree.y)){
-            if(pacman.powered){
-                ghostThree.addFitness(-20);
-                ghostThree.respawn();
 
             }
-            else{
-                ghostThree.addFitness(100);
-                pacman.addFitness(-100);
-                pacman.lives--;
-                pacman.respawn();
-                ghostOne.respawn();
-                ghostTwo.respawn();
-                ghostThree.respawn();
-                ghostFour.respawn();
-            }
-        }
-        if((pacman.x == ghostFour.x)&&(pacman.y == ghostFour.y)){
-            if(pacman.powered){
-                ghostFour.addFitness(-20);
-                ghostFour.respawn();
+        }*/
 
-            }
-            else{
-                ghostFour.addFitness(100);
-                pacman.addFitness(-100);
-                pacman.lives--;
-                pacman.respawn();
-                ghostOne.respawn();
-                ghostTwo.respawn();
-                ghostThree.respawn();
-                ghostFour.respawn();
-            }
-        }
     }
 
     public InfoStorage getIs() {
         return is;
     }
     public Ghost getBestGhost(){
-        Ghost[]temp = {ghostOne, ghostTwo, ghostThree, ghostFour};
+        Ghost[]temp = {ghostOne, ghostTwo};
         for(int i = 0; i < 3; i++){
             if(temp[i+1].fitness < temp[i].fitness){
                 Ghost flip = temp[i];

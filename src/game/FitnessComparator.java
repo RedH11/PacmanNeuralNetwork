@@ -2,7 +2,7 @@ package game;
 
 import java.util.Comparator;
 
-class PacmanFitnessComparator implements Comparator<PacmanGame> {
+class GhostFitnessComparator implements Comparator<PacmanGame> {
     @Override
     public int compare(PacmanGame x, PacmanGame y) {
         /* compare logic goes here

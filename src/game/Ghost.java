@@ -1,9 +1,11 @@
 package game;
 
+import game.NEAT.Genome;
+
 import java.util.Random;
 
 public class Ghost {
-    NeuralNetwork brain;
+    Genome brain;
     Random num = new Random();
     boolean alive = true;
     boolean scared = false;
@@ -11,39 +13,32 @@ public class Ghost {
     int x;
     int y;
     private int dir = 1;
-    final int INPUTS= 16;
-    final int HIDDEN_ONE=20;
-    final int HIDDEN_TWO=10;
-    final int OUTPUTS= 2;
     int moveChoice = 0;
-    public Ghost(){
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
-        respawn();
-    }
-    public Ghost(NeuralNetwork brain){
+    int INPUTS;
+
+    public Ghost(Genome brain, int INPUTS){
         this.brain = brain;
+        this.INPUTS = INPUTS;
         respawn();
     }
-    public void respawn(){
+    public void respawn() {
         x = 13;
         y= 17;
         scared = false;
         alive = true;
     }
+
     private int think(double[] input){
 
         // Calculate the outputs
-        double[] outputs = brain.calculate(input);
+        double output = brain.calculate(input);
         // Save the outputs to the info storage
 //        is.setNNOutputs(outputs);
 
-        // Find the highest output
-        int highestIndex = 0;
-        for (int i = 1; i < outputs.length; i++) {
-            if (outputs[highestIndex] < outputs[i]) highestIndex = i;
-        }
-
-        return highestIndex;
+        // Return left
+        if (output > 0.5) return 0;
+        // Return right
+        else return 1;
     }
 
     private double[] see(Tile[][] map, int px, int py) {
@@ -106,14 +101,6 @@ public class Ghost {
                 if (!wallInWay(3, map)) y++;
                 break;
         }
-
-        /*
-        // Can't move twice in a turn
-        if (prevX - x == 2) x++;
-        else if (prevX - x == -2) x--;
-        else if (prevY - y == 2) y++;
-        else if (prevY - y == -2) y--;
-        */
     }
 
     private void makeTurn(Tile[][] map) {
