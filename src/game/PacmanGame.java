@@ -139,7 +139,7 @@ public class PacmanGame implements Serializable {
                 ghostOne.respawn();
 
             } else {
-                ghostOne.addFitness(100);
+                ghostOne.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
                 pacman.lives--;
                 pacman.respawn();
                 ghostOne.respawn();
@@ -151,7 +151,7 @@ public class PacmanGame implements Serializable {
                 ghostTwo.addFitness(-20);
                 ghostTwo.respawn();
             } else {
-                ghostTwo.addFitness(100);
+                ghostTwo.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
                 pacman.lives--;
                 pacman.respawn();
                 ghostOne.respawn();
