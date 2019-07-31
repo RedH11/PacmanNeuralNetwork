@@ -19,7 +19,7 @@ public class Main extends Application {
     int stageH = 620;
     int currDir = 0;
 
-    final int MAXMOVES = 600;
+    final int MAXMOVES = 400;
 
     String PacmanDataPath;
     GraphicsContext gameGC;

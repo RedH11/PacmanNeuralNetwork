@@ -16,8 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 
 public class PacmanSettings extends Pane {
 

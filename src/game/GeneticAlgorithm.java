@@ -37,7 +37,7 @@ public class GeneticAlgorithm {
     private GraphicsContext gc;
     private int coordinateW = 5;
 
-    private int MAXMOVES = 200;
+    private int MAXMOVES = 400;
 
     public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
@@ -147,7 +147,7 @@ public class GeneticAlgorithm {
 
         // Save the top Pacman's weights and biases
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+       // topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
         try {
             // Save file records of the best Pacman/Inky
