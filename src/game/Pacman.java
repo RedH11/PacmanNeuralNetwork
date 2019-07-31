@@ -1,7 +1,9 @@
 package game;
 
 import java.util.Random;
-
+/*
+This is the pacman object. The pacman object has the move, thinking, and fitness functions for simulating the game.
+ */
 public class Pacman {
     Random num = new Random();
     int x;
@@ -20,7 +22,7 @@ public class Pacman {
     final int INPUTS = 16;
     final int HIDDEN_ONE = 40;
     final int HIDDEN_TWO = 50;
-    final int OUTPUTS = 2; // Left, Right, Back are the possible outputs
+    final int OUTPUTS = 2;
 
 
     public Pacman() {
@@ -87,8 +89,6 @@ public class Pacman {
                 if (!(i == 0 && j == 0)) {
                     if (map[y + j][x + i].wall) inputs[inputsIndex] = 1;
                     else inputs[inputsIndex] = 0;
-                    //else if(map[y + j][x + i].eaten) inputs[inputsIndex] = 1;
-                    //else if (map[y + j][x + i].dot || map[y + j][x + i].bigDot) inputs[inputsIndex] = 2;
                     inputsIndex++;
                 }
             }
@@ -117,13 +117,7 @@ public class Pacman {
                break;
         }
 
-        /*
-        // Can't move twice in a turn
-        if (prevX - x == 2) x++;
-        else if (prevX - x == -2) x--;
-        else if (prevY - y == 2) y++;
-        else if (prevY - y == -2) y--;
-        */
+
     }
 
     private void makeTurn(Tile[][] map) {

@@ -17,7 +17,9 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.ArrayList;
 
-
+/*
+PacmanSettings allows us to save information from Pacman and Genetic Algorithim and display it in a simple UI.
+ */
 public class PacmanSettings extends Pane {
 
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
@@ -131,18 +133,6 @@ public class PacmanSettings extends Pane {
         for (int i = 1; i < listOfFiles.length; i++) {
             fileList.add(listOfFiles[i]);
         }
-/*
-        Collections.sort(fileList, new Comparator<File>() {
-            @Override
-            public int compare(File s1, File s2) {
-                int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
-                if (letter != 0) return letter;
-                else return 0;
-            }
-        });
-
-
- */
         for (int i = 1; i < fileList.size() - 1; i++) {
             possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");
         }

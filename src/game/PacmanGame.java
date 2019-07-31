@@ -2,6 +2,10 @@ package game;
 
 import java.io.*;
 import java.util.ArrayList;
+/*
+Pacman game is the game object. It utilizes Pacman to simulate the game.
+It adds fitness to pacman based on how many pellets are consumed.
+ */
 
 public class PacmanGame implements Serializable {
 

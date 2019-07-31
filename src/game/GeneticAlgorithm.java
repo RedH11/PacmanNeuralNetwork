@@ -6,7 +6,12 @@ import javafx.scene.paint.Color;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+/*
+Genetic algorithm determines which pacman brains advance and mutate. The population is first created and simulated.
+We then sort it from worst to best pacmen by their fitness. A variable number from the user determines how
+many of the highest scoring pacmen advance along with a small number of lower scoring pacmen. After selecting the pacmen
+the brains are spread across the population and mutated.
+ */
 public class GeneticAlgorithm {
 
     ArrayList<PacmanGame> pacmanBabys = new ArrayList<>();
@@ -147,7 +152,7 @@ public class GeneticAlgorithm {
 
         // Save the top Pacman's weights and biases
         PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-       // topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+
 
         try {
             // Save file records of the best Pacman/Inky
