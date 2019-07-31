@@ -93,7 +93,7 @@ public class GA {
 
         ArrayList<InfoStorage> brains = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 9; i++) {
             try {
                 brains.add(parseFile(i, 99, true));
             } catch (Exception ex) {
@@ -324,7 +324,8 @@ public class GA {
                 try {
                     InfoStorage object = (InfoStorage) ois.readObject();
                     objects.add(object);
-                } catch (EOFException ex) {
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                     break;
                 }
             }
@@ -345,8 +346,7 @@ public class GA {
 
         try {
             ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);
-
-            return allGames.get(generationNum);
+            return allGames.get(allGames.size() - 1);
 
         } catch (Exception ex) {
             System.out.println("File Not Found");
