@@ -62,7 +62,7 @@ public class PacmanGame implements Serializable {
     private int scaredStart = 0;
     private int MAXMOVES;
 
-    private InfoStorage is;
+    private GhostInfoStorage is;
     static String PacmanDataPath;
 
     int INPUTS;
@@ -70,7 +70,7 @@ public class PacmanGame implements Serializable {
     public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, Genome g1, Genome g2, int INPUTS) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
-        is = new InfoStorage(MAXMOVES);
+        is = new GhostInfoStorage(MAXMOVES);
         createMap();
         ghostOne = new Ghost(g1, INPUTS);
         ghostTwo = new Ghost(g2, INPUTS);
@@ -171,7 +171,7 @@ public class PacmanGame implements Serializable {
 
     }
 
-    public InfoStorage getIs() {
+    public GhostInfoStorage getIs() {
         return is;
     }
     public Ghost getBestGhost(){
@@ -186,7 +186,7 @@ public class PacmanGame implements Serializable {
         return temp[3];
     }
 
-    public static void saveInformation(InfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {
+    public static void saveInformation(GhostInfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {
 
         try {
             // Write the InformationStorage into the file
@@ -200,15 +200,15 @@ public class PacmanGame implements Serializable {
         }
     }
 
-    private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
-        ArrayList<InfoStorage> objects = new ArrayList<>();
+    private static ArrayList<GhostInfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
+        ArrayList<GhostInfoStorage> objects = new ArrayList<>();
         InputStream is = null;
         try {
             is = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(is);
             while (true) {
                 try {
-                    InfoStorage object = (InfoStorage) ois.readObject();
+                    GhostInfoStorage object = (GhostInfoStorage) ois.readObject();
                     objects.add(object);
                 } catch (EOFException ex) {
                     break;

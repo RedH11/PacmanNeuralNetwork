@@ -80,7 +80,7 @@ public class Ghost {
         }
     }
 
-    public void move(Tile[][] map, InfoStorage is, int px, int py) {
+    public void move(Tile[][] map, GhostInfoStorage is, int px, int py) {
         if (!alive) respawn();
 
         moveChoice = think(see(map, px, py));

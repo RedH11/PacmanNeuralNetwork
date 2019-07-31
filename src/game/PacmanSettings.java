@@ -15,8 +15,6 @@ import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
 public class PacmanSettings extends Pane {
@@ -99,7 +97,7 @@ public class PacmanSettings extends Pane {
             fileList.add(listOfFiles[i]);
         }
 
-        Collections.sort(fileList, new Comparator<File>() {
+        /*Collections.sort(fileList, new Comparator<File>() {
             @Override
             public int compare(File s1, File s2) {
                 int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
@@ -116,7 +114,7 @@ public class PacmanSettings extends Pane {
             possibleGames.setText(possibleGames.getText() + fileList.get(fileList.size() - 1).getName());
             possibleGames.setWrapText(true);
             possibleGames.setPrefWidth(175);
-        }
+        }*/
 
         TextField genNum = new TextField();
         genNum.setPromptText("Insert Generation Number");
@@ -131,10 +129,10 @@ public class PacmanSettings extends Pane {
         showGame.setOnAction(ev -> {
             Thread showing = new Thread(() -> {
                 try {
-                    if (vg != null) vg.stop();
+                    /*if (vg != null) vg.stop();
                     boolean pacmanGame = gameType.getText().contains("Pacman");
-                    InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 5);
+                    GhostInfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
+                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 5);*/
                 } catch (Exception ex) {}
             });
             showing.start();
@@ -152,15 +150,15 @@ public class PacmanSettings extends Pane {
     }
 
 
-    private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
-        ArrayList<InfoStorage> objects = new ArrayList<>();
+    private static ArrayList<GhostInfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
+        ArrayList<GhostInfoStorage> objects = new ArrayList<>();
         InputStream is = null;
         try {
             is = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(is);
             while (true) {
                 try {
-                    InfoStorage object = (InfoStorage) ois.readObject();
+                    GhostInfoStorage object = (GhostInfoStorage) ois.readObject();
                     objects.add(object);
                 } catch (EOFException ex) {
                     break;
@@ -175,7 +173,7 @@ public class PacmanSettings extends Pane {
     }
 
 
-    public InfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
+    public GhostInfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
         String gameFile = "";
 
         // Viewing Setup
@@ -183,7 +181,7 @@ public class PacmanSettings extends Pane {
         else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/InkGens";
 
         try {
-            ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);
+            ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);
 
             return allGames.get(generationNum);
 

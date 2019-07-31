@@ -57,22 +57,22 @@ public class GA {
         nextGenGenomes = new ArrayList<Genome>(populationSize);
         nextGenGenomes = new ArrayList<Genome>(populationSize);
         mappedSpecies = new HashMap<Genome, Species>();
+        scoreMap = new HashMap<Genome, Double>();
 
+        constructPacmanBrains();
     }
 
     // Create 20 Pacman Brains from already trained pacman
     private void constructPacmanBrains() {
 
-        ArrayList<InfoStorage> brains = null;
+        ArrayList<InfoStorage> brains = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
-
+        for (int i = 1; i <= 5; i++) {
             try {
-                brains = readObjectsFromFile(PacmanDataPath + "/PacmanBrains");
+                brains.add(parseFile(i, 99, true));
             } catch (Exception ex) {
-                System.out.println("Pacman Brains File Not Found");
+                System.out.println("Pacman Brains File Not Found " + ex);
             }
-
             pacmanBrains.add(new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS));
             pacmanBrains.get(i).setWeights(brains.get(i).getWeights());
             pacmanBrains.get(i).setBias(brains.get(i).getBiases());
@@ -179,6 +179,8 @@ public class GA {
                 fittestGenome = g2;
             }
         }
+
+        System.out.println("Gen " + currentGen + " Fitness " + highestScore);
     }
 
     private void sort() {
@@ -241,7 +243,7 @@ public class GA {
         throw new RuntimeException("Couldn't find a species... Number is species in total is "+species.size()+", and the total adjusted fitness is "+completeWeight);
     }
 
-    
+
     //Selects a random genome from the species chosen, where genomes with a higher adjusted fitness have a higher chance of being selected
     private Genome getRandomGenomeBiasedAdjustedFitness(Species selectFrom, Random random) {
         double completeWeight = 0.0;	// sum of probablities of selecting each genome - selection is more probable for genomes with higher fitness
@@ -256,7 +258,7 @@ public class GA {
                 return fg.genome;
             }
         }
-        throw new RuntimeException("Couldn't find a genome... Number is genomes in sel�ected species is "+selectFrom.fitnessPop.size()+", and the total adjusted fitness is "+completeWeight);
+        throw new RuntimeException("Couldn't find a genome... Number is genomes in selected species is "+selectFrom.fitnessPop.size()+", and the total adjusted fitness is "+completeWeight);
     }
 
     private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
@@ -279,6 +281,24 @@ public class GA {
             }
         }
         return objects;
+    }
+
+    public InfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
+        String gameFile = "";
+
+        // Viewing Setup
+        if (pacman) gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
+        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/InkGens";
+
+        try {
+            ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);
+
+            return allGames.get(generationNum);
+
+        } catch (Exception ex) {
+            System.out.println("File Not Found");
+        }
+        return null;
     }
 }
 

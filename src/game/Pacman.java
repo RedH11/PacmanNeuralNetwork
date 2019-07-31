@@ -40,7 +40,7 @@ public class Pacman {
         alive = true;
     }
 
-    private int think(double[] input, InfoStorage is, Tile[][] map){
+    private int think(double[] input, GhostInfoStorage is, Tile[][] map){
 
         // Calculate the outputs
         double[] outputs = brain.calculate(input);
@@ -94,7 +94,7 @@ public class Pacman {
         }
     }
 
-    public void move(Tile[][] map, InfoStorage is) {
+    public void move(Tile[][] map, GhostInfoStorage is) {
         if (!alive) respawn();
 
         moveChoice = think(see(map), is, map);

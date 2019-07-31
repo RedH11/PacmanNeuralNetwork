@@ -1,8 +1,8 @@
 package game;
 
-import java.io.Serializable;
+import java.io.*;
 
-public class InfoStorage implements Serializable {
+public class GhostInfoStorage implements Serializable {
 
     /** Visual Information
      * MAXMOVES - Maximum Amount of Moves
@@ -13,9 +13,22 @@ public class InfoStorage implements Serializable {
      */
     private int MAXMOVES;
     private int[][] pacCoords;
+    private int[][] g1Coords;
+    private int[][] g2Coords;
+
     int[] pDirs;
+
+
     private int[] choices;
+    private int[] g1Choices;
+    private int[] g2Choices;
+
     private int[] pFits;
+    private int[] g1Fits;
+    private int[] g2Fits;
+
+    private boolean[] pPowered;
+
     private double[] weights;
     private double[] biases;
     private double[][] outputs;
@@ -29,12 +42,24 @@ public class InfoStorage implements Serializable {
     private int totalInfo = 0;
     private int totalNNInfo = 0;
 
-    public InfoStorage(int MAXMOVES) {
+    public GhostInfoStorage(int MAXMOVES) {
         this.MAXMOVES = MAXMOVES;
         pacCoords = new int[MAXMOVES][2];
+        g1Coords = new int [MAXMOVES][2];
+        g2Coords = new int [MAXMOVES][2];
+
         pDirs = new int[MAXMOVES];
+
         choices = new int[MAXMOVES];
+        g1Choices = new int[MAXMOVES];
+        g2Choices = new int[MAXMOVES];
+
         pFits = new int[MAXMOVES];
+        g1Fits = new int[MAXMOVES];
+        g2Fits = new int[MAXMOVES];
+
+
+        pPowered = new boolean[MAXMOVES];
         outputs = new double[MAXMOVES][4];
     }
 
@@ -42,17 +67,35 @@ public class InfoStorage implements Serializable {
         weights = new double[weightsLength];
         biases = new double[biasLength];
     }
-
-    public void addAllCoords(int px, int py) {
+    
+    public void addAllCoords(int px, int py, int g1x, int g1y, int g2x, int g2y) {
         pacCoords[totalCoords][0] = px;
         pacCoords[totalCoords][1] = py;
+
+        g1Coords[totalCoords][0] = g1x;
+        g1Coords[totalCoords][1] = g1y;
+
+        g2Coords[totalCoords][0] = g2x;
+        g2Coords[totalCoords][1] = g2y;
+
         totalCoords++;
     }
 
-    public void addAllInfo(int choice, int dir, int fit) {
+    public void addAllInfo(int choice, int g1choice, int g2choice,   int dir, int fit, int g1fit, int g2fit, boolean powered) {
         choices[totalInfo] = choice;
+        g1Choices[totalInfo] = g1choice;
+        g2Choices[totalInfo] = g2choice;
+
+
         pDirs[totalInfo] = dir;
+
         pFits[totalInfo] = fit;
+        g1Fits[totalInfo] = g1fit;
+        g2Fits[totalInfo] = g2fit;
+
+
+        pPowered[totalInfo] = powered;
+
         totalInfo++;
     }
 
@@ -76,6 +119,9 @@ public class InfoStorage implements Serializable {
         return totalCoords;
     }
 
+    public boolean[] getpPowered() {
+        return pPowered;
+    }
 
     public double[] getBiases() {
         return biases;

@@ -54,7 +54,7 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, int FPS) {
+    public VisualGame(GraphicsContext gameGC, GhostInfoStorage is, int generation, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
         this.choices = is.getChoices();
