@@ -325,8 +325,9 @@ public class Genome {
             connections.put(newCon.getInnovation(), newCon);
             success = true;
         }
+
         if (success == false) {
-            System.out.println("Tried, but could not add more connections");
+            //System.out.println("Tried, but could not add more connections");
         }
     }
 
@@ -339,12 +340,24 @@ public class Genome {
         con.disable();
 
         NodeGene newNode = new NodeGene(NodeGene.TYPE.HIDDEN, nodeInnovation.getInnovation());
-        ConnectionGene inToNew = new ConnectionGene(inNode.getId(), newNode.getId(), 1f, true, connectionInnovation.getInnovation());
+        ConnectionGene inToNew = new ConnectionGene(inNode.getId(), newNode.getId(), 1, true, connectionInnovation.getInnovation());
         ConnectionGene newToOut = new ConnectionGene(newNode.getId(), outNode.getId(), con.getWeight(), true, connectionInnovation.getInnovation());
 
         nodes.put(newNode.getId(), newNode);
         connections.put(inToNew.getInnovation(), inToNew);
         connections.put(newToOut.getInnovation(), newToOut);
+    }
+
+    public int[] countLayers() {
+        int[] layerSizes = new int[3];
+
+        for (NodeGene node : nodes.values()) {
+            if (node.getType() == NodeGene.TYPE.INPUT) layerSizes[0]++;
+            else if (node.getType() == NodeGene.TYPE.HIDDEN) layerSizes[1]++;
+            else layerSizes[2]++;
+        }
+
+        return layerSizes;
     }
 
      // Sorts in ascending order

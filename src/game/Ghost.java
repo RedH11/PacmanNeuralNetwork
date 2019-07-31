@@ -22,8 +22,8 @@ public class Ghost {
         respawn();
     }
     public void respawn() {
-        x = 13;
-        y= 17;
+        x = 14;
+        y= 11;
         scared = false;
         alive = true;
     }
@@ -80,7 +80,7 @@ public class Ghost {
         }
     }
 
-    public void move(Tile[][] map, GhostInfoStorage is, int px, int py) {
+    public void move(Tile[][] map, int px, int py) {
         if (!alive) respawn();
 
         moveChoice = think(see(map, px, py));

@@ -67,7 +67,6 @@ public class InfoStorage implements Serializable {
         return totalCoords;
     }
 
-
     public double[] getBiases() {
         return biases;
     }

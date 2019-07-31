@@ -5,6 +5,7 @@ import game.NEAT.*;
 import java.io.*;
 import java.util.*;
 
+/* Genetic Algorithm to Train the Ghosts using a NEAT Framework modified for this project */
 public class GA {
 
     final int MAX_MOVES = 400;
@@ -17,8 +18,8 @@ public class GA {
     private int totalGens;
     private int currentGen = 0;
 
-    private Counter nodeInnovation;
-    private Counter connectionInnovation;
+    private Counter nodeInnovation = new Counter();
+    private Counter connectionInnovation = new Counter();
     private List<Species> species = new ArrayList<Species>();
     private List<PacmanGame> games = new ArrayList<PacmanGame>();
     private List<Genome> genomes;
@@ -28,6 +29,9 @@ public class GA {
     private Genome startingGenome;
     private Map<Genome, Species> mappedSpecies;
     private Map<Genome, Double> scoreMap;
+
+    private OutputStream opsGhost;
+    private ObjectOutputStream oosGhost = null;
 
     private ArrayList<NeuralNetwork> pacmanBrains = new ArrayList<>();
 
@@ -60,6 +64,28 @@ public class GA {
         scoreMap = new HashMap<Genome, Double>();
 
         constructPacmanBrains();
+        constructFileWriters();
+    }
+
+    private void constructFileWriters() {
+
+        // Gets amount of files int he folder already
+        File folder = new File(PacmanDataPath);
+        File[] listOfFiles = folder.listFiles();
+
+        // Make file to hold the Game Data
+        int gameNum = listOfFiles.length;
+        new File(PacmanDataPath + "/Game" + gameNum).mkdir();
+
+        // Make new file to store the generation game tracker
+        new File(PacmanDataPath + "/Game" + gameNum + "/Gens").mkdir();
+
+        try {
+            opsGhost = new FileOutputStream(PacmanDataPath + "/Game" +  gameNum + "/Gens/GhostGens");
+            oosGhost = new ObjectOutputStream(opsGhost);
+        } catch (Exception ex) {
+            System.out.println("File Not Found for Object Writer");
+        }
     }
 
     // Create 20 Pacman Brains from already trained pacman
@@ -67,7 +93,7 @@ public class GA {
 
         ArrayList<InfoStorage> brains = new ArrayList<>();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 0; i < 20; i++) {
             try {
                 brains.add(parseFile(i, 99, true));
             } catch (Exception ex) {
@@ -80,14 +106,20 @@ public class GA {
     }
 
     public void evolveGhosts() {
-        makePopulation();
         while (currentGen < totalGens) {
             clear();
+            if (currentGen == 0) makePopulation();
             speciate();
             test();
             sort();
             breed();
             currentGen++;
+        }
+
+        try {
+            oosGhost.close();
+        } catch (IOException ex) {
+            System.out.println("Error Closing Ghost Info Writer");
         }
     }
 
@@ -102,6 +134,7 @@ public class GA {
         for (Species s : species) {
             s.reset(random);
         }
+        games.clear();
         scoreMap.clear();
         mappedSpecies.clear();
         nextGenGenomes.clear();
@@ -141,18 +174,21 @@ public class GA {
     // Note: Population has to be an even number for testing two ghosts per game
     private void test() {
         int gameIndx = 0;
+        int bestGhostIndex = 0;
+        int ghostIndx = 0;
         // Evaluate two genomes per game and assign score
-        for (int i = 0; i < genomes.size() - 1; i += 2) {
+        for (int i = 0; i < genomes.size()/2; i++) {
             int randomPacmanIndex = random.nextInt(pacmanBrains.size());
 
-            Genome g1 = genomes.get(i);
-            Genome g2 = genomes.get(i + 1);
+            Genome g1 = genomes.get(ghostIndx);
+            Genome g2 = genomes.get(ghostIndx + 1);
 
             Species s1 = mappedSpecies.get(g1);		// Get species of the first genome
             Species s2 = mappedSpecies.get(g2);		// Get species of the second genome
 
             // Put a random pacman brain in the game that simulates two ghosts at a time
             games.add(new PacmanGame(PacmanDataPath, MAX_MOVES, pacmanBrains.get(randomPacmanIndex), g1, g2, INPUTS));
+            games.get(i).simulateGame();
 
             double score1 = games.get(gameIndx).ghostOne.fitness;
             double score2 = games.get(gameIndx).ghostTwo.fitness;
@@ -172,15 +208,32 @@ public class GA {
             if (score1 > highestScore) {
                 highestScore = score1;
                 fittestGenome = g1;
+                bestGhostIndex = i;
             }
 
             if (score2 > highestScore) {
                 highestScore = score2;
                 fittestGenome = g2;
+                bestGhostIndex = i;
             }
+
+            ghostIndx += 2;
         }
 
-        System.out.println("Gen " + currentGen + " Fitness " + highestScore);
+        System.out.println("Gen " + (currentGen + 1) + " Fitness " + highestScore);
+
+        PacmanGame bestGhost = games.get(bestGhostIndex);
+        try {
+            // Store the amount of layers used for displaying the neural network in the visual display
+            bestGhost.getIs().setLayerSizes(bestGhost.getBestGhost().brain.countLayers());
+            // Store the nodes and connections of the best ghost to show the Neural Network
+            bestGhost.getIs().setGenomeInfo(bestGhost.getBestGhost().brain.getNodes(), bestGhost.getBestGhost().brain.getConnections());
+            // Save the information stored in the Ghost Info Storage to the file
+            bestGhost.saveInformation(games.get(bestGhostIndex).getIs(), oosGhost);
+        } catch (Exception ex) {
+            System.out.println("Error saving game data " + ex);
+            ex.printStackTrace();
+        }
     }
 
     private void sort() {
@@ -258,7 +311,7 @@ public class GA {
                 return fg.genome;
             }
         }
-        throw new RuntimeException("Couldn't find a genome... Number is genomes in selected species is "+selectFrom.fitnessPop.size()+", and the total adjusted fitness is "+completeWeight);
+        throw new RuntimeException("Couldn't find a genome... Number is genomes in selected species is " + selectFrom.fitnessPop.size() + ", and the total adjusted fitness is "+completeWeight);
     }
 
     private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
@@ -287,8 +340,8 @@ public class GA {
         String gameFile = "";
 
         // Viewing Setup
-        if (pacman) gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
-        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/InkGens";
+        if (pacman) gameFile = PacmanDataPath + "/PacBrains/Game" +  gameNum + "/Gens/PacGens";
+        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
 
         try {
             ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);

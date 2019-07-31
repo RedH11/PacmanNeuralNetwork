@@ -1,6 +1,8 @@
 package game.NEAT;
 
-public class NodeGene {
+import java.io.Serializable;
+
+public class NodeGene implements Serializable {
 
     double value;
 

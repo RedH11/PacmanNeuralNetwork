@@ -1,6 +1,7 @@
 package game;
 
 import game.NEAT.*;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +18,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+
+// TODO: Make the GA run single generations and then draw the current structure of the NN in the canvas
+
 public class PacmanSettings extends Pane {
 
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
@@ -31,16 +35,22 @@ public class PacmanSettings extends Pane {
     public PacmanSettings( String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
 
+        invalAlert.setTitle("Error Warning");
         setupGenome();
 
-        // The canvas for the pacman game
-        Canvas gameCanvas = new Canvas(950, 620);
-        // Hide it at first
-        GraphicsContext gc = gameCanvas.getGraphicsContext2D();
+        Label gameExplanation = new Label("Welcome to ThInky! \nChoose your population amount and amount of generations you want to train them for to see the " +
+                "results! (Tip: More Generations = Longer time but better ghosts)\n To View Generation Progress input the generation " +
+                "you want to view after your training has completed");
+        gameExplanation.setPrefWidth(500);
+        gameExplanation.setWrapText(true);
 
-        gc.setFill(Color.rgb(211, 211,211));
-        gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-
+        Label neatExplanation = new Label("What is ThInky though?! Great question! In Pacman the Inky ghost is programmed " +
+                "to go in random directions when they get too close to pacman making it the least effective ghost" +
+                ", so we decided that we were going to give Inky the best brain possible (aka A Thinky Inky) using a NEAT" +
+                " algorithm. A Neural Evolution Augmented Topologies is a neural network that evolves through creating" +
+                " new nodes and connections to find the optimal structure to solve a given problem");
+        neatExplanation.setPrefWidth(500);
+        neatExplanation.setWrapText(true);
         VBox settings = new VBox();
         settings.setPadding(new Insets(5, 10, 5, 10));
         settings.setSpacing(10);
@@ -73,20 +83,15 @@ public class PacmanSettings extends Pane {
             } catch (InterruptedException ex){}
         });
 
-        Button clearDisplay = new Button("Clear");
-        clearDisplay.setOnAction( event -> {
-            gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-            gc.setFill(Color.rgb(211, 211,211));
-            gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-        });
-
         // VIEWER
         Label viewLabel = new Label("Evolution Settings");
 
-        TextField gameNum = new TextField();
-        gameNum.setPromptText("Insert Game Number");
+        Label gameNumTF = new Label("Game Number");
 
-        Label possibleGames = new Label("Options:\n");
+        TextField gameNum = new TextField();
+        gameNum.setPromptText("Most Recent Game");
+        gameNum.setDisable(true);
+
         // Gets amount of files in the folder already
         File folder = new File(PacmanDataPath);
         File[] listOfFiles = folder.listFiles();
@@ -97,54 +102,51 @@ public class PacmanSettings extends Pane {
             fileList.add(listOfFiles[i]);
         }
 
-        /*Collections.sort(fileList, new Comparator<File>() {
-            @Override
-            public int compare(File s1, File s2) {
-                int letter = Integer.parseInt(s1.getName().substring(4)) - Integer.parseInt(s2.getName().substring(4));
-                if (letter != 0) return letter;
-                else return 0;
-            }
-        });
-
-        for (int i = 1; i < fileList.size() - 1; i++) {
-            possibleGames.setText(possibleGames.getText() + fileList.get(i).getName() + ", ");
-        }
-
-        if (fileList.size() > 0) {
-            possibleGames.setText(possibleGames.getText() + fileList.get(fileList.size() - 1).getName());
-            possibleGames.setWrapText(true);
-            possibleGames.setPrefWidth(175);
-        }*/
-
+        Label gameGenTF = new Label("Ghost Generation");
         TextField genNum = new TextField();
         genNum.setPromptText("Insert Generation Number");
 
-        Button gameType = new Button("Pacman");
-        gameType.setOnAction(ev -> {
-            if (gameType.getText().contains("Pacman")) gameType.setText("Inky");
-            else gameType.setText("Pacman");
-        });
-
         Button showGame = new Button("Show Game");
         showGame.setOnAction(ev -> {
-            Thread showing = new Thread(() -> {
-                try {
-                    /*if (vg != null) vg.stop();
-                    boolean pacmanGame = gameType.getText().contains("Pacman");
-                    GhostInfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 5);*/
-                } catch (Exception ex) {}
-            });
-            showing.start();
+            // If text is entered
+            if (gensTF.getText().length() > 0) {
+                // Gets amount of files in the folder already
+                File folder2 = new File(PacmanDataPath);
+                File[] listOfFiles2 = folder2.listFiles();
+
+
+                Thread showing = new Thread(() -> {
+                    try {
+                        int fileAmount = listOfFiles2.length;
+                        if (listOfFiles2[0].getName().contains("DS")) fileAmount--;
+                        GhostInfoStorage is = parseFile(fileAmount, Integer.parseInt(genNum.getText()) - 1);
+                        vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()) - 1, 10);
+                    } catch (Exception ex) {
+                        // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
+                        Platform.runLater(() -> {
+                            invalAlert.setTitle("Error Evolving" + ex);
+                            ex.printStackTrace();
+                            invalAlert.show();
+                        });
+                    }
+                });
+                showing.start();
+            }
         });
 
-        BorderPane root = new BorderPane();
+        VBox root = new VBox();
 
-        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF,  evolve, clearDisplay);
-        viewer.getChildren().addAll(viewLabel, possibleGames, gameNum, genNum, gameType, showGame);
-        root.setCenter(gameCanvas);
-        root.setLeft(settings);
-        root.setRight(viewer);
+        root.setPadding(new Insets(0, 5, 0, 5));
+
+        BorderPane pane = new BorderPane();
+
+        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF,  evolve);
+        viewer.getChildren().addAll(viewLabel, gameNumTF, gameNum, gameGenTF, genNum, showGame);
+        pane.setLeft(settings);
+        pane.setRight(viewer);
+
+        root.getChildren().addAll(gameExplanation, pane, neatExplanation);
+        root.setSpacing(20);
 
         getChildren().add(root);
     }
@@ -173,20 +175,18 @@ public class PacmanSettings extends Pane {
     }
 
 
-    public GhostInfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
+    public GhostInfoStorage parseFile(int gameNum, int generationNum) {
         String gameFile = "";
 
         // Viewing Setup
-        if (pacman) gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
-        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/InkGens";
+        gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/GhostGens";
 
         try {
             ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);
-
             return allGames.get(generationNum);
 
         } catch (Exception ex) {
-            invalAlert.setContentText("File Not Found");
+            invalAlert.setContentText("GhostGens File Not Found");
             invalAlert.show();
         }
         return null;

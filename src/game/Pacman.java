@@ -11,22 +11,14 @@ public class Pacman {
     // 0: Left Turn, 1: Right Turn
     int moveChoice = 0;
 
-    int fitness = 0;
     boolean powered = false;
     boolean alive = true;
     NeuralNetwork brain;
 
     // Neural Network Settings
     final int INPUTS = 16;
-    final int HIDDEN_ONE = 40;
-    final int OUTPUTS = 2; // Left, Right, Back are the possible outputs
+
     int lives = 3;
-
-
-    public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
-        respawn();
-    }
 
     public Pacman(NeuralNetwork brain) {
         this.brain = brain;
@@ -40,12 +32,10 @@ public class Pacman {
         alive = true;
     }
 
-    private int think(double[] input, GhostInfoStorage is, Tile[][] map){
+    private int think(double[] input, Tile[][] map){
 
         // Calculate the outputs
         double[] outputs = brain.calculate(input);
-        // Save the outputs to the info storage
-        is.setNNOutputs(outputs);
 
         // Find the highest output
         int highestIndex = 0;
@@ -94,10 +84,10 @@ public class Pacman {
         }
     }
 
-    public void move(Tile[][] map, GhostInfoStorage is) {
+    public void move(Tile[][] map) {
         if (!alive) respawn();
 
-        moveChoice = think(see(map), is, map);
+        moveChoice = think(see(map), map);
 
         makeTurn(map);
 
@@ -163,10 +153,6 @@ public class Pacman {
             if (map[testY][testX].wall) return true;
         }
         return false;
-    }
-
-    public void addFitness(int add) {
-        fitness += add;
     }
 
     // Generates a random direction that isn't the last one
