@@ -3,7 +3,6 @@ package game;
 import game.NEAT.*;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -12,14 +11,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
-
-
-// TODO: Make the GA run single generations and then draw the current structure of the NN in the canvas
+import java.util.concurrent.*;
 
 public class PacmanSettings extends Pane {
 
@@ -86,7 +84,7 @@ public class PacmanSettings extends Pane {
         // VIEWER
         Label viewLabel = new Label("Evolution Settings");
 
-        Label gameNumTF = new Label("Game Number");
+        Label gameNumLbl = new Label("Game Number");
 
         TextField gameNum = new TextField();
         gameNum.setPromptText("Most Recent Game");
@@ -102,19 +100,18 @@ public class PacmanSettings extends Pane {
             fileList.add(listOfFiles[i]);
         }
 
-        Label gameGenTF = new Label("Ghost Generation");
+        Label gameGenLbl = new Label("Ghost Generation");
         TextField genNum = new TextField();
         genNum.setPromptText("Insert Generation Number");
 
         Button showGame = new Button("Show Game");
         showGame.setOnAction(ev -> {
             // If text is entered
-            if (gensTF.getText().length() > 0) {
+            if (genNum.getText().length() > 0) {
+                if (vg != null) vg.stop();
                 // Gets amount of files in the folder already
                 File folder2 = new File(PacmanDataPath);
                 File[] listOfFiles2 = folder2.listFiles();
-
-
                 Thread showing = new Thread(() -> {
                     try {
                         int fileAmount = listOfFiles2.length;
@@ -141,7 +138,7 @@ public class PacmanSettings extends Pane {
         BorderPane pane = new BorderPane();
 
         settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF,  evolve);
-        viewer.getChildren().addAll(viewLabel, gameNumTF, gameNum, gameGenTF, genNum, showGame);
+        viewer.getChildren().addAll(viewLabel, gameNumLbl, gameNum, gameGenLbl, genNum, showGame);
         pane.setLeft(settings);
         pane.setRight(viewer);
 
@@ -151,6 +148,36 @@ public class PacmanSettings extends Pane {
         getChildren().add(root);
     }
 
+    // Setting up the start genome for the NEAT evolution
+    public void setupGenome() {
+        Random random = new Random();
+
+        // Input layer and single output node
+        int[] inputNodes = new int[6];
+        int outputNode;
+
+        // Add the input nodes to the genome as well as giving them unique innovation numbers
+        for (int i = 0; i < inputNodes.length; i++) {
+            inputNodes[i] = nodeInnovation.getInnovation();
+            genome.addNodeGene(new NodeGene(NodeGene.TYPE.INPUT, inputNodes[i]));
+        }
+
+        // Add the output node to the genome
+        outputNode = nodeInnovation.getInnovation();
+        genome.addNodeGene(new NodeGene(NodeGene.TYPE.OUTPUT, outputNode));
+
+        // Create two random connections from an input node to the output
+        int c1 = connectionInnovation.getInnovation();
+        int c2 = connectionInnovation.getInnovation();
+
+        int randNodeOne = random.nextInt(inputNodes.length);
+        int randNodeTwo = random.nextInt(inputNodes.length);
+
+        while (randNodeOne == randNodeTwo) randNodeTwo = random.nextInt(inputNodes.length);
+
+        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeOne], outputNode, 0.5, true, c1));
+        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeTwo], outputNode, 0.5, true, c2));
+    }
 
     private static ArrayList<GhostInfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
         ArrayList<GhostInfoStorage> objects = new ArrayList<>();
@@ -190,36 +217,5 @@ public class PacmanSettings extends Pane {
             invalAlert.show();
         }
         return null;
-    }
-
-    // Setting up the start genome for the NEAT evolution
-    public void setupGenome() {
-        Random random = new Random();
-
-        // Input layer and single output node
-        int[] inputNodes = new int[6];
-        int outputNode;
-
-        // Add the input nodes to the genome as well as giving them unique innovation numbers
-        for (int i = 0; i < inputNodes.length; i++) {
-            inputNodes[i] = nodeInnovation.getInnovation();
-            genome.addNodeGene(new NodeGene(NodeGene.TYPE.INPUT, inputNodes[i]));
-        }
-
-        // Add the output node to the genome
-        outputNode = nodeInnovation.getInnovation();
-        genome.addNodeGene(new NodeGene(NodeGene.TYPE.OUTPUT, outputNode));
-
-        // Create two random connections from an input node to the output
-        int c1 = connectionInnovation.getInnovation();
-        int c2 = connectionInnovation.getInnovation();
-
-        int randNodeOne = random.nextInt(inputNodes.length);
-        int randNodeTwo = random.nextInt(inputNodes.length);
-
-        while (randNodeOne == randNodeTwo) randNodeTwo = random.nextInt(inputNodes.length);
-
-        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeOne], outputNode, 0.5, true, c1));
-        genome.addConnectionGene(new ConnectionGene(inputNodes[randNodeTwo], outputNode, 0.5, true, c2));
     }
 }

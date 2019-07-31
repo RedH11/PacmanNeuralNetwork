@@ -274,4 +274,8 @@ public class VisualGame {
             gc.strokeLine(inNode.x + circleD, inNode.y + circleD/2, outNode.x, outNode.y + circleD/2);
         }
     }
+
+    public void stop() {
+        moves = MAXMOVES;
+    }
 }

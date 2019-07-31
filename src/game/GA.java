@@ -91,9 +91,12 @@ public class GA {
     // Create 20 Pacman Brains from already trained pacman
     private void constructPacmanBrains() {
 
+        File folder = new File(PacmanDataPath + "/PacBrains");
+        File[] brainFiles = folder.listFiles();
+
         ArrayList<InfoStorage> brains = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < brainFiles.length - 1; i++) {
             try {
                 brains.add(parseFile(i, 99, true));
             } catch (Exception ex) {
@@ -325,7 +328,6 @@ public class GA {
                     InfoStorage object = (InfoStorage) ois.readObject();
                     objects.add(object);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     break;
                 }
             }
