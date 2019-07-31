@@ -304,6 +304,8 @@ public class Genome {
                 connectionImpossible = true;
             } else if (node1.getType() == NodeGene.TYPE.OUTPUT && node2.getType() == NodeGene.TYPE.OUTPUT) {
                 connectionImpossible = true;
+            } else if (node1.getId() == node2.getId()) {
+                connectionImpossible = true; // Should fix problem with genes connecting to themselves
             }
 
             boolean connectionExists = false;
