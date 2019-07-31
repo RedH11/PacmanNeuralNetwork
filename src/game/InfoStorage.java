@@ -11,6 +11,7 @@ public class InfoStorage implements Serializable {
      * gDirs - Ghost's Direction History
      * gFits - Ghost's Fitness History
      */
+
     private int MAXMOVES;
     private int[][] pacCoords;
     int[] pDirs;
@@ -19,10 +20,6 @@ public class InfoStorage implements Serializable {
     private double[] weights;
     private double[] biases;
     private double[][] outputs;
-
-    // Stores the top ten average fitnesses of Pacman, Inky, and InkyTwo
-    private  int[] pacTopTenFitnesses = new int[10];
-    private int[] ghostTopTenFitnesses = new int[10];
 
     // Index tracking
     private int totalCoords = 0;
@@ -56,12 +53,6 @@ public class InfoStorage implements Serializable {
         totalInfo++;
     }
 
-    // Saves the top ten fitnesses of the game
-    public void setTopTenFitness(int[] pacTopTen, int[] ghostTopTen) {
-        pacTopTenFitnesses = pacTopTen;
-        ghostTopTenFitnesses = ghostTopTen;
-    }
-
     public void setNNInfo(double[] weights, double[] biases) {
         this.weights = weights;
         this.biases = biases;
@@ -83,14 +74,6 @@ public class InfoStorage implements Serializable {
 
     public double[][] getOutputs() {
         return outputs;
-    }
-
-    public int[] getGhostTopTenFitnesses() {
-        return ghostTopTenFitnesses;
-    }
-
-    public int[] getPacTopTenFitnesses() {
-        return pacTopTenFitnesses;
     }
 
     public int[] getChoices() { return choices; }
