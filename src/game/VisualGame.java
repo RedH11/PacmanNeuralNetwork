@@ -7,7 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -164,7 +167,7 @@ public class VisualGame {
         // Get pacmans row and column coordinate (r, c)
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
-
+        
         int g1C = g1Coords[moves][0];
         int g1R = g1Coords[moves][1];
 
@@ -179,21 +182,91 @@ public class VisualGame {
             gc.fillRect(prevG2C * rectW + startX, prevG2R * rectW + startY, 20, 20);
         }
 
-        // Draw Pacman
-        if (pPowered[moves]) {
-            gc.setFill(Color.LIGHTGOLDENRODYELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, circleW, circleW);
-        } else {
-            gc.setFill(Color.YELLOW);
-            gc.fillOval(pC * rectW + startX, pR * rectW + startY, circleW, circleW);
+
+        javafx.scene.image.Image pacLeft = new javafx.scene.image.Image("assets/sprites/pacman_left.png");
+        javafx.scene.image.Image pacRight =new javafx.scene.image.Image("assets/sprites/pacman_right.png");
+        javafx.scene.image.Image pacUp = new javafx.scene.image.Image("assets/sprites/pacman_up.png");
+        javafx.scene.image.Image pacDown = new javafx.scene.image.Image("assets/sprites/pacman_down.png");
+        javafx.scene.image.Image poweredPacLeft = new javafx.scene.image.Image("assets/sprites/powered_pacman_left.png");
+        javafx.scene.image.Image poweredPacRight = new javafx.scene.image.Image("assets/sprites/powered_pacman_right.png");
+        javafx.scene.image.Image poweredPacUp = new javafx.scene.image.Image("assets/sprites/powered_pacman_up.png");
+        javafx.scene.image.Image poweredPacDown = new javafx.scene.image.Image("assets/sprites/powered_pacman_down.png");
+        javafx.scene.image.Image pacImage = pacLeft;
+
+        javafx.scene.image.Image inkyLeft = new javafx.scene.image.Image("assets/sprites/inky_left.png");
+        javafx.scene.image.Image inkyRight = new javafx.scene.image.Image("assets/sprites/inky_Right.png");
+        javafx.scene.image.Image scaredGhost = new javafx.scene.image.Image("assets/sprites/scared_ghost.png");
+        javafx.scene.image.Image inkyImage = inkyLeft;
+        javafx.scene.image.Image inky2Image = inkyLeft;
+
+        //Set Pacman's sprite depending on movement direction / powered state
+        if (pC-prevPC == 0 && pR-prevPR == -1) {
+            if (pPowered[moves]) {
+                pacImage = poweredPacUp;
+            } else {
+                pacImage = pacUp;
+            }
         }
-
-        // Draw Ghosts
-        gc.setFill(Color.LIGHTBLUE);
-        gc.fillOval(g1C * rectW + startX, g1R * rectW + startY, circleW, circleW);
-
-        gc.setFill(Color.RED);
-        gc.fillOval(g2C * rectW + startX, g2R * rectW + startY, circleW, circleW);
+        if (pC-prevPC == -1 && pR-prevPR == 0) {
+            if (pPowered[moves]) {
+                pacImage = poweredPacLeft;
+            } else {
+                pacImage = pacLeft;
+            }
+        }
+        if (pC-prevPC == 1 && pR-prevPR == 0) {
+            if (pPowered[moves]) {
+                pacImage = poweredPacRight;
+            } else {
+                pacImage = pacRight;
+            }
+        }
+        if (pC-prevPC == 0 && pR-prevPR == 1) {
+            if (pPowered[moves]) {
+                pacImage = poweredPacDown;
+            } else {
+                pacImage = pacDown;
+            }
+        }
+        
+        //Set Inky1's sprite depending on movement direction / scared state
+        if (g1C-prevG1C == -1 && g1R-prevG1R == 0) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyLeft;
+            }
+        }
+        if (g1C-prevG1C == 1 && g1R-prevG1R == 0) {
+            if (pPowered[moves]) {
+                inkyImage = scaredGhost;
+            } else {
+                inkyImage = inkyRight;
+            }
+        }
+        
+        //Set inky2's sprite
+        if (g2C-prevG2C == -1 && g2R-prevG2R == 0) {
+            if (pPowered[moves]) {
+                inky2Image = scaredGhost;
+            } else {
+                inky2Image = inkyLeft;
+            }
+        }
+        if (g2C-prevG2C == 1 && g2R-prevG2R == 0) {
+            if (pPowered[moves]) {
+                inky2Image = scaredGhost;
+            } else {
+                inky2Image = inkyRight;
+            }
+        }
+        
+        
+        //-----------------------------------------------
+        //Do all the drawing
+        gc.drawImage(pacImage, pC, pR);
+        gc.drawImage(inkyImage, g1C, g1R);
+        gc.drawImage(inky2Image, g2C, g2R);
 
         // Show eaten pellets
         if (moves > 0) {
