@@ -2,29 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b5915e2-e883-43e2-b669-e66da8261e08" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/game/InfoStorage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/GeneticAlgorithm.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/GeneticAlgorithm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/Grid.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/MapLayout.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/Pacman.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/Pacman.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NWAWPNeuralNet/game/VisualMap.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game100/Gens/PacGen_100" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game100/Gens/PacGen_1000" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game100/Gens/PacGen_50" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game100/Gens/PacGen_500" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/BlinkyGhost.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/ClydeGhost.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Ghost.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Grid.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Inky.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/MapLayout.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game/GeneticAlgorithm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/GeneticAlgorithm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game/InfoStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/InfoStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game/Pacman.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/Pacman.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/PacmanSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/PacmanSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/PinkyGhost.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/Tile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/VisualGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/VisualGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/VisualMap.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,32 +26,51 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/PacmanGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="45" column="5" lean-forward="true" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+            <state relative-caret-position="230">
+              <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#6691#6692#0" expanded="true" />
+                <element signature="e#6716#6717#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/game/InfoStorage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="231">
+              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+              <folding>
+                <element signature="e#1770#1771#0" expanded="true" />
+                <element signature="e#1804#1805#0" expanded="true" />
+                <element signature="e#1840#1841#0" expanded="true" />
+                <element signature="e#1869#1870#0" expanded="true" />
+                <element signature="e#1907#1908#0" expanded="true" />
+                <element signature="e#1937#1938#0" expanded="true" />
+                <element signature="e#2019#2020#0" expanded="true" />
+                <element signature="e#2047#2048#0" expanded="true" />
+                <element signature="e#2084#2085#0" expanded="true" />
+                <element signature="e#2116#2117#0" expanded="true" />
+                <element signature="e#2152#2153#0" expanded="true" />
+                <element signature="e#2182#2183#0" expanded="true" />
+                <element signature="e#2214#2215#0" expanded="true" />
+                <element signature="e#2245#2246#0" expanded="true" />
+                <element signature="e#2276#2277#0" expanded="true" />
+                <element signature="e#2304#2305#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/VisualGame.java">
+        <entry file="file://$PROJECT_DIR$/src/game/Pacman.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1956">
-              <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/GeneticAlgorithm.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2153">
-              <caret line="171" column="24" selection-start-line="171" selection-start-column="24" selection-end-line="171" selection-end-column="24" />
+            <state relative-caret-position="221">
+              <caret line="25" column="21" lean-forward="true" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -71,8 +78,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/PacmanSettings.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="156" column="61" selection-start-line="156" selection-start-column="61" selection-end-line="156" selection-end-column="61" />
+            <state relative-caret-position="269">
+              <caret line="144" selection-start-line="144" selection-end-line="144" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -81,19 +88,46 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/Tile.java">
+        <entry file="file://$PROJECT_DIR$/src/game/GeneticAlgorithm.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+            <state relative-caret-position="136">
+              <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/PacmanGame.java">
+        <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="43">
-              <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+            <state relative-caret-position="338">
+              <caret line="50" column="37" selection-start-line="50" selection-start-column="37" selection-end-line="50" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/FitnessComparator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/NeuralNetwork.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/NetworkTools.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="697">
+              <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -110,6 +144,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>pacman</find>
+      <find>saveI</find>
+      <find>is</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -118,7 +154,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/game/Pacman.java" />
         <option value="$PROJECT_DIR$/src/game/Main.java" />
         <option value="$PROJECT_DIR$/src/gamePack/InkyGhost.java" />
         <option value="$PROJECT_DIR$/src/gamePack/Grid.java" />
@@ -132,11 +167,14 @@
         <option value="$PROJECT_DIR$/src/game/GameArray.java" />
         <option value="$PROJECT_DIR$/src/game/VisualMap.java" />
         <option value="$PROJECT_DIR$/src/game/InkyGhost.java" />
-        <option value="$PROJECT_DIR$/src/game/GeneticAlgorithm.java" />
         <option value="$PROJECT_DIR$/src/game/NeuralNetwork.java" />
-        <option value="$PROJECT_DIR$/src/game/PacmanSettings.java" />
         <option value="$PROJECT_DIR$/src/game/VisualGame.java" />
         <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/g/GeneticAlgorithm.java" />
+        <option value="$PROJECT_DIR$/src/game/GeneticAlgorithm.java" />
+        <option value="$PROJECT_DIR$/src/game/PacmanSettings.java" />
+        <option value="$PROJECT_DIR$/src/game/Pacman.java" />
+        <option value="$PROJECT_DIR$/src/game/InfoStorage.java" />
       </list>
     </option>
   </component>
@@ -156,19 +194,26 @@
         <subPane>
           <expand>
             <path>
-              <item name="NWAWPPacmanNN" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NWAWPPacmanNN" type="462c0819:PsiDirectoryNode" />
+              <item name="NWAWPNeuralNet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NWAWPNeuralNet" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="NWAWPPacmanNN" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NWAWPPacmanNN" type="462c0819:PsiDirectoryNode" />
+              <item name="NWAWPNeuralNet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NWAWPNeuralNet" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="NWAWPPacmanNN" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NWAWPPacmanNN" type="462c0819:PsiDirectoryNode" />
+              <item name="NWAWPNeuralNet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NWAWPNeuralNet" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="game" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NWAWPNeuralNet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NWAWPNeuralNet" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="game" type="462c0819:PsiDirectoryNode" />
+              <item name="FitnessComparator.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </path>
           </expand>
           <select />
@@ -232,10 +277,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="816" extended-state="6" />
-    <editor active="true" />
+    <frame x="-6" y="-6" width="1613" height="873" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25608012" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.244373" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -244,7 +288,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32974428" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.041551247" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.46433377" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39973083" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -253,7 +297,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info active="true" anchor="bottom" id="Messages" order="11" visible="true" weight="0.32872927" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32839838" />
       <window_info anchor="bottom" id="FindBugs-IDEA" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -264,6 +308,36 @@
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23794213" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Designer" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32974428" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.31090176" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39973083" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="CheckStyle" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32872927" />
+      <window_info anchor="bottom" id="FindBugs-IDEA" order="12" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Maven" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+    </layout-to-restore>
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
@@ -283,156 +357,36 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gamePack/MapLayout.java" />
-    <entry file="file://$PROJECT_DIR$/src/gamePack/Pacman.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="54" selection-start-line="54" selection-end-line="54" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gamePack/Pacman.java" />
     <entry file="file://$PROJECT_DIR$/src/gamePack/GameMap.java" />
     <entry file="file://$PROJECT_DIR$/src/gamePack/GameArray.java" />
     <entry file="file://$PROJECT_DIR$/src/gamePack/Grid.java" />
-    <entry file="file://$PROJECT_DIR$/src/game/Grid.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2567">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/BlinkyGhost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/ClydeGhost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="53" selection-start-line="53" selection-end-line="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/Ghost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="41" column="22" lean-forward="true" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/PinkyGhost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-434">
-          <caret column="13" selection-start-column="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/Grid.java" />
+    <entry file="file://$PROJECT_DIR$/src/game/BlinkyGhost.java" />
+    <entry file="file://$PROJECT_DIR$/src/game/ClydeGhost.java" />
+    <entry file="file://$PROJECT_DIR$/src/game/Ghost.java" />
+    <entry file="file://$PROJECT_DIR$/src/game/PinkyGhost.java" />
     <entry file="file://$PROJECT_DIR$/src/game/NetworkTools.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="42" column="80" selection-start-line="42" selection-start-column="80" selection-end-line="42" selection-end-column="80" />
+        <state relative-caret-position="697">
+          <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/GameArray.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1003">
-          <caret line="28" column="18" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#7114#7115#0" expanded="true" />
-            <element signature="e#7158#7159#0" expanded="true" />
-            <element signature="e#7199#7200#0" expanded="true" />
-            <element signature="e#7233#7234#0" expanded="true" />
-            <element signature="e#7271#7272#0" expanded="true" />
-            <element signature="e#7312#7313#0" expanded="true" />
-            <element signature="e#7350#7351#0" expanded="true" />
-            <element signature="e#7389#7390#0" expanded="true" />
-            <element signature="e#8798#8799#0" expanded="true" />
-            <element signature="e#8827#8828#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/GameArray.java" />
     <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_211/src.zip!/java/util/ArrayList.java" />
     <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_211/src.zip!/java/util/Random.java" />
-    <entry file="file://$PROJECT_DIR$/src/game/InkyGhost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-          <folding>
-            <element signature="e#600#601#0" expanded="true" />
-            <element signature="e#628#629#0" expanded="true" />
-            <element signature="e#2188#2189#0" expanded="true" />
-            <element signature="e#2588#2589#0" expanded="true" />
-            <element signature="e#2668#2669#0" expanded="true" />
-            <element signature="e#2776#2777#0" expanded="true" />
-            <element signature="e#2996#2997#0" expanded="true" />
-            <element signature="e#3195#3196#0" expanded="true" />
-            <element signature="e#3269#3270#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/InkyGhost.java" />
     <entry file="file://$PROJECT_DIR$/src/game/NeuralNetwork.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="87" selection-start-line="87" selection-end-line="87" />
-          <folding>
-            <element signature="e#3797#3798#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="68">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/PacmanGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="43">
-          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/VisualMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/MapLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="637">
-          <caret line="293" column="36" selection-start-line="293" selection-start-column="36" selection-end-line="293" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/GeneticAlgorithm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2153">
-          <caret line="171" column="24" selection-start-line="171" selection-start-column="24" selection-end-line="171" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/PacmanSettings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="156" column="61" selection-start-line="156" selection-start-column="61" selection-end-line="156" selection-end-column="61" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/Pacman Backup/Second Backup/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-495">
-          <caret selection-end-line="74" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/VisualMap.java" />
+    <entry file="file://$PROJECT_DIR$/src/game/MapLayout.java" />
+    <entry file="file://$USER_HOME$/Desktop/Pacman Backup/Second Backup/src/Main.java" />
     <entry file="file://$PROJECT_DIR$/src/game/VisualGame.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1956">
@@ -440,19 +394,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/PacmanUI.java">
+    <entry file="file://$PROJECT_DIR$/src/game/PacmanUI.java" />
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="135" lean-forward="true" selection-start-line="135" selection-end-line="135" />
+        <state relative-caret-position="338">
+          <caret line="50" column="37" selection-start-line="50" selection-start-column="37" selection-end-line="50" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/game/PacmanGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="45" column="5" lean-forward="true" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+        <state relative-caret-position="230">
+          <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+          <folding>
+            <element signature="e#6691#6692#0" expanded="true" />
+            <element signature="e#6716#6717#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/GeneticAlgorithm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/PacmanSettings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="144" selection-start-line="144" selection-end-line="144" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/Pacman.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="25" column="21" lean-forward="true" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/InfoStorage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="e#1770#1771#0" expanded="true" />
+            <element signature="e#1804#1805#0" expanded="true" />
+            <element signature="e#1840#1841#0" expanded="true" />
+            <element signature="e#1869#1870#0" expanded="true" />
+            <element signature="e#1907#1908#0" expanded="true" />
+            <element signature="e#1937#1938#0" expanded="true" />
+            <element signature="e#2019#2020#0" expanded="true" />
+            <element signature="e#2047#2048#0" expanded="true" />
+            <element signature="e#2084#2085#0" expanded="true" />
+            <element signature="e#2116#2117#0" expanded="true" />
+            <element signature="e#2152#2153#0" expanded="true" />
+            <element signature="e#2182#2183#0" expanded="true" />
+            <element signature="e#2214#2215#0" expanded="true" />
+            <element signature="e#2245#2246#0" expanded="true" />
+            <element signature="e#2276#2277#0" expanded="true" />
+            <element signature="e#2304#2305#0" expanded="true" />
           </folding>
         </state>
       </provider>

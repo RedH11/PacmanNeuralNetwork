@@ -1,6 +1,6 @@
 package game;
 
-import java.io.*;
+import java.io.Serializable;
 
 public class InfoStorage implements Serializable {
 
@@ -11,6 +11,7 @@ public class InfoStorage implements Serializable {
      * gDirs - Ghost's Direction History
      * gFits - Ghost's Fitness History
      */
+
     private int MAXMOVES;
     private int[][] pacCoords;
     int[] pDirs;
@@ -19,10 +20,6 @@ public class InfoStorage implements Serializable {
     private double[] weights;
     private double[] biases;
     private double[][] outputs;
-
-    // Stores the top ten average fitnesses of Pacman, Inky, and InkyTwo
-    private  int[] pacTopTenFitnesses = new int[10];
-    private int[] ghostTopTenFitnesses = new int[10];
 
     // Index tracking
     private int totalCoords = 0;
@@ -42,7 +39,7 @@ public class InfoStorage implements Serializable {
         weights = new double[weightsLength];
         biases = new double[biasLength];
     }
-    
+
     public void addAllCoords(int px, int py) {
         pacCoords[totalCoords][0] = px;
         pacCoords[totalCoords][1] = py;
@@ -54,12 +51,6 @@ public class InfoStorage implements Serializable {
         pDirs[totalInfo] = dir;
         pFits[totalInfo] = fit;
         totalInfo++;
-    }
-
-    // Saves the top ten fitnesses of the game
-    public void setTopTenFitness(int[] pacTopTen, int[] ghostTopTen) {
-        pacTopTenFitnesses = pacTopTen;
-        ghostTopTenFitnesses = ghostTopTen;
     }
 
     public void setNNInfo(double[] weights, double[] biases) {
@@ -83,14 +74,6 @@ public class InfoStorage implements Serializable {
 
     public double[][] getOutputs() {
         return outputs;
-    }
-
-    public int[] getGhostTopTenFitnesses() {
-        return ghostTopTenFitnesses;
-    }
-
-    public int[] getPacTopTenFitnesses() {
-        return pacTopTenFitnesses;
     }
 
     public int[] getChoices() { return choices; }

@@ -146,12 +146,12 @@ public class GeneticAlgorithm {
         pacmanBabys.sort(new PacmanFitnessComparator());
 
         // Save the top Pacman's weights and biases
-        //PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
-        //topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
+        PacmanGame topPac = pacmanBabys.get(pacmanBabys.size() - 1);
+        topPac.getIs().initializeNNStorage(topPac.pacman.brain.getArrayWeights().length, topPac.pacman.brain.getArrayBias().length);
 
         try {
             // Save file records of the best Pacman/Inky
-            //pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
+            pacmanBabys.get(pacmanBabys.size() - 1).saveInformation(topPac.getIs(), oosPac);
 
         } catch (Exception ex) {}
 
