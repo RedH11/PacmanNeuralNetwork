@@ -26,6 +26,12 @@ public class PacmanSettings extends Pane {
     String PacmanDataPath;
     VisualGame vg = null;
 
+    /**
+     * Settings for the pacman game
+     * @param stage viewing stage
+     * @param PacmanDataPath path to PacmanData folder
+     * @param gameGC
+     */
     public PacmanSettings(Stage stage, String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
 
@@ -163,6 +169,13 @@ public class PacmanSettings extends Pane {
         getChildren().add(root);
     }
 
+    /**
+     * Reads objects from infostorage file
+     * @param filename the file path
+     * @return objects in storage
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private static ArrayList<InfoStorage> readObjectsFromFile(String filename) throws IOException, ClassNotFoundException {
         ArrayList<InfoStorage> objects = new ArrayList<>();
         InputStream is = null;
@@ -185,7 +198,13 @@ public class PacmanSettings extends Pane {
         return objects;
     }
 
-
+    /**
+     *
+     * @param gameNum
+     * @param generationNum
+     * @param pacman if there is pacman or not
+     * @return the specified game
+     */
     public InfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
         String gameFile = "";
 
