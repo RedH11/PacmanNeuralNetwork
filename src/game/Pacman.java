@@ -27,7 +27,14 @@ public class Pacman {
 
     public void respawn() {
         Random random = new Random();
+        int prevSpawn = -1;
         int randSpawn = random.nextInt(4);
+
+        while (randSpawn != prevSpawn) {
+            randSpawn = random.nextInt(4);
+        }
+
+        prevSpawn= randSpawn;
 
         // 13, 17 default
         // Spawn pacman in a random corner

@@ -126,10 +126,13 @@ public class VisualGame {
             System.out.println("Error Drawing Map" + ex);
         }
 
-        gc.setFill(Color.BLACK);
-        gc.clearRect(0, 0, 1000, 1000);
         gc.setFill(Color.WHITE);
         gc.fillText("GAME OVER", 235, 290);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {}
+        gc.setFill(Color.BLACK);
+        gc.clearRect(0, 0, 1000, 1000);
         showGame.setDisable(false);
     }
 

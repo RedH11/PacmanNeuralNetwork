@@ -45,8 +45,8 @@ public class GA {
     // If adjusted must also adjust in Genome 
     private final double WEIGHT_MUTATION_RATE = 0.8;
     private final double ADJUST_WEIGHT_RATE = 0.9; // 90% chance of adjusting node weight, else replaces weight with random one
-    private final double ADD_CONNECTION_RATE = 0.05;
-    private final double ADD_NODE_RATE = 0.03;
+    private final double ADD_CONNECTION_RATE = 0.1;
+    private final double ADD_NODE_RATE = 0.07;
 
     final int HIDDEN_ONE = 40;
     final int OUTPUTS = 2;

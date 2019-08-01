@@ -121,6 +121,7 @@ public class PacmanSettings extends Pane {
                         // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
                         Platform.runLater(() -> {
                             invalAlert.setTitle("Error Evolving" + ex);
+                            showGame.setDisable(false);
                             ex.printStackTrace();
                             invalAlert.show();
                         });
