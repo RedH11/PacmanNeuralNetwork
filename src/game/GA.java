@@ -49,6 +49,7 @@ public class GA {
     private final double ADD_NODE_RATE = 0.07;
 
     final int HIDDEN_ONE = 40;
+    final int HIDDEN_TWO = 20;
     final int OUTPUTS = 2;
 
     final int GHOST_INPUTS;
@@ -97,20 +98,26 @@ public class GA {
     // Create 20 Pacman Brains from already trained pacman
     private void constructPacmanBrains() {
 
-        File folder = new File("src/PacBrains");
+        File folder = new File("src/game/PacmanBrains");
         File[] brainFiles = folder.listFiles();
 
         ArrayList<InfoStorage> brains = new ArrayList<>();
 
+        int brainIndex = 0;
+
         for (int i = 0; i < brainFiles.length - 1; i++) {
-            try {
-                brains.add(parsePacBrainsFile(i));
-            } catch (Exception ex) {
-                System.out.println("Pacman Brains File Not Found " + ex);
+            if (!brainFiles[i].getName().contains("DS")) {
+                try {
+                    brains.add(parsePacBrainsFile(i));
+                } catch (Exception ex) {
+                    System.out.println("Pacman Brains File Not Found " + ex);
+                }
+                pacmanBrains.add(new NeuralNetwork(16, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS));
+                pacmanBrains.get(brainIndex).setWeights(brains.get(brainIndex).getWeights());
+                pacmanBrains.get(brainIndex).setBias(brains.get(brainIndex).getBiases());
+                brainIndex++;
+                System.out.println("BRAIN LOADED");
             }
-            pacmanBrains.add(new NeuralNetwork(16, HIDDEN_ONE, OUTPUTS));
-            pacmanBrains.get(i).setWeights(brains.get(i).getWeights());
-            pacmanBrains.get(i).setBias(brains.get(i).getBiases());
         }
     }
 
@@ -351,14 +358,14 @@ public class GA {
         String gameFile = "";
 
         // Viewing Setup
-        gameFile = "src/PacBrains/Game" + gameNum + "/Gens/PacGens";
+        gameFile = "src/game/PacmanBrains/Game" + gameNum + "/Gens/PacGens";
 
         try {
             ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);
             return allGames.get(allGames.size() - 1);
 
         } catch (Exception ex) {
-            System.out.println("File Not Found");
+            System.out.println("File Not Found in Parser");
         }
         return null;
     }
