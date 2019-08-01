@@ -53,7 +53,7 @@ public class Main extends Application {
 
         game.setResizable(false);
         // load the image
-        Image image = new Image("pacMap.jpg");
+        Image image = new Image("game/pacMap.jpg");
 
         // simple displays ImageView the image as is
         ImageView iv1 = new ImageView();

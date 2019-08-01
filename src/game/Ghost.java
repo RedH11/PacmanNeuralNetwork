@@ -53,6 +53,9 @@ public class Ghost {
         inputs[3] = distWallRight(map);
         inputs[4] = distFromPac(px, py);
         inputs[5] = angleFromPac(px, py);
+
+        inputs[6] = 1; // Last input is always 1 as the bias
+
         //lookAround(map, inputs, px, py);
 
         return inputs;
@@ -272,22 +275,11 @@ public class Ghost {
     private double distFromPac(int px, int py) {
         double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
         // Add a score for the fitness based on the distance
-        addFitness(45 - (int) dist);
+        addFitness((int)(45 - dist) / 10);
         return dist;
     }
     private double angleFromPac(int px, int py){
-        //return Math.asin((y-py)/distFromPac(px, py));
-        if (px != x && py != y) {
-            return 1 / (Math.tan((py - y) / (px - x)));
-        } else {
-            if (py == y) {
-                if (px > x) return 180;
-                else return -180;
-            } else {
-                if (py > y) return -90;
-                else return 90;
-            }
-        }
+        return Math.asin((y-py)/distFromPac(px, py));
     }
     // Debugging Methods
     // Print direction

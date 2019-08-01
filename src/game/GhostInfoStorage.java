@@ -4,7 +4,6 @@ import game.NEAT.ConnectionGene;
 import game.NEAT.NodeGene;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
 
 public class GhostInfoStorage implements Serializable {

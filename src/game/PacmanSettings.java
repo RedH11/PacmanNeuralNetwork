@@ -14,14 +14,11 @@ import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
 
 public class PacmanSettings extends Pane {
 
-    int GHOST_INPUTS = 6;
+    int GHOST_INPUTS = 7; // 6 inputs + a bias at the end that is always set to one
 
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
     String PacmanDataPath;
@@ -74,14 +71,12 @@ public class PacmanSettings extends Pane {
 
         Button evolve = new Button("Evolve");
         evolve.setOnAction(ev -> {
+            evolve.setDisable(true);
             Thread tests = new Thread(() -> {
-                GA ga = new GA(PacmanDataPath, Integer.parseInt(popTF.getText()), Integer.parseInt(gensTF.getText()), genome, GHOST_INPUTS);
+                GA ga = new GA(PacmanDataPath, Integer.parseInt(popTF.getText()), Integer.parseInt(gensTF.getText()), genome, GHOST_INPUTS, evolve);
                 ga.evolveGhosts();
             });
             tests.start();
-            try {
-                tests.join();
-            } catch (InterruptedException ex){}
         });
 
         // VIEWER
@@ -109,9 +104,9 @@ public class PacmanSettings extends Pane {
 
         Button showGame = new Button("Show Game");
         showGame.setOnAction(ev -> {
+            showGame.setDisable(true);
             // If text is entered
             if (genNum.getText().length() > 0) {
-                if (vg != null) vg.stop();
                 // Gets amount of files in the folder already
                 File folder2 = new File(PacmanDataPath);
                 File[] listOfFiles2 = folder2.listFiles();
@@ -119,8 +114,9 @@ public class PacmanSettings extends Pane {
                     try {
                         int fileAmount = listOfFiles2.length;
                         if (listOfFiles2[0].getName().contains("DS")) fileAmount--;
+                        else if (listOfFiles[0].getName().contains("0")) fileAmount--;
                         GhostInfoStorage is = parseFile(fileAmount, Integer.parseInt(genNum.getText()) - 1);
-                        vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()) - 1, 10);
+                        vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()) - 1, showGame, 10);
                     } catch (Exception ex) {
                         // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
                         Platform.runLater(() -> {
@@ -209,7 +205,7 @@ public class PacmanSettings extends Pane {
         String gameFile = "";
 
         // Viewing Setup
-        gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/GhostGens";
+        gameFile = PacmanDataPath + "\\Game" +  gameNum + "\\Gens\\GhostGens";
 
         try {
             ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);

@@ -1,6 +1,7 @@
 package game;
 
 import game.NEAT.*;
+import javafx.scene.control.Button;
 
 import java.io.*;
 import java.util.*;
@@ -52,12 +53,15 @@ public class GA {
 
     final int GHOST_INPUTS;
 
-    public GA(String PacmanDataPath, int populationSize, int totalGens, Genome startingGenome, int GHOST_INPUTS) {
+    Button evolve;
+
+    public GA(String PacmanDataPath, int populationSize, int totalGens, Genome startingGenome, int GHOST_INPUTS, Button evolve) {
         this.PacmanDataPath = PacmanDataPath;
         this.populationSize = populationSize;
         this.totalGens = totalGens;
         this.startingGenome = startingGenome;
         this.GHOST_INPUTS = GHOST_INPUTS;
+        this.evolve = evolve;
 
         genomes = new ArrayList<Genome>(populationSize);
         nextGenGenomes = new ArrayList<Genome>(populationSize);
@@ -126,6 +130,8 @@ public class GA {
         } catch (IOException ex) {
             System.out.println("Error Closing Ghost Info Writer");
         }
+
+        evolve.setDisable(false);
     }
 
     private void makePopulation() {

@@ -3,14 +3,11 @@ package game;
 import game.NEAT.ConnectionGene;
 import game.NEAT.NodeGene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-import javax.imageio.ImageIO;
 import java.awt.Point;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +89,7 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(GraphicsContext gameGC, GhostInfoStorage is, int generation, int FPS) {
+    public VisualGame(GraphicsContext gameGC, GhostInfoStorage is, int generation, Button showGame, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
         this.pPowered = is.getpPowered();
@@ -133,6 +130,7 @@ public class VisualGame {
         gc.clearRect(0, 0, 1000, 1000);
         gc.setFill(Color.WHITE);
         gc.fillText("GAME OVER", 235, 290);
+        showGame.setDisable(false);
     }
 
     private void initSprites() {
@@ -325,6 +323,7 @@ public class VisualGame {
 
             if (node.getType() == NodeGene.TYPE.INPUT) {
                 gc.setFill(Color.rgb(153, 204, 255));
+                //gc.setFill(Color.rgb(255, 255, 153)); // Set bias node to be yellow
                 gc.fillOval(inputXCoord, inputYCoord, circleD, circleD);
                 nodeGenePositions.put(node.getId(), new Point(inputXCoord, inputYCoord));
                 inputYCoord += inputYSpacing;
