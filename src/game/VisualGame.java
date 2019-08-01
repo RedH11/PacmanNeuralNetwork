@@ -1,6 +1,7 @@
 package game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 public class VisualGame {
@@ -18,7 +19,10 @@ public class VisualGame {
     GraphicsContext gc;
     int moves = 0;
 
-    private boolean complete = false;
+    int prevPR;
+    int prevPC;
+
+    Button showGame;
 
     // The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
     private int[][] tiles = {
@@ -54,13 +58,14 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-    public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, int FPS) {
+    public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, Button showGame, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
         this.choices = is.getChoices();
         this.pDirs = is.getpDirs();
         this.pFits = is.getpFits();
         this.generation = generation;
+        this.showGame = showGame;
         this.gc = gameGC;
 
         try {
@@ -78,6 +83,7 @@ public class VisualGame {
 
         gc.setFill(Color.BLACK);
         gc.clearRect(0, 0, 1000, 1000);
+        showGame.setDisable(false);
     }
 
     public void stop() {
@@ -95,18 +101,10 @@ public class VisualGame {
 
         gc.setStroke(Color.WHITE);
 
-        gc.setFill(Color.BLACK);
-        // Background color black
-        gc.fillRect(0, 0, 640, 640);
-
         // Draw the base map
         for (int r = 0; r < 31; r++) {
             for (int c = 0; c < 28; c++) {
                 switch (tiles[r][c]) {
-                    case 1: // Wall
-                        gc.setFill(Color.rgb(0, 0, 156));
-                        gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
-                        break;
                     case 0: // Power Pellet
                         gc.setFill(Color.YELLOW);
                         gc.fillOval(c * rectW + startX + 7, r * rectW + startY + 7, 5, 5);
@@ -122,13 +120,6 @@ public class VisualGame {
                             gc.strokeOval(c * rectW + startX + 4, r * rectW + startY + 4, 10, 10);
                         }
                         break;
-                    case 6: // Empty
-                        gc.setFill(Color.BLACK);
-                        gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
-                        break;
-                    default: // Other
-                        gc.setFill(Color.WHITE);
-                        gc.fillRect(c * rectW + startX, r * rectW + startY, rectW, rectW);
                 }
             }
         }
@@ -149,19 +140,10 @@ public class VisualGame {
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
 
-        int arrowLength = 15;
-
-        // Draw pacman and inky and arrows showing their direction
-
-        //int pacX = pC * rectW + startX  + 9;
-        //int pacY = pR * rectW + startY + 9;
-
-        //drawArrows(pacX, pacY, moves, arrowLength);
-
-        if (choices[moves] == 0) {
-            System.out.println("Left");
-        } else {
-            System.out.println("Right");
+        // Delete the trail behind the ghosts / pacman
+        if (prevPR != 0) {
+            gc.setFill(Color.BLACK);
+            gc.clearRect(prevPC * rectW + startX, prevPR * rectW + startY, 22, 22);
         }
 
         gc.setFill(Color.YELLOW);
@@ -175,6 +157,9 @@ public class VisualGame {
                 tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
             }
         }
+
+        prevPC = pC;
+        prevPR = pR;
     }
 
     public void drawArrows (int x, int y, int moves, int length) {

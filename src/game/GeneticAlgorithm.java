@@ -1,6 +1,7 @@
 package game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 import java.io.*;
@@ -39,19 +40,20 @@ public class GeneticAlgorithm {
 
     // Settings for graphing the fitness
     private int fitnessX = 10;
-    private GraphicsContext gc;
     private int coordinateW = 5;
 
-    private int MAXMOVES = 400;
+    Button evolve;
 
-    public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, GraphicsContext gc) throws IOException {
+    private int MAXMOVES = 600;
+
+    public GeneticAlgorithm(String PacmanDataPath, int popSize, int totalGens, double mutationChance, int lowerGhosts, int topGhosts, int lowerPacman, int topPacman, Button evolve) throws IOException {
         this.PacmanDataPath = PacmanDataPath;
         this.populationSize = popSize;
         this.totalGens = totalGens;
         this.mutationChance = mutationChance;
         this.lowerPacman = lowerPacman;
         this.topPacman = topPacman;
-        this.gc = gc;
+        this.evolve = evolve;
 
         // u1 is the chance that the number one pacman is the parent
         double r = calcRate(topPacman + lowerPacman, 20);
@@ -123,6 +125,7 @@ public class GeneticAlgorithm {
         // Close file writer for fitness
         pacWriter.close();
         oosPac.close();
+        evolve.setDisable(false);
     }
 
     // Make a fresh population of Pacmans
@@ -232,21 +235,9 @@ public class GeneticAlgorithm {
 
     // Records the fitness of the pacman to a file and prints it out in the console (every 10 generations)
     private void recordFitness() {
-        // Lighter color is a lower mutation rate on the display
-        if (mutationChance <= 0.5) gc.setFill(Color.rgb(204, 229, 255));
-        else if (mutationChance <= 0.6) gc.setFill(Color.rgb(153, 204, 255));
-        else if (mutationChance <= 0.7) gc.setFill(Color.rgb(102, 178, 255));
-        else if (mutationChance <= 0.8) gc.setFill(Color.rgb(51, 153, 255));
-        else if (mutationChance <= 0.9) gc.setFill(Color.rgb(0, 128, 255));
-        else gc.setFill(Color.rgb(0, 102, 204));
+
 
         if (generation % 10 == 0) System.out.println("Gen " + generation + " " + pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness);
-        if (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness == 0) {
-            gc.fillOval(fitnessX, 620, coordinateW, coordinateW);
-
-        } else {
-            gc.fillOval(fitnessX, 620 - (pacmanBabys.get(pacmanBabys.size() - 1).pacman.fitness / 2), coordinateW, coordinateW);
-        }
 
         // The x coordinate of the points that are being graphed to show fitness progression
         fitnessX += 8;

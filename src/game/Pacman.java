@@ -20,13 +20,13 @@ public class Pacman {
 
     // Neural Network Settings
     final int INPUTS = 16;
-    final int HIDDEN_ONE = 40;
-    final int HIDDEN_TWO = 50;
+    final int HIDDEN_ONE = 25;
+    //final int HIDDEN_TWO = 50;
     final int OUTPUTS = 2;
 
 
     public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE,  OUTPUTS);
+        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
         respawn();
     }
 
@@ -187,10 +187,10 @@ public class Pacman {
                 break;
             }
         }
-        return dist;
+        return dist / 26;
     }
 
-    public int numPUp(Tile[][]map){
+    public double numPUp(Tile[][]map){
         int numP = 0;
         for(int i = y; i > 1; i--) {
             if (!map[i][x].wall) {
@@ -203,10 +203,10 @@ public class Pacman {
             }
         }
 
-        return numP;
+        return sigmoid(numP);
     }
 
-    public int distWallDown(Tile [][]map){
+    public double distWallDown(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
             if(map[y+i][x].wall){
@@ -214,10 +214,10 @@ public class Pacman {
                 break;
             }
         }
-        return dist;
+        return dist / 26;
     }
 
-    public int numPDown(Tile[][]map){
+    public double numPDown(Tile[][]map){
         int numP = 0;
         for(int i = y; i < 26; i++) {
             if (!map[i][x].wall) {
@@ -230,10 +230,10 @@ public class Pacman {
             }
         }
 
-        return numP;
+        return sigmoid(numP);
     }
 
-    public int distWallLeft(Tile [][]map){
+    public double distWallLeft(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
             if(map[y][x-i].wall){
@@ -241,9 +241,9 @@ public class Pacman {
                 break;
             }
         }
-        return dist;
+        return dist/26;
     }
-    public int numPLeft(Tile[][]map){
+    public double numPLeft(Tile[][]map){
         int numP = 0;
         for(int i = x; i > 1; i--) {
             if (!map[y][i].wall) {
@@ -256,11 +256,11 @@ public class Pacman {
             }
         }
 
-        return numP;
+        return sigmoid(numP);
     }
 
     //right
-    public int distWallRight(Tile [][]map){
+    public double distWallRight(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
             if(map[y][x+i].wall){
@@ -268,9 +268,9 @@ public class Pacman {
                 break;
             }
         }
-        return dist;
+        return dist / 26;
     }
-    public int numPRight(Tile[][]map){
+    public double numPRight(Tile[][]map){
         int numP = 0;
         for(int i = x; i < 26; i++) {
             if (!map[y][i].wall) {
@@ -283,7 +283,7 @@ public class Pacman {
             }
         }
 
-        return numP;
+        return sigmoid(numP);
     }
 
     // Debugging Methods
@@ -300,5 +300,9 @@ public class Pacman {
         if (wallInWay(1, map)) System.out.println("Wall Left");
         if (wallInWay(2, map)) System.out.println("Wall Right");
         if (wallInWay(3, map)) System.out.println("Wall Below");
+    }
+
+    private double sigmoid(double x) {
+        return (1 / (1 + Math.pow(Math.E, -x)));
     }
 }

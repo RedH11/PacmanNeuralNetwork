@@ -29,14 +29,6 @@ public class PacmanSettings extends Pane {
     public PacmanSettings(Stage stage, String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
 
-        // The canvas for the pacman game
-        Canvas gameCanvas = new Canvas(950, 620);
-        // Hide it at first
-        GraphicsContext gc = gameCanvas.getGraphicsContext2D();
-
-        gc.setFill(Color.rgb(211, 211,211));
-        gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-
         // Stores the pacman evolution settings
         VBox settings = new VBox();
         settings.setPadding(new Insets(5, 10, 5, 10));
@@ -77,13 +69,13 @@ public class PacmanSettings extends Pane {
         evolve.setOnAction(ev -> {
             Thread tests = new Thread(() -> {
                 int counter = 0;
-                while (counter < 20) {
+                evolve.setDisable(true);
                     try {
                         GeneticAlgorithm ga = new GeneticAlgorithm(
                                 PacmanDataPath, Integer.parseInt(popTF.getText()),
                                 Integer.parseInt(gensTF.getText()), Double.parseDouble(mutateTF.getText()),
                                 Integer.parseInt(lowerGhostsTF.getText()), Integer.parseInt(topGhostsTF.getText()),
-                                Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), gc
+                                Integer.parseInt(lowerPacmanTF.getText()), Integer.parseInt(topPacmanTF.getText()), evolve
                         );
 
                         ga.makeGenerations();
@@ -91,25 +83,15 @@ public class PacmanSettings extends Pane {
                     } catch (IOException ex) {
                         // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
                         Platform.runLater(() -> {
+                            evolve.setDisable(false);
                             invalAlert.setTitle("Error Evolving" + ex);
                             invalAlert.show();
                         });
                     }
                     counter++;
-                }
             });
 
             tests.start();
-            try {
-                tests.join();
-            } catch (InterruptedException ex){}
-        });
-
-        Button clearDisplay = new Button("Clear");
-        clearDisplay.setOnAction( event -> {
-            gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-            gc.setFill(Color.rgb(211, 211,211));
-            gc.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
         });
 
         // Viewer Settings Creator
@@ -154,22 +136,27 @@ public class PacmanSettings extends Pane {
 
         Button showGame = new Button("Show Game");
         showGame.setOnAction(ev -> {
+            showGame.setDisable(true);
             Thread showing = new Thread(() -> {
                 try {
                     if (vg != null) vg.stop();
                     boolean pacmanGame = gameType.getText().contains("Pacman");
                     InfoStorage is = parseFile(Integer.parseInt(gameNum.getText()), Integer.parseInt(genNum.getText()), pacmanGame);
-                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), 1);
-                } catch (Exception ex) {}
+                    vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()), showGame, 8);
+                } catch (Exception ex) {
+                    // Avoid throwing IllegalStateException by running from game non-JavaFX thread.
+                    Platform.runLater(() -> {
+                        showGame.setDisable(false);
+                    });
+                }
             });
             showing.start();
         });
 
         BorderPane root = new BorderPane();
 
-        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topGhosts, topGhostsTF, lowerGhosts, lowerGhostsTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve, clearDisplay);
+        settings.getChildren().addAll(evolLabel, popLbl, popTF, genLbl, gensTF, mutateLbl, mutateTF, topGhosts, topGhostsTF, lowerGhosts, lowerGhostsTF, topPac, topPacmanTF, lowerPac, lowerPacmanTF, evolve);
         viewer.getChildren().addAll(viewLabel, possibleGames, gameNum, genNum, gameType, showGame);
-        root.setCenter(gameCanvas);
         root.setLeft(settings);
         root.setRight(viewer);
 
