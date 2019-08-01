@@ -174,23 +174,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-
-    public int numPUp(Tile[][]map){
-        int numP = 0;
-        for(int i = y; i > 1; i--) {
-            if (!map[i][x].wall) {
-                if (map[i][x].dot || map[i][x].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     public int distWallDown(Tile [][]map){
@@ -201,23 +185,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-
-    public int numPDown(Tile[][]map){
-        int numP = 0;
-        for(int i = y; i < 26; i++) {
-            if (!map[i][x].wall) {
-                if (map[i][x].dot||map[i][x].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     public int distWallLeft(Tile [][]map){
@@ -228,22 +196,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-    public int numPLeft(Tile[][]map){
-        int numP = 0;
-        for(int i = x; i > 1; i--) {
-            if (!map[y][i].wall) {
-                if (map[y][i].dot||map[y][i].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     //right
@@ -255,29 +208,17 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
+        return dist / 26;
     }
-    public int numPRight(Tile[][]map){
-        int numP = 0;
-        for(int i = x; i < 26; i++) {
-            if (!map[y][i].wall) {
-                if (map[y][i].dot||map[y][i].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
 
-        return numP;
-    }
     private double distFromPac(int px, int py) {
         double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
         // Add a score for the fitness based on the distance
         addFitness((int)(45 - dist) / 10);
-        return dist;
+        // Subtracted by 0.5 because distance is only positive
+        return sigmoid(dist) - 0.5;
     }
+
     private double angleFromPac(int px, int py){
         return Math.asin((y-py)/distFromPac(px, py));
     }
@@ -295,5 +236,9 @@ public class Ghost {
         if (wallInWay(1, map)) System.out.println("Wall Left");
         if (wallInWay(2, map)) System.out.println("Wall Right");
         if (wallInWay(3, map)) System.out.println("Wall Below");
+    }
+
+    public static double sigmoid(double x) {
+        return (1/( 1 + Math.pow(Math.E,(-1*x))));
     }
 }
