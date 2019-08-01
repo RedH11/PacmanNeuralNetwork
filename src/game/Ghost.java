@@ -271,7 +271,8 @@ public class Ghost {
     }
     private double distFromPac(int px, int py) {
         double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
-        addFitness(28 - (int) dist);
+        // Add a score for the fitness based on the distance
+        addFitness(45 - (int) dist);
         return dist;
     }
     private double angleFromPac(int px, int py){

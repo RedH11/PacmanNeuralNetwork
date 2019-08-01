@@ -215,8 +215,7 @@ public class PacmanSettings extends Pane {
             ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);
             return allGames.get(generationNum);
         } catch (Exception ex) {
-            invalAlert.setContentText("GhostGens File Not Found");
-            invalAlert.show();
+            System.out.println("FILE NOT FOUND");
         }
         return null;
     }

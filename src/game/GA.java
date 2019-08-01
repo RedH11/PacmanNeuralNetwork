@@ -93,14 +93,14 @@ public class GA {
     // Create 20 Pacman Brains from already trained pacman
     private void constructPacmanBrains() {
 
-        File folder = new File(PacmanDataPath + "/PacBrains");
+        File folder = new File("src/PacBrains");
         File[] brainFiles = folder.listFiles();
 
         ArrayList<InfoStorage> brains = new ArrayList<>();
 
         for (int i = 0; i < brainFiles.length - 1; i++) {
             try {
-                brains.add(parseFile(i, 99, true));
+                brains.add(parsePacBrainsFile(i));
             } catch (Exception ex) {
                 System.out.println("Pacman Brains File Not Found " + ex);
             }
@@ -341,12 +341,11 @@ public class GA {
         return objects;
     }
 
-    public InfoStorage parseFile(int gameNum, int generationNum, boolean pacman) {
+    public InfoStorage parsePacBrainsFile(int gameNum) {
         String gameFile = "";
 
         // Viewing Setup
-        if (pacman) gameFile = PacmanDataPath + "/PacBrains/Game" +  gameNum + "/Gens/PacGens";
-        else gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/PacGens";
+        gameFile = "src/PacBrains/Game" + gameNum + "/Gens/PacGens";
 
         try {
             ArrayList<InfoStorage> allGames = readObjectsFromFile(gameFile);

@@ -41,6 +41,23 @@ public class VisualGame {
 
     HashMap<Integer, Point> nodeGenePositions = new HashMap<Integer, Point>();
     int circleD = 20;
+
+    Image pacImage;
+    Image inkyImage;
+    Image clydeImage;
+    Image pacLeft;
+    Image pacRight;
+    Image pacUp;
+    Image pacDown;
+    Image poweredPacUp;
+    Image poweredPacRight;
+    Image poweredPacLeft;
+    Image poweredPacDown;
+    Image inkyLeft;
+    Image inkyRight;
+    Image clydeLeft;
+    Image clydeRight;
+    Image scaredGhost;
     
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -88,6 +105,8 @@ public class VisualGame {
         nodes = is.getNodes();
         connections = is.getConnections();
 
+        initSprites();
+        
         gc.setFill(Color.BLACK);
         gc.fillText("Best Ghost Neural Network", 550 + 120, 20);
         drawNodes();
@@ -116,6 +135,24 @@ public class VisualGame {
         gc.fillText("GAME OVER", 235, 290);
     }
 
+    private void initSprites() {
+        pacLeft = new Image("game/assets/sprites/pacman_left.png");
+        pacRight = new Image("game/assets/sprites/pacman_right.png");
+        pacUp = new Image("game/assets/sprites/pacman_up.png");
+        pacDown = new Image("game/assets/sprites/pacman_down.png");
+        poweredPacLeft = new Image("game/assets/sprites/powered_pacman_left.png");
+        poweredPacRight = new Image("game/assets/sprites/powered_pacman_right.png");
+        poweredPacUp = new Image("game/assets/sprites/powered_pacman_up.png");
+        poweredPacDown = new Image("game/assets/sprites/powered_pacman_down.png");
+        pacImage = pacLeft;
+        inkyLeft = new Image("game/assets/sprites/inky_left.png");
+        inkyRight = new Image("game/assets/sprites/inky_Right.png");
+        scaredGhost = new Image("game/assets/sprites/scared_ghost.png");
+        inkyImage = inkyLeft;
+        clydeRight = new Image("game/assets/sprites/clyde_right.png");
+        clydeLeft = new Image("game/assets/sprites/clyde_left.png");
+        clydeImage = clydeLeft;
+    }
     private void drawMap() {
 
         // 0: Pellet / 1: Wall / 6: Empty / 8: Power Pellet
@@ -162,8 +199,6 @@ public class VisualGame {
         double startX = -4;
         double startY = -5;
         
-        int circleW = 17;
-
         // Get pacmans row and column coordinate (r, c)
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
@@ -177,51 +212,34 @@ public class VisualGame {
         // Delete the trail behind the ghosts / pacman
         if (prevPR != 0) {
             gc.setFill(Color.BLACK);
-            gc.fillRect(prevPC * rectW + startX, prevPR * rectW + startY, 20, 20);
-            gc.fillRect(prevG1C * rectW + startX, prevG1R * rectW + startY, 20, 20);
-            gc.fillRect(prevG2C * rectW + startX, prevG2R * rectW + startY, 20, 20);
+            gc.clearRect(prevPC * rectW + startX, prevPR * rectW + startY, 22, 22);
+            gc.clearRect(prevG1C * rectW + startX, prevG1R * rectW + startY, 22, 22);
+            gc.clearRect(prevG2C * rectW + startX, prevG2R * rectW + startY, 22, 22);
         }
 
-
-        javafx.scene.image.Image pacLeft = new javafx.scene.image.Image("assets/sprites/pacman_left.png");
-        javafx.scene.image.Image pacRight =new javafx.scene.image.Image("assets/sprites/pacman_right.png");
-        javafx.scene.image.Image pacUp = new javafx.scene.image.Image("assets/sprites/pacman_up.png");
-        javafx.scene.image.Image pacDown = new javafx.scene.image.Image("assets/sprites/pacman_down.png");
-        javafx.scene.image.Image poweredPacLeft = new javafx.scene.image.Image("assets/sprites/powered_pacman_left.png");
-        javafx.scene.image.Image poweredPacRight = new javafx.scene.image.Image("assets/sprites/powered_pacman_right.png");
-        javafx.scene.image.Image poweredPacUp = new javafx.scene.image.Image("assets/sprites/powered_pacman_up.png");
-        javafx.scene.image.Image poweredPacDown = new javafx.scene.image.Image("assets/sprites/powered_pacman_down.png");
-        javafx.scene.image.Image pacImage = pacLeft;
-
-        javafx.scene.image.Image inkyLeft = new javafx.scene.image.Image("assets/sprites/inky_left.png");
-        javafx.scene.image.Image inkyRight = new javafx.scene.image.Image("assets/sprites/inky_Right.png");
-        javafx.scene.image.Image scaredGhost = new javafx.scene.image.Image("assets/sprites/scared_ghost.png");
-        javafx.scene.image.Image inkyImage = inkyLeft;
-        javafx.scene.image.Image inky2Image = inkyLeft;
-
         //Set Pacman's sprite depending on movement direction / powered state
-        if (pC-prevPC == 0 && pR-prevPR == -1) {
+        if (pC - prevPC == 0 && pR - prevPR == -1) {
             if (pPowered[moves]) {
                 pacImage = poweredPacUp;
             } else {
                 pacImage = pacUp;
             }
         }
-        if (pC-prevPC == -1 && pR-prevPR == 0) {
+        if (pC - prevPC == -1 && pR - prevPR == 0) {
             if (pPowered[moves]) {
                 pacImage = poweredPacLeft;
             } else {
                 pacImage = pacLeft;
             }
         }
-        if (pC-prevPC == 1 && pR-prevPR == 0) {
+        if (pC - prevPC == 1 && pR - prevPR == 0) {
             if (pPowered[moves]) {
                 pacImage = poweredPacRight;
             } else {
                 pacImage = pacRight;
             }
         }
-        if (pC-prevPC == 0 && pR-prevPR == 1) {
+        if (pC - prevPC == 0 && pR - prevPR == 1) {
             if (pPowered[moves]) {
                 pacImage = poweredPacDown;
             } else {
@@ -230,14 +248,14 @@ public class VisualGame {
         }
         
         //Set Inky1's sprite depending on movement direction / scared state
-        if (g1C-prevG1C == -1 && g1R-prevG1R == 0) {
+        if (g1C - prevG1C == -1 && g1R - prevG1R == 0) {
             if (pPowered[moves]) {
                 inkyImage = scaredGhost;
             } else {
                 inkyImage = inkyLeft;
             }
         }
-        if (g1C-prevG1C == 1 && g1R-prevG1R == 0) {
+        if (g1C - prevG1C == 1 && g1R - prevG1R == 0) {
             if (pPowered[moves]) {
                 inkyImage = scaredGhost;
             } else {
@@ -246,34 +264,29 @@ public class VisualGame {
         }
         
         //Set inky2's sprite
-        if (g2C-prevG2C == -1 && g2R-prevG2R == 0) {
+        if (g2C - prevG2C == -1 && g2R - prevG2R == 0) {
             if (pPowered[moves]) {
-                inky2Image = scaredGhost;
+                clydeImage = scaredGhost;
             } else {
-                inky2Image = inkyLeft;
+                clydeImage = clydeLeft;
             }
         }
-        if (g2C-prevG2C == 1 && g2R-prevG2R == 0) {
+        if (g2C - prevG2C == 1 && g2R - prevG2R == 0) {
             if (pPowered[moves]) {
-                inky2Image = scaredGhost;
+                clydeImage = scaredGhost;
             } else {
-                inky2Image = inkyRight;
+                clydeImage = clydeRight;
             }
         }
         
-        
-        //-----------------------------------------------
         //Do all the drawing
-        gc.drawImage(pacImage, pC, pR);
-        gc.drawImage(inkyImage, g1C, g1R);
-        gc.drawImage(inky2Image, g2C, g2R);
+        gc.drawImage(pacImage, pC * rectW + startX, pR * rectW + startY);
+        gc.drawImage(inkyImage, g1C * rectW + startX, g1R * rectW + startX);
+        gc.drawImage(clydeImage, g2C * rectW + startX, g2R * rectW + startX);
 
         // Show eaten pellets
         if (moves > 0) {
-            // Draw empty spaces for pellets behind pacman
-            //if (!(pCoords[moves - 1][0] == pCoords[moves][0] && pCoords[moves - 1][1] == pCoords[moves][1])) {
-                tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
-            //}
+            tiles[pCoords[moves][1]][pCoords[moves][0]] = 6;
         }
 
         prevPC = pC;
