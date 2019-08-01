@@ -24,7 +24,9 @@ public class VisualGame {
 
     Button showGame;
 
-    // The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
+    /**
+     * The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
+     */
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -58,6 +60,14 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
+    /**
+     * Displays the game
+     * @param gameGC javafx graphics context framework
+     * @param is the infostorage file to use
+     * @param generation which generation
+     * @param showGame showgame button
+     * @param FPS frames per second to render
+     */
     public VisualGame(GraphicsContext gameGC, InfoStorage is, int generation, Button showGame, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
@@ -90,6 +100,9 @@ public class VisualGame {
         moves = MAXMOVES;
     }
 
+    /**
+     * Draws the game map
+     */
     private void drawMap() {
 
         // 0: Pellet / 1: Wall / 6: Empty / 8: Power Pellet
@@ -129,6 +142,10 @@ public class VisualGame {
         gc.fillText("Generation: " + generation, 25, 15);
     }
 
+    /**
+     * Every move, draws the game objects
+     * @param moves keeps track of number of moves so far
+     */
     private void drawGame(int moves) {
 
         int rectW = 20;
@@ -162,6 +179,13 @@ public class VisualGame {
         prevPR = pR;
     }
 
+    /**
+     * (Deprecated) draws arrows displaying the direction Pacman is attempting to move in
+     * @param x arrow's x position
+     * @param y arrow's y position
+     * @param moves
+     * @param length arrow length
+     */
     public void drawArrows (int x, int y, int moves, int length) {
         gc.setStroke(Color.GRAY);
         // Up arrow
