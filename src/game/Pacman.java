@@ -20,21 +20,30 @@ public class Pacman {
 
     // Neural Network Settings
     final int INPUTS = 16;
-    final int HIDDEN_ONE = 25;
-    //final int HIDDEN_TWO = 50;
+    final int HIDDEN_ONE = 40;
+    final int HIDDEN_TWO = 20;
     final int OUTPUTS = 2;
 
-
+    /**
+     * Makes a pacman brain and respawns Pacman
+     */
     public Pacman() {
-        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS);
+        brain = new NeuralNetwork(INPUTS, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS);
         respawn();
     }
 
+    /**
+     *
+     * @param brain Initialize pacman brain
+     */
     public Pacman(NeuralNetwork brain) {
         this.brain = brain;
         respawn();
     }
 
+    /**
+     * Respawns pacman in the middle
+     */
     private void respawn() {
         x = 13;
         y = 17;
@@ -42,6 +51,13 @@ public class Pacman {
         alive = true;
     }
 
+    /**
+     *
+     * @param input input vector
+     * @param is infostorage object to save info to
+     * @param map the map object
+     * @return returns highest output from pacman's brain
+     */
     private int think(double[] input, InfoStorage is, Tile[][] map){
 
         // Calculate the outputs
@@ -59,6 +75,11 @@ public class Pacman {
         return highestIndex;
     }
 
+    /**
+     * Processes map data around Pacman into inputs
+     * @param map the man
+     * @return inputs as a vector
+     */
     private double[] see(Tile[][] map) {
 
         double[] inputs = new double[INPUTS];
@@ -79,7 +100,11 @@ public class Pacman {
         return inputs;
     }
 
-    // Allow Pacman to see the wall tiles around him
+    /**
+     * Lets pacman see the wall inputs around him
+     * @param map map object
+     * @param inputs
+     */
     private void lookAround(Tile[][] map, double[] inputs) {
 
         int inputsIndex = 8;
@@ -95,6 +120,11 @@ public class Pacman {
         }
     }
 
+    /**
+     * Pacman's move function, where he moves depending on the output from think()
+     * @param map map
+     * @param is infostorage object to save moves to
+     */
     public void move(Tile[][] map, InfoStorage is) {
         if (!alive) respawn();
 
@@ -120,6 +150,10 @@ public class Pacman {
 
     }
 
+    /**
+     * Move function for Pacman's turn
+     * @param map
+     */
     private void makeTurn(Tile[][] map) {
         // If travelling west, wants to turn left, and there is no wall below allow it to go down
         if (dir == 1 && moveChoice == 0 && !wallInWay(3, map)) dir = 3;
@@ -139,6 +173,12 @@ public class Pacman {
         else if (dir == 0 && moveChoice == 1 && !wallInWay(2, map)) dir = 2;
     }
 
+    /**
+     * Checks for a wall in the way
+     * @param dir pacman's direction
+     * @param map
+     * @return boolean
+     */
     private boolean wallInWay(int dir, Tile[][] map) {
         if (dir == 0) {
             final int testX = x;
@@ -160,11 +200,19 @@ public class Pacman {
         return false;
     }
 
+    /**
+     * Adds to Pacman's fitness
+     * @param add
+     */
     public void addFitness(int add) {
         fitness += add;
     }
 
-    // Generates a random direction that isn't the last one
+    /**
+     * Generates a random direction that isn't the last one
+     * @param lastDir Pacman's last direction
+     * @return a new direction
+     */
     private int randDir(int lastDir) {
         int dir = num.nextInt(4);
         while (dir == lastDir) {
@@ -179,6 +227,10 @@ public class Pacman {
         return dir;
     }
 
+    /**
+     * @param map
+     * @return distance from wall above pacman
+     */
     public int distWallUp(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
@@ -190,6 +242,10 @@ public class Pacman {
         return dist / 26;
     }
 
+    /**
+     * @param map
+     * @return number of pellets above pacman
+     */
     public double numPUp(Tile[][]map){
         int numP = 0;
         for(int i = y; i > 1; i--) {
@@ -205,7 +261,10 @@ public class Pacman {
 
         return sigmoid(numP);
     }
-
+    /**
+     * @param map
+     * @return distance from wall below Pacman
+     */
     public double distWallDown(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
@@ -216,7 +275,10 @@ public class Pacman {
         }
         return dist / 26;
     }
-
+    /**
+     * @param map
+     * @return number of pellets below pacman
+     */
     public double numPDown(Tile[][]map){
         int numP = 0;
         for(int i = y; i < 26; i++) {
@@ -232,7 +294,10 @@ public class Pacman {
 
         return sigmoid(numP);
     }
-
+    /**
+     * @param map
+     * @return distance from wall to the left of Pacman
+     */
     public double distWallLeft(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
@@ -243,6 +308,12 @@ public class Pacman {
         }
         return dist/26;
     }
+
+    /**
+     *
+     * @param map
+     * @return number of pellets to the left of Pacman
+     */
     public double numPLeft(Tile[][]map){
         int numP = 0;
         for(int i = x; i > 1; i--) {
@@ -259,8 +330,10 @@ public class Pacman {
         return sigmoid(numP);
     }
 
-    //right
-    public double distWallRight(Tile [][]map){
+    /**
+     * @param map
+     * @return distance from wall to the right of Pacman
+     */    public double distWallRight(Tile [][]map){
         int dist = 0;
         for(int i = 1; i < 26; i ++){
             if(map[y][x+i].wall){
@@ -270,6 +343,12 @@ public class Pacman {
         }
         return dist / 26;
     }
+
+    /**
+     *
+     * @param map
+     * @return number of pellets to the right of Pacman
+     */
     public double numPRight(Tile[][]map){
         int numP = 0;
         for(int i = x; i < 26; i++) {
@@ -287,7 +366,10 @@ public class Pacman {
     }
 
     // Debugging Methods
-    // Print direction
+
+    /**
+     * Prints direction
+     */
     private void outputDecision(int highestDir) {
         if (highestDir == 0) System.out.println("Up output");
         if (highestDir == 1) System.out.println("Left output");
@@ -295,6 +377,10 @@ public class Pacman {
         if (highestDir == 3) System.out.println("Down output");
     }
 
+    /**
+     * Prints walls in the way of Pacman
+     * @param map
+     */
     private void wallsAround(Tile[][] map) {
         if (wallInWay(0, map)) System.out.println("Wall Above");
         if (wallInWay(1, map)) System.out.println("Wall Left");
@@ -302,6 +388,11 @@ public class Pacman {
         if (wallInWay(3, map)) System.out.println("Wall Below");
     }
 
+    /**
+     * Sigmoid function
+     * @param x variable to pass in
+     * @return sigmoid of x
+     */
     private double sigmoid(double x) {
         return (1 / (1 + Math.pow(Math.E, -x)));
     }
