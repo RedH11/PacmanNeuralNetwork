@@ -141,6 +141,7 @@ public class PacmanGame implements Serializable {
 
             } else {
                 ghostOne.addFitness(2000);
+                ghostOne.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
                 pacman.lives--;
                 ghostOne.addFitness(MAXMOVES - gameMoves);
                 gameMoves = 0;
@@ -157,6 +158,7 @@ public class PacmanGame implements Serializable {
                 ghostTwo.addFitness(2000);
                 ghostTwo.addFitness(MAXMOVES - gameMoves);
                 gameMoves = 0;
+                //ghostTwo.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
                 pacman.lives--;
                 pacman.respawn();
                 ghostOne.respawn();
@@ -172,8 +174,8 @@ public class PacmanGame implements Serializable {
     }
 
     public Ghost getBestGhost() {
-            if (ghostOne.fitness > ghostTwo.fitness) return ghostOne;
-            else return ghostTwo;
+        if (ghostOne.fitness > ghostTwo.fitness) return ghostOne;
+        else return ghostTwo;
     }
 
     public static void saveInformation(GhostInfoStorage infoStorage, ObjectOutputStream oos) throws IOException, ClassNotFoundException {
