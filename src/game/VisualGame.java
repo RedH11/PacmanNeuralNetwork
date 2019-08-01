@@ -5,6 +5,8 @@ import game.NEAT.NodeGene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 
 import java.awt.Point;
@@ -115,6 +117,7 @@ public class VisualGame {
             while (moves < MAXMOVES && pCoords[moves][1] != 0) {
                 drawMap();
                 drawGame(moves);
+                playGameSounds();
                 moves++;
                 try {
                     Thread.sleep(1000 / FPS);
@@ -200,7 +203,7 @@ public class VisualGame {
         double startX = -4;
         double startY = -5;
         
-        // Get pacmans row and column coordinate (r, c)
+        // Get pacman & ghosts' row and column coordinate (r, c)
         int pC = pCoords[moves][0];
         int pR = pCoords[moves][1];
         
@@ -298,6 +301,57 @@ public class VisualGame {
         prevG2R = g2R;
     }
 
+    // Play intro sound
+    private void playIntro() {
+        Media intro = new Media("assets\\sound\\pacman_beginning.wav");
+        MediaPlayer introSound = new MediaPlayer(intro);
+        introSound.play();
+    }
+    
+    // Play game sounds
+    private void playGameSounds() {
+        // Get pacman & ghosts' row and column coordinate (r, c)
+        int pC = pCoords[moves][0];
+        int pR = pCoords[moves][1];
+
+        int g1C = g1Coords[moves][0];
+        int g1R = g1Coords[moves][1];
+
+        int g2C = g2Coords[moves][0];
+        int g2R = g2Coords[moves][1];
+
+        Media chomp = new Media("assets\\sound\\pacman_chomp.wav");
+        MediaPlayer chompSound = new MediaPlayer(chomp);
+        Media eatGhost = new Media("assets\\sound\\pacman_eatghost.wav");
+        MediaPlayer eatGhostSound = new MediaPlayer(eatGhost);
+        Media death = new Media("assets\\sound\\pacman_death.wav");
+        MediaPlayer deathSound = new MediaPlayer(death);
+        Media powered = new Media("assets\\sound\\pacman_powered.wav");
+        MediaPlayer poweredSound = new MediaPlayer(powered);
+
+        // If Pacman eats a power pellet, play super saiyan noise
+        if (tiles[pC][pR] == 0) {
+            poweredSound.play();
+        }
+        if (pPowered[moves]) {
+            if ((pC == g1C)&&(pR == g1R)||(pC == g2C)&&(pR == g2R)){
+                eatGhostSound.play();
+            }
+            else{
+                chompSound.play();
+            }
+        }
+        else {
+            if ((pC == g1C)&&(pR == g1R)||(pC == g2C)&&(pR == g2R)){
+                deathSound.play();
+            }
+            else{
+                chompSound.play();
+            }
+        }
+
+
+    }
     private void drawNodes() {
         int INPUTS = layerSizes[0];
         int HIDDEN = layerSizes[1];
