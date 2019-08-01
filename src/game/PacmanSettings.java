@@ -21,6 +21,8 @@ import java.util.concurrent.*;
 
 public class PacmanSettings extends Pane {
 
+    int GHOST_INPUTS = 6;
+
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
     String PacmanDataPath;
     VisualGame vg = null;
@@ -28,7 +30,8 @@ public class PacmanSettings extends Pane {
     Counter nodeInnovation = new Counter();
     Counter connectionInnovation = new Counter();
 
-    Genome genome = new Genome(6);
+    //Genome genome = new Genome(6);
+    Genome genome = new Genome(GHOST_INPUTS);
 
     public PacmanSettings( String PacmanDataPath, GraphicsContext gameGC) {
         this.PacmanDataPath = PacmanDataPath;
@@ -72,7 +75,7 @@ public class PacmanSettings extends Pane {
         Button evolve = new Button("Evolve");
         evolve.setOnAction(ev -> {
             Thread tests = new Thread(() -> {
-                GA ga = new GA(PacmanDataPath, Integer.parseInt(popTF.getText()), Integer.parseInt(gensTF.getText()), genome);
+                GA ga = new GA(PacmanDataPath, Integer.parseInt(popTF.getText()), Integer.parseInt(gensTF.getText()), genome, GHOST_INPUTS);
                 ga.evolveGhosts();
             });
             tests.start();
@@ -153,7 +156,7 @@ public class PacmanSettings extends Pane {
         Random random = new Random();
 
         // Input layer and single output node
-        int[] inputNodes = new int[6];
+        int[] inputNodes = new int[GHOST_INPUTS];
         int outputNode;
 
         // Add the input nodes to the genome as well as giving them unique innovation numbers
@@ -211,7 +214,6 @@ public class PacmanSettings extends Pane {
         try {
             ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);
             return allGames.get(generationNum);
-
         } catch (Exception ex) {
             invalAlert.setContentText("GhostGens File Not Found");
             invalAlert.show();

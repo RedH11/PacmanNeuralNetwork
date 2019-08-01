@@ -10,10 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-/*
-    https://stackoverflow.com/questions/33250413/javafx-stage-show-ending-in-program-freezing
-    FOR FIXING THE FREEZING
- */
 
 public class Main extends Application {
 
@@ -55,6 +51,7 @@ public class Main extends Application {
         game.setWidth(950); // 550 to fit just game
         game.setHeight(630); // 630 to fit just game
 
+        game.setResizable(false);
         // load the image
         Image image = new Image("pacMap.jpg");
 

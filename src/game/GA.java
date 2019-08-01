@@ -8,7 +8,7 @@ import java.util.*;
 /* Genetic Algorithm to Train the Ghosts using a NEAT Framework modified for this project */
 public class GA {
 
-    final int MAX_MOVES = 400;
+    final int MAX_MOVES = 100;
 
     Random random = new Random();
     private FitnessGenomeComparator fitComp = new FitnessGenomeComparator();
@@ -47,15 +47,17 @@ public class GA {
     private final double ADD_CONNECTION_RATE = 0.05;
     private final double ADD_NODE_RATE = 0.03;
 
-    final int INPUTS = 16;
     final int HIDDEN_ONE = 40;
     final int OUTPUTS = 2;
 
-    public GA(String PacmanDataPath, int populationSize, int totalGens, Genome startingGenome) {
+    final int GHOST_INPUTS;
+
+    public GA(String PacmanDataPath, int populationSize, int totalGens, Genome startingGenome, int GHOST_INPUTS) {
         this.PacmanDataPath = PacmanDataPath;
         this.populationSize = populationSize;
         this.totalGens = totalGens;
         this.startingGenome = startingGenome;
+        this.GHOST_INPUTS = GHOST_INPUTS;
 
         genomes = new ArrayList<Genome>(populationSize);
         nextGenGenomes = new ArrayList<Genome>(populationSize);
@@ -102,7 +104,7 @@ public class GA {
             } catch (Exception ex) {
                 System.out.println("Pacman Brains File Not Found " + ex);
             }
-            pacmanBrains.add(new NeuralNetwork(INPUTS, HIDDEN_ONE, OUTPUTS));
+            pacmanBrains.add(new NeuralNetwork(16, HIDDEN_ONE, OUTPUTS));
             pacmanBrains.get(i).setWeights(brains.get(i).getWeights());
             pacmanBrains.get(i).setBias(brains.get(i).getBiases());
         }
@@ -128,7 +130,7 @@ public class GA {
 
     private void makePopulation() {
         for (int i = 0; i < populationSize; i++) {
-            genomes.add(new Genome(startingGenome, INPUTS));
+            genomes.add(new Genome(startingGenome, GHOST_INPUTS));
         }
     }
 
@@ -190,7 +192,7 @@ public class GA {
             Species s2 = mappedSpecies.get(g2);		// Get species of the second genome
 
             // Put a random pacman brain in the game that simulates two ghosts at a time
-            games.add(new PacmanGame(PacmanDataPath, MAX_MOVES, pacmanBrains.get(randomPacmanIndex), g1, g2, INPUTS));
+            games.add(new PacmanGame(PacmanDataPath, MAX_MOVES, pacmanBrains.get(randomPacmanIndex), g1, g2, GHOST_INPUTS));
             games.get(i).simulateGame();
 
             double score1 = games.get(gameIndx).ghostOne.fitness;

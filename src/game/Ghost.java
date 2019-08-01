@@ -33,7 +33,7 @@ public class Ghost {
         // Calculate the outputs
         double output = brain.calculate(input);
         // Save the outputs to the info storage
-//        is.setNNOutputs(outputs);
+//      is.setNNOutputs(outputs);
 
         // Return left
         if (output > 0.5) return 0;
@@ -48,30 +48,31 @@ public class Ghost {
         // First 8 inputs are the distance from pacman to the walls around him
         //  as well as how many pellets are between him and the wall in the direction he is looking
         inputs[0] = distWallUp(map);
-
         inputs[1] = distWallDown(map);
-
         inputs[2] = distWallLeft(map);
-
         inputs[3] = distWallRight(map);
         inputs[4] = distFromPac(px, py);
         inputs[5] = angleFromPac(px, py);
-        // Gives Pacman a view of each tile around him
-       // lookAround(map, inputs);
+        //lookAround(map, inputs, px, py);
 
         return inputs;
     }
 
     // Allow Pacman to see the wall tiles around him
-    private void lookAround(Tile[][] map, double[] inputs) {
+    private void lookAround(Tile[][] map, double[] inputs, int px, int py) {
 
-        int inputsIndex = 8;
+        int inputsIndex = 6;
 
-        for (int j = -1; j < 2; j++) {
-            for (int i = -1; i < 2; i++) {
+        for (int j = -2; j <= 2; j++) {
+            for (int i = -2; i <= 2; i++) {
                 if (!(i == 0 && j == 0)) {
-                    if (map[y + j][x + i].wall) inputs[inputsIndex] = 1;
-                    else inputs[inputsIndex] = 0;
+                    if (j == py && i == px) inputs[inputsIndex] = 2;
+                    try {
+                        if (map[y + j][x + i].wall) inputs[inputsIndex] = 1;
+                        else inputs[inputsIndex] = 0;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        inputs[inputsIndex] = -1;
+                    }
                     //else if(map[y + j][x + i].eaten) inputs[inputsIndex] = 1;
                     //else if (map[y + j][x + i].dot || map[y + j][x + i].bigDot) inputs[inputsIndex] = 2;
                     inputsIndex++;
@@ -268,11 +269,24 @@ public class Ghost {
 
         return numP;
     }
-    private double distFromPac(int px, int py){
-        return Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
+    private double distFromPac(int px, int py) {
+        double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
+        addFitness(28 - (int) dist);
+        return dist;
     }
     private double angleFromPac(int px, int py){
-        return Math.asin((y-py)/distFromPac(px, py));
+        //return Math.asin((y-py)/distFromPac(px, py));
+        if (px != x && py != y) {
+            return 1 / (Math.tan((py - y) / (px - x)));
+        } else {
+            if (py == y) {
+                if (px > x) return 180;
+                else return -180;
+            } else {
+                if (py > y) return -90;
+                else return 90;
+            }
+        }
     }
     // Debugging Methods
     // Print direction

@@ -64,17 +64,17 @@ public class PacmanGame implements Serializable {
     private GhostInfoStorage is;
     static String PacmanDataPath;
 
-    int INPUTS;
+    private int INPUTS;
 
     public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, Genome g1, Genome g2, int INPUTS) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
-        is = new GhostInfoStorage(MAXMOVES);
+        this.INPUTS = INPUTS;
         createMap();
         pacman = new Pacman(pacmanBrain);
         ghostOne = new Ghost(g1, INPUTS);
         ghostTwo = new Ghost(g2, INPUTS);
-        this.INPUTS = INPUTS;
+        is = new GhostInfoStorage(MAXMOVES * pacman.lives);
     }
 
     public void simulateGame() {
@@ -112,8 +112,8 @@ public class PacmanGame implements Serializable {
     }
 
     private void simulateTurn() {
-        pacman.move(map);
-        checkStates();
+        //pacman.move(map);
+        //checkStates();
         ghostOne.move(map, pacman.x, pacman.y);
         checkStates();
         ghostTwo.move(map, pacman.x, pacman.y);
@@ -126,21 +126,24 @@ public class PacmanGame implements Serializable {
 
         // Pacman on a pellet
         if (map[pacman.y][pacman.x].bigDot && !map[pacman.y][pacman.x].eaten) {
-            pacman.powered = true;
+            //pacman.powered = true;
             map[pacman.y][pacman.x].eaten = true;
             scaredStart = gameMoves;
         } else if (map[pacman.y][pacman.x].dot && !map[pacman.y][pacman.x].eaten) {
             map[pacman.y][pacman.x].eaten = true;
         }
 
+        // Ghost eating pacman
         if ((pacman.x == ghostOne.x)&&(pacman.y == ghostOne.y)){
             if (pacman.powered) {
-                ghostOne.addFitness(-20);
+                //ghostOne.addFitness(-20);
                 ghostOne.respawn();
 
             } else {
-                ghostOne.addFitness(100);
+                ghostOne.addFitness(2000);
                 pacman.lives--;
+                ghostOne.addFitness(MAXMOVES - gameMoves);
+                gameMoves = 0;
                 pacman.respawn();
                 ghostOne.respawn();
                 ghostTwo.respawn();
@@ -148,10 +151,12 @@ public class PacmanGame implements Serializable {
         }
         if ((pacman.x == ghostTwo.x) && (pacman.y == ghostTwo.y)) {
             if(pacman.powered){
-                ghostTwo.addFitness(-20);
+                //ghostTwo.addFitness(-20);
                 ghostTwo.respawn();
             } else {
-                ghostTwo.addFitness(100);
+                ghostTwo.addFitness(2000);
+                ghostTwo.addFitness(MAXMOVES - gameMoves);
+                gameMoves = 0;
                 pacman.lives--;
                 pacman.respawn();
                 ghostOne.respawn();

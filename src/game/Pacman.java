@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.*;
 import java.util.Random;
 
 public class Pacman {
@@ -18,7 +19,7 @@ public class Pacman {
     // Neural Network Settings
     final int INPUTS = 16;
 
-    int lives = 3;
+    int lives = 4;
 
     public Pacman(NeuralNetwork brain) {
         this.brain = brain;
@@ -26,8 +27,30 @@ public class Pacman {
     }
 
     public void respawn() {
-        x = 13;
-        y = 17;
+        Random random = new Random();
+        int randSpawn = random.nextInt(4);
+
+        // 13, 17 default
+        // Spawn pacman in a random corner
+        switch (randSpawn) {
+            case 0:
+                x = 26;
+                y = 29;
+                break;
+            case 1:
+                x = 1;
+                y = 29;
+                break;
+            case 2:
+                x = 26;
+                y = 1;
+                break;
+            case 3:
+                x = 1;
+                y = 1;
+                break;
+        }
+
         powered = false;
         alive = true;
     }
@@ -106,13 +129,6 @@ public class Pacman {
                break;
         }
 
-        /*
-        // Can't move twice in a turn
-        if (prevX - x == 2) x++;
-        else if (prevX - x == -2) x--;
-        else if (prevY - y == 2) y++;
-        else if (prevY - y == -2) y--;
-        */
     }
 
     private void makeTurn(Tile[][] map) {
