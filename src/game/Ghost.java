@@ -47,13 +47,14 @@ public class Ghost {
 
         // First 8 inputs are the distance from pacman to the walls around him
         //  as well as how many pellets are between him and the wall in the direction he is looking
-        inputs[0] = distWallUp(map);
+        /*inputs[0] = distWallUp(map);
         inputs[1] = distWallDown(map);
         inputs[2] = distWallLeft(map);
-        inputs[3] = distWallRight(map);
-        inputs[4] = distFromPac(px, py);
-        inputs[5] = angleFromPac(px, py);
+        inputs[3] = distWallRight(map);*/
 
+        inputs[0] = sigmoid(distFromPac(px, py)) - 0.5;
+        inputs[1] = angleFromPac(px, py);
+        lookAround(map, inputs, px, py);
         inputs[6] = 1; // Last input is always 1 as the bias
 
         //lookAround(map, inputs, px, py);
@@ -64,17 +65,17 @@ public class Ghost {
     // Allow Pacman to see the wall tiles around him
     private void lookAround(Tile[][] map, double[] inputs, int px, int py) {
 
-        int inputsIndex = 6;
+        int inputsIndex = 2;
 
-        for (int j = -2; j <= 2; j++) {
-            for (int i = -2; i <= 2; i++) {
+        for (int j = -1; j <= 1; j++) {
+            for (int i = -1; i <= 1; i++) {
                 if (!(i == 0 && j == 0)) {
-                    if (j == py && i == px) inputs[inputsIndex] = 2;
+                    //if (j == py && i == px) inputs[inputsIndex] = 2; // Returns this is pacman is in the tile
                     try {
                         if (map[y + j][x + i].wall) inputs[inputsIndex] = 1;
                         else inputs[inputsIndex] = 0;
                     } catch (ArrayIndexOutOfBoundsException ex) {
-                        inputs[inputsIndex] = -1;
+                        inputs[inputsIndex] = 0;
                     }
                     //else if(map[y + j][x + i].eaten) inputs[inputsIndex] = 1;
                     //else if (map[y + j][x + i].dot || map[y + j][x + i].bigDot) inputs[inputsIndex] = 2;
@@ -174,23 +175,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-
-    public int numPUp(Tile[][]map){
-        int numP = 0;
-        for(int i = y; i > 1; i--) {
-            if (!map[i][x].wall) {
-                if (map[i][x].dot || map[i][x].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     public int distWallDown(Tile [][]map){
@@ -201,23 +186,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-
-    public int numPDown(Tile[][]map){
-        int numP = 0;
-        for(int i = y; i < 26; i++) {
-            if (!map[i][x].wall) {
-                if (map[i][x].dot||map[i][x].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     public int distWallLeft(Tile [][]map){
@@ -228,22 +197,7 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
-    }
-    public int numPLeft(Tile[][]map){
-        int numP = 0;
-        for(int i = x; i > 1; i--) {
-            if (!map[y][i].wall) {
-                if (map[y][i].dot||map[y][i].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
-
-        return numP;
+        return dist / 26;
     }
 
     //right
@@ -255,32 +209,22 @@ public class Ghost {
                 break;
             }
         }
-        return dist;
+        return dist / 26;
     }
-    public int numPRight(Tile[][]map){
-        int numP = 0;
-        for(int i = x; i < 26; i++) {
-            if (!map[y][i].wall) {
-                if (map[y][i].dot||map[y][i].bigDot) {
-                    numP++;
-                }
-            }
-            else{
-                break;
-            }
-        }
 
-        return numP;
-    }
     private double distFromPac(int px, int py) {
         double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
         // Add a score for the fitness based on the distance
         addFitness((int)(45 - dist) / 10);
+        // Subtracted by 0.5 because distance is only positive
         return dist;
     }
+
+    // Y's are inversed in the equation because in the game the ghost has a lower y axis if it is higher up
     private double angleFromPac(int px, int py){
-        return Math.asin((y-py)/distFromPac(px, py));
+        return (py-y)/distFromPac(px, py);
     }
+
     // Debugging Methods
     // Print direction
     private void outputDecision(int highestDir) {
@@ -295,5 +239,9 @@ public class Ghost {
         if (wallInWay(1, map)) System.out.println("Wall Left");
         if (wallInWay(2, map)) System.out.println("Wall Right");
         if (wallInWay(3, map)) System.out.println("Wall Below");
+    }
+
+    public static double sigmoid(double x) {
+        return (1/( 1 + Math.pow(Math.E,(-1*x))));
     }
 }
