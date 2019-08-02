@@ -45,7 +45,7 @@ public class GA {
     // If adjusted must also adjust in Genome 
     private final double WEIGHT_MUTATION_RATE = 0.8;
     private final double ADJUST_WEIGHT_RATE = 0.9; // 90% chance of adjusting node weight, else replaces weight with random one
-    private final double ADD_CONNECTION_RATE = 0.1;
+    private final double ADD_CONNECTION_RATE = 0.5;
     private final double ADD_NODE_RATE = 0.07;
 
     final int HIDDEN_ONE = 40;
@@ -116,7 +116,6 @@ public class GA {
                 pacmanBrains.get(brainIndex).setWeights(brains.get(brainIndex).getWeights());
                 pacmanBrains.get(brainIndex).setBias(brains.get(brainIndex).getBiases());
                 brainIndex++;
-                System.out.println("BRAIN LOADED");
             }
         }
     }

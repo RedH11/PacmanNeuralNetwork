@@ -112,8 +112,8 @@ public class PacmanGame implements Serializable {
     }
 
     private void simulateTurn() {
-        //pacman.move(map);
-        //checkStates();
+        pacman.move(map);
+        checkStates();
         ghostOne.move(map, pacman.x, pacman.y);
         checkStates();
         ghostTwo.move(map, pacman.x, pacman.y);

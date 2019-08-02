@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class PacmanSettings extends Pane {
 
-    int GHOST_INPUTS = 7; // 6 inputs + a bias at the end that is always set to one
+    int GHOST_INPUTS = 11; // 6 inputs + a bias at the end that is always set to one
 
     private Alert invalAlert = new Alert(Alert.AlertType.INFORMATION, null);
     String PacmanDataPath;
@@ -114,7 +114,8 @@ public class PacmanSettings extends Pane {
                     try {
                         int fileAmount = listOfFiles2.length;
                         if (listOfFiles2[0].getName().contains("DS")) fileAmount--;
-                        else if (listOfFiles[0].getName().contains("0")) fileAmount--;
+                        else if (listOfFiles[1].getName().contains("0")) fileAmount--;
+                        else if (listOfFiles[0].getName().contains("0") || listOfFiles[1].getName().contains("0")) fileAmount--;
                         GhostInfoStorage is = parseFile(fileAmount, Integer.parseInt(genNum.getText()) - 1);
                         vg = new VisualGame(gameGC, is, Integer.parseInt(genNum.getText()) - 1, showGame, 10);
                     } catch (Exception ex) {
@@ -206,7 +207,7 @@ public class PacmanSettings extends Pane {
         String gameFile = "";
 
         // Viewing Setup
-        gameFile = PacmanDataPath + "\\Game" +  gameNum + "\\Gens\\GhostGens";
+        gameFile = PacmanDataPath + "/Game" +  gameNum + "/Gens/GhostGens";
 
         try {
             ArrayList<GhostInfoStorage> allGames = readObjectsFromFile(gameFile);

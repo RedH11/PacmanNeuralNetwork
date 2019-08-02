@@ -111,22 +111,76 @@ public class Pacman {
     public void move(Tile[][] map) {
         if (!alive) respawn();
 
+        Random random = new Random();
+
         moveChoice = think(see(map), map);
 
         makeTurn(map);
 
+        // Side tunnels
+        //6, 14
+        //21, 14
+
+        // Top tunnels
+        //9,5
+        //15,5
+
+        // Bottom tunnels
+        //9, 14
+        //15,14
+
         switch (dir) {
            case 0:
-               if (!wallInWay(0, map)) y--;
+               // If trying to go up through a bottom tunnel to the center
+               if ((x == 6 && y == 14) || (x == 21 && y == 14)) {
+                   int randDir = random.nextInt(2);
+                   if (randDir == 0) {
+                       dir = 1;
+                       x--;
+                   } else {
+                       dir = 2;
+                       x++;
+                   }
+               } else if (!wallInWay(0, map)) y--;
                break;
            case 1:
-               if (!wallInWay(1, map)) x--;
+               // if trying to go into the side tunnels make it go up or down
+               if ((x == 6 && y == 14) || (x == 21 && y == 14)) {
+                   int randDir = random.nextInt(2);
+                   if (randDir == 0) {
+                       dir = 0;
+                       y--;
+                   } else {
+                       dir = 3;
+                       y++;
+                   }
+               } else if (!wallInWay(1, map)) x--;
                break;
            case 2:
-               if (!wallInWay(2, map)) x++;
+               // if trying to go into the side tunnels make it go up or down
+               if ((x == 6 && y == 14) || (x == 21 && y == 14)) {
+                   int randDir = random.nextInt(2);
+                   if (randDir == 0) {
+                       dir = 0;
+                       y--;
+                   } else {
+                       dir = 3;
+                       y++;
+                   }
+               } else if (!wallInWay(2, map)) x++;
                break;
            case 3:
-               if (!wallInWay(3, map)) y++;
+               // if trying to go into the top tunnel make it go left or right
+               if ((x == 9 && y == 5) || (x == 15 && y == 5)) {
+                   int randDir = random.nextInt(2);
+                   if (randDir == 0) {
+                       dir = 1;
+                       x--;
+                   } else {
+                       dir = 2;
+                       x++;
+                   }
+               } else if (!wallInWay(3, map)) y++;
                break;
         }
 

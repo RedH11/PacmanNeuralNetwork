@@ -10,6 +10,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 
 import java.awt.Point;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,8 @@ public class VisualGame {
     Image clydeLeft;
     Image clydeRight;
     Image scaredGhost;
+
+    MediaPlayer chompSound;
     
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -104,8 +107,9 @@ public class VisualGame {
         nodes = is.getNodes();
         connections = is.getConnections();
 
+        //playIntro();
         initSprites();
-        
+
         gc.setFill(Color.BLACK);
         gc.fillText("Best Ghost Neural Network", 550 + 120, 20);
         drawNodes();
@@ -117,7 +121,7 @@ public class VisualGame {
             while (moves < MAXMOVES && pCoords[moves][1] != 0) {
                 drawMap();
                 drawGame(moves);
-                playGameSounds();
+                //playGameSounds();
                 moves++;
                 try {
                     Thread.sleep(1000 / FPS);
@@ -156,6 +160,9 @@ public class VisualGame {
         clydeRight = new Image("game/assets/sprites/clyde_right.png");
         clydeLeft = new Image("game/assets/sprites/clyde_left.png");
         clydeImage = clydeLeft;
+
+        Media chomp = new Media(new File("src/game/assets/sound/pacman_chomp.wav").toURI().toString());
+        chompSound = new MediaPlayer(chomp);
     }
     private void drawMap() {
 
@@ -198,6 +205,8 @@ public class VisualGame {
 
     private void drawGame(int moves) {
 
+        chompSound.stop();
+
         int rectW = 20;
 
         double startX = -4;
@@ -216,6 +225,7 @@ public class VisualGame {
         // Delete the trail behind the ghosts / pacman
         if (prevPR != 0) {
             gc.setFill(Color.BLACK);
+            //if (prevPC != pC && prevPR != pR) chompSound.play();
             gc.clearRect(prevPC * rectW + startX, prevPR * rectW + startY, 22, 22);
             gc.clearRect(prevG1C * rectW + startX, prevG1R * rectW + startY, 22, 22);
             gc.clearRect(prevG2C * rectW + startX, prevG2R * rectW + startY, 22, 22);
@@ -303,7 +313,7 @@ public class VisualGame {
 
     // Play intro sound
     private void playIntro() {
-        Media intro = new Media("assets\\sound\\pacman_beginning.wav");
+        Media intro = new Media(new File("src/game/assets/sound/pacman_beginning.wav").toURI().toString());
         MediaPlayer introSound = new MediaPlayer(intro);
         introSound.play();
     }
@@ -320,34 +330,17 @@ public class VisualGame {
         int g2C = g2Coords[moves][0];
         int g2R = g2Coords[moves][1];
 
-        Media chomp = new Media("assets\\sound\\pacman_chomp.wav");
-        MediaPlayer chompSound = new MediaPlayer(chomp);
-        Media eatGhost = new Media("assets\\sound\\pacman_eatghost.wav");
+
+        Media eatGhost =  new Media(new File("src/game/assets/sound/pacman_eatghost.wav").toURI().toString());
         MediaPlayer eatGhostSound = new MediaPlayer(eatGhost);
-        Media death = new Media("assets\\sound\\pacman_death.wav");
+        Media death = new Media(new File("src/game/assets/sound/pacman_death.wav").toURI().toString());
         MediaPlayer deathSound = new MediaPlayer(death);
-        Media powered = new Media("assets\\sound\\pacman_powered.wav");
-        MediaPlayer poweredSound = new MediaPlayer(powered);
+        //Media powered = new Media(new File("src/game/assets/sound/pacman_powered.wav").toURI().toString());
+        //MediaPlayer poweredSound = new MediaPlayer(powered);
 
         // If Pacman eats a power pellet, play super saiyan noise
         if (tiles[pC][pR] == 0) {
-            poweredSound.play();
-        }
-        if (pPowered[moves]) {
-            if ((pC == g1C)&&(pR == g1R)||(pC == g2C)&&(pR == g2R)){
-                eatGhostSound.play();
-            }
-            else{
-                chompSound.play();
-            }
-        }
-        else {
-            if ((pC == g1C)&&(pR == g1R)||(pC == g2C)&&(pR == g2R)){
-                deathSound.play();
-            }
-            else{
-                chompSound.play();
-            }
+            //poweredSound.play();
         }
 
 
