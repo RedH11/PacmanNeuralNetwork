@@ -37,14 +37,12 @@ public class NeuralNetwork {
             this.output[i] = new double[NETWORK_LAYER_SIZES[i]];
             this.bias[i] = new double[NETWORK_LAYER_SIZES[i]];
 
-            // Generate random biases and fill array
-            this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], 0.3, 0.7);
-
+            this.bias[i] = NetworkTools.createZeroArray(NETWORK_LAYER_SIZES[i], 0.3, 0.7);
 
             if (i > 0) {
                 weights[i] = new double[NETWORK_LAYER_SIZES[i]][NETWORK_LAYER_SIZES[i - 1]];
                 // Generate random weights and fill array
-                weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], NETWORK_LAYER_SIZES[i - 1], -0.3, 0.5);
+                weights[i] = NetworkTools.createZeroArray(NETWORK_LAYER_SIZES[i], NETWORK_LAYER_SIZES[i - 1], -0.3, 0.5);
             }
         }
     }
@@ -145,8 +143,8 @@ public class NeuralNetwork {
         for (int layer = 1; layer < NETWORK_SIZE; layer++) {
             for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
                 for (int prevNeuron = 0; prevNeuron < NETWORK_LAYER_SIZES[layer - 1]; prevNeuron++) {
-                        weights[layer][neuron][prevNeuron] = newWeights[index];
-                        index++;
+                    weights[layer][neuron][prevNeuron] = newWeights[index];
+                    index++;
                 }
             }
         }

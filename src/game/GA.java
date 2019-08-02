@@ -45,17 +45,29 @@ public class GA {
     // If adjusted must also adjust in Genome 
     private final double WEIGHT_MUTATION_RATE = 0.8;
     private final double ADJUST_WEIGHT_RATE = 0.9; // 90% chance of adjusting node weight, else replaces weight with random one
-    private final double ADD_CONNECTION_RATE = 0.1;
+    private final double ADD_CONNECTION_RATE = 0.5;
     private final double ADD_NODE_RATE = 0.07;
 
+    // The max amount of generations a species can plateau before it is killed
+    private final int SPECIES_PLATEAU_LIMIT = 0;
+
     final int HIDDEN_ONE = 40;
-    final int HIDDEN_TWO = 20;
+    final int HIDDEN_TWO = 40;
     final int OUTPUTS = 2;
 
     final int GHOST_INPUTS;
 
     Button evolve;
 
+    /**
+     *
+     * @param PacmanDataPath - The path to the users desktop folder
+     * @param populationSize - The size of the inky population that will be tested and evolved
+     * @param totalGens - The total amount of generations
+     * @param startingGenome - The genome that creates a uniform first population (made up of inputs/output(s) and two random connections)
+     * @param GHOST_INPUTS - The amount of input nodes that the ghosts have
+     * @param evolve - The button for evolving that is disabled while evolution occurs and re-enabled at the end of the evolution
+     */
     public GA(String PacmanDataPath, int populationSize, int totalGens, Genome startingGenome, int GHOST_INPUTS, Button evolve) {
         this.PacmanDataPath = PacmanDataPath;
         this.populationSize = populationSize;
@@ -74,6 +86,9 @@ public class GA {
         constructFileWriters();
     }
 
+    /**
+     * Constructs the object output stream to write the data from the ghosts into a file in a folder named "PacmanData"
+     */
     private void constructFileWriters() {
 
         // Gets amount of files int he folder already
@@ -95,7 +110,9 @@ public class GA {
         }
     }
 
-    // Create 20 Pacman Brains from already trained pacman
+    /**
+     * Constructs the pacman brains that the inkies train against by pulling from the previously trained generation
+     */
     private void constructPacmanBrains() {
 
         File folder = new File("src/game/PacmanBrains");
@@ -112,15 +129,17 @@ public class GA {
                 } catch (Exception ex) {
                     System.out.println("Pacman Brains File Not Found " + ex);
                 }
-                pacmanBrains.add(new NeuralNetwork(16, HIDDEN_ONE, HIDDEN_TWO, OUTPUTS));
+                pacmanBrains.add(new NeuralNetwork(16, HIDDEN_ONE, OUTPUTS));
                 pacmanBrains.get(brainIndex).setWeights(brains.get(brainIndex).getWeights());
                 pacmanBrains.get(brainIndex).setBias(brains.get(brainIndex).getBiases());
                 brainIndex++;
-                System.out.println("BRAIN LOADED");
             }
         }
     }
 
+    /**
+     * Runs through the evolution process for the ghosts based on the amount of total generations
+     */
     public void evolveGhosts() {
         while (currentGen < totalGens) {
             clear();
@@ -141,12 +160,20 @@ public class GA {
         evolve.setDisable(false);
     }
 
+    /**
+     * Makes the original ghost population out of the starting genome
+     */
     private void makePopulation() {
+        if (populationSize % 2 != 0) populationSize++; // Has to be even for two ghosts a game so correct if entered as odd
+
         for (int i = 0; i < populationSize; i++) {
             genomes.add(new Genome(startingGenome, GHOST_INPUTS));
         }
     }
 
+    /**
+     * Resets the arrays and other values for testing the next generation
+     */
     private void clear() {
         // Reset everything for next generation
         for (Species s : species) {
@@ -160,6 +187,9 @@ public class GA {
         fittestGenome = null;
     }
 
+    /**
+     * Based on genomes compatibility distance, genomes that are more like each other are put into the same species where they compete locally
+     */
     private void speciate() {
         // Place genomes into species
         for (Genome g : genomes) {
@@ -189,7 +219,9 @@ public class GA {
         }
     }
 
-    // Note: Population has to be an even number for testing two ghosts per game
+    /**
+     * Puts inkies and pacman into a game and runs the game to derive their respective fitnesses
+     */
     private void test() {
         int gameIndx = 0;
         int bestGhostIndex = 0;
@@ -238,7 +270,7 @@ public class GA {
             ghostIndx += 2;
         }
 
-        System.out.println("Gen " + (currentGen + 1) + " Fitness " + highestScore);
+        System.out.println("Gen " + (currentGen + 1) + " Fitness " + highestScore + " Species " + species.size());
 
         PacmanGame bestGhost = games.get(bestGhostIndex);
         try {
@@ -254,6 +286,9 @@ public class GA {
         }
     }
 
+    /**
+     * Sorts each species and saves the best in the generation
+     */
     private void sort() {
         // put best genomes from each species into next generation
         for (Species s : species) {
@@ -294,7 +329,7 @@ public class GA {
         }
 
         genomes = nextGenGenomes;
-        nextGenGenomes = new ArrayList<Genome>();
+        nextGenGenomes = new ArrayList<>();
     }
 
     //Selects a random species from the species list, where species with a higher total adjusted fitness have a higher chance of being selected
@@ -385,7 +420,7 @@ class FitnessGenomeComparator implements Comparator<FitnessGenome> {
 
 }
 
-// Details of NEAT
+// Details of NEAT Paper
 
 // 25% of Genomes are cloned (based on exponential distribution)
 // 75% are crossed over

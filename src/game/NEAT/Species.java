@@ -8,6 +8,7 @@ public class Species {
     public List<Genome> members;
     public List<FitnessGenome> fitnessPop;
     public double totalAdjustedFitness = 0;
+    public int plateauCount = 0;
 
     public Species(Genome mascot) {
         this.mascot = mascot;
@@ -18,11 +19,11 @@ public class Species {
 
     /* Selects new random mascot + clear members + set totaladjustedfitness to 0 */
     public void reset(Random r) {
-        int newMascotIndex = r.nextInt(members.size());
-        this.mascot = members.get(newMascotIndex);
+        //int newMascotIndex = r.nextInt(members.size());
+        //this.mascot = members.get(newMascotIndex);
         members.clear();
         fitnessPop.clear();
-        totalAdjustedFitness = 0f;
+        totalAdjustedFitness = 0;
     }
 
     public void setMascot(Genome mascot) {
