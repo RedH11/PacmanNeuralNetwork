@@ -14,7 +14,7 @@ import java.io.File;
 public class Main extends Application {
 
     int stageW = 520;
-    int stageH = 500;
+    int stageH = 610;
 
     String PacmanDataPath;
     GraphicsContext gameGC;

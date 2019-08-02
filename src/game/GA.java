@@ -285,6 +285,8 @@ public class GA {
         System.out.println("Gen " + (currentGen + 1) + " Fitness " + highestScore + " Species " + species.size());
 
         PacmanGame bestGhost = games.get(bestGhostIndex);
+        nextGenGenomes.add(games.get(bestGhostIndex).getBestGhost().brain);
+
         try {
             // Store the amount of layers used for displaying the neural network in the visual display
             bestGhost.getIs().setLayerSizes(bestGhost.getBestGhost().brain.countLayers());
@@ -307,7 +309,10 @@ public class GA {
             Collections.sort(s.fitnessPop, fitComp);
             Collections.reverse(s.fitnessPop);
             FitnessGenome fittestInSpecies = s.fitnessPop.get(0);
-            if (s.fitnessPop.get(0).fitness > s.topAdjustedFitness) s.setTopAdjustedFitness(s.fitnessPop.get(0).fitness);
+            if (s.fitnessPop.get(0).fitness > s.topAdjustedFitness && s.fitnessPop.get(0).fitness >= 600) {
+                s.setTopAdjustedFitness(s.fitnessPop.get(0).fitness);
+                s.setMascot(s.fitnessPop.get(0).genome);
+            }
             s.checkImproved();
             nextGenGenomes.add(fittestInSpecies.genome);
         }

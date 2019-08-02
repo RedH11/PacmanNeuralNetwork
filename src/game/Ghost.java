@@ -215,7 +215,9 @@ public class Ghost {
     private double distFromPac(int px, int py) {
         double dist = Math.sqrt(Math.pow(x-px, 2)+Math.pow(y-py, 2));
         // Add a score for the fitness based on the distance
-        addFitness((int)(45 - dist) / 10);
+        if (dist <= 1) addFitness(100);
+        else if (dist <= 3) addFitness(50);
+        else addFitness((int)(45 - dist) / 10);
         // Subtracted by 0.5 because distance is only positive
         return dist;
     }

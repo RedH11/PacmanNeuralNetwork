@@ -36,17 +36,18 @@ public class PacmanSettings extends Pane {
         invalAlert.setTitle("Error Warning");
         setupGenome();
 
-        Label gameExplanation = new Label("Welcome to ThInky! \nChoose your population amount and amount of generations you want to train them for to see the " +
-                "results! (Tip: More Generations = Longer time but better ghosts)\n To View Generation Progress input the generation " +
-                "you want to view after your training has completed");
+        Label gameExplanation = new Label("Welcome to ThInky! \nChoose the population and generation amount and click evolve to train ghosts " +
+                " \n(Tip: More Generations = Longer time but better ghosts)\n\n To View Generations in real time input the generation number " +
+                "in the Ghost Generation input field and click Show Game");
         gameExplanation.setPrefWidth(500);
         gameExplanation.setWrapText(true);
 
-        Label neatExplanation = new Label("What is ThInky though?! Great question! In Pacman the Inky ghost is programmed " +
+        Label neatExplanation = new Label("What is ThInky though?! \nGreat question! In Pacman the Inky ghost is programmed " +
                 "to go in random directions when they get too close to pacman making it the least effective ghost" +
                 ", so we decided that we were going to give Inky the best brain possible (aka A Thinky Inky) using a NEAT" +
-                " algorithm. A Neural Evolution Augmented Topologies is a neural network that evolves through creating" +
-                " new nodes and connections to find the optimal structure to solve a given problem");
+                " algorithm. \n\nA Neural Evolution Augmented Topologies is a neural network that evolves through creating" +
+                " new nodes and connections to find the optimal structure to solve a given problem.\n\nThis is contrasted to many standard neural networks" +
+                " where the amount of nodes in each layer is already defined.");
         neatExplanation.setPrefWidth(500);
         neatExplanation.setWrapText(true);
         VBox settings = new VBox();
