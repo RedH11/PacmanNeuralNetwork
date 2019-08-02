@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VisualGame {
-
+    // Initialization
     private int generation ;
     private int fitness;
 
@@ -57,7 +57,10 @@ public class VisualGame {
     Image clydeLeft;
     Image clydeRight;
     Image scaredGhost;
-    
+
+    /**
+     * The game map (1: Walls, 0: Pellets, 8: Power Pellets, 6: Empty)
+     */
     private int[][] tiles = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -91,6 +94,14 @@ public class VisualGame {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
+    /**
+     * Displays the game
+     * @param gameGC javafx graphics context framework
+     * @param is the infostorage file to use
+     * @param generation which generation
+     * @param showGame showgame button
+     * @param FPS frames per second to render
+     */
     public VisualGame(GraphicsContext gameGC, GhostInfoStorage is, int generation, Button showGame, int FPS) {
         this.MAXMOVES = is.getMAXMOVES();
         this.pCoords = is.getPacCoords();
@@ -139,28 +150,32 @@ public class VisualGame {
         showGame.setDisable(false);
     }
 
+    /**
+     * Initializes sprite image objects
+     */
     private void initSprites() {
-        pacLeft = new Image("game/assets/sprites/pacman_left.png");
-        pacRight = new Image("game/assets/sprites/pacman_right.png");
-        pacUp = new Image("game/assets/sprites/pacman_up.png");
-        pacDown = new Image("game/assets/sprites/pacman_down.png");
-        poweredPacLeft = new Image("game/assets/sprites/powered_pacman_left.png");
-        poweredPacRight = new Image("game/assets/sprites/powered_pacman_right.png");
-        poweredPacUp = new Image("game/assets/sprites/powered_pacman_up.png");
-        poweredPacDown = new Image("game/assets/sprites/powered_pacman_down.png");
+        pacLeft = new Image("assets/sprites/pacman_left.png");
+        pacRight = new Image("assets/sprites/pacman_right.png");
+        pacUp = new Image("assets/sprites/pacman_up.png");
+        pacDown = new Image("assets/sprites/pacman_down.png");
+        poweredPacLeft = new Image("assets/sprites/powered_pacman_left.png");
+        poweredPacRight = new Image("assets/sprites/powered_pacman_right.png");
+        poweredPacUp = new Image("assets/sprites/powered_pacman_up.png");
+        poweredPacDown = new Image("assets/sprites/powered_pacman_down.png");
         pacImage = pacLeft;
-        inkyLeft = new Image("game/assets/sprites/inky_left.png");
-        inkyRight = new Image("game/assets/sprites/inky_Right.png");
-        scaredGhost = new Image("game/assets/sprites/scared_ghost.png");
+        inkyLeft = new Image("assets/sprites/inky_left.png");
+        inkyRight = new Image("assets/sprites/inky_Right.png");
+        scaredGhost = new Image("assets/sprites/scared_ghost.png");
         inkyImage = inkyLeft;
-        clydeRight = new Image("game/assets/sprites/clyde_right.png");
-        clydeLeft = new Image("game/assets/sprites/clyde_left.png");
+        clydeRight = new Image("assets/sprites/clyde_right.png");
+        clydeLeft = new Image("assets/sprites/clyde_left.png");
         clydeImage = clydeLeft;
     }
+
+    /**
+     * Draws the base game map (0: Pellet / 1: Wall / 6: Empty / 8: Power Pellet)
+     */
     private void drawMap() {
-
-        // 0: Pellet / 1: Wall / 6: Empty / 8: Power Pellet
-
         int rectW = 20;
 
         int startX = 0;
@@ -196,6 +211,10 @@ public class VisualGame {
         //gc.fillText("Generation: " + generation, 25, 15);
     }
 
+    /**
+     * Every move, draws the game objects
+     * @param moves keeps track of number of moves so far
+     */
     private void drawGame(int moves) {
 
         int rectW = 20;
@@ -301,14 +320,18 @@ public class VisualGame {
         prevG2R = g2R;
     }
 
-    // Play intro sound
+    /**
+     * Play intro sound
+     */
     private void playIntro() {
-        Media intro = new Media("assets\\sound\\pacman_beginning.wav");
+        Media intro = new Media("game/assets/sound/pacman_beginning.wav");
         MediaPlayer introSound = new MediaPlayer(intro);
         introSound.play();
     }
-    
-    // Play game sounds
+
+    /**
+     * Play game sounds
+     */
     private void playGameSounds() {
         // Get pacman & ghosts' row and column coordinate (r, c)
         int pC = pCoords[moves][0];
@@ -320,13 +343,13 @@ public class VisualGame {
         int g2C = g2Coords[moves][0];
         int g2R = g2Coords[moves][1];
 
-        Media chomp = new Media("assets\\sound\\pacman_chomp.wav");
+        Media chomp = new Media("assets/sound/pacman_chomp.wav");
         MediaPlayer chompSound = new MediaPlayer(chomp);
-        Media eatGhost = new Media("assets\\sound\\pacman_eatghost.wav");
+        Media eatGhost = new Media("assets/sound/pacman_eatghost.wav");
         MediaPlayer eatGhostSound = new MediaPlayer(eatGhost);
-        Media death = new Media("assets\\sound\\pacman_death.wav");
+        Media death = new Media("assets/sound/pacman_death.wav");
         MediaPlayer deathSound = new MediaPlayer(death);
-        Media powered = new Media("assets\\sound\\pacman_powered.wav");
+        Media powered = new Media("assets/sound/pacman_powered.wav");
         MediaPlayer poweredSound = new MediaPlayer(powered);
 
         // If Pacman eats a power pellet, play super saiyan noise
@@ -352,6 +375,10 @@ public class VisualGame {
 
 
     }
+
+    /**
+     * Draws nodes
+     */
     private void drawNodes() {
         int INPUTS = layerSizes[0];
         int HIDDEN = layerSizes[1];
@@ -398,6 +425,9 @@ public class VisualGame {
         }
     }
 
+    /**
+     * Draws connection lines between nodes
+     */
     private void drawConnections() {
 
         gc.setStroke(Color.BLACK);
