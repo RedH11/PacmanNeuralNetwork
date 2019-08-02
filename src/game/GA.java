@@ -40,7 +40,7 @@ public class GA {
     private double C1 = 1.0;
     private double C2 = 1.0;
     private double C3 = 0.4;
-    private final double SPECIES_THRESHOLD = 10;
+    private final double SPECIES_THRESHOLD = 12; // Default 10 (Higher = Less Species)
 
     // If adjusted must also adjust in Genome 
     private final double WEIGHT_MUTATION_RATE = 0.8;
@@ -49,7 +49,7 @@ public class GA {
     private final double ADD_NODE_RATE = 0.07;
 
     // The max amount of generations a species can plateau before it is killed
-    private final int SPECIES_PLATEAU_LIMIT = 0;
+    private final int SPECIES_PLATEAU_LIMIT = 15;
 
     final int HIDDEN_ONE = 40;
     final int HIDDEN_TWO = 40;
@@ -209,11 +209,17 @@ public class GA {
             }
         }
 
+        // If the species hits the Plateau count kill it off
+        for (Species s : species) {
+            if (s.plateauCount > SPECIES_PLATEAU_LIMIT) s.members.clear();
+        }
+
         // Remove unused species
         Iterator<Species> iter = species.iterator();
         while(iter.hasNext()) {
             Species s = iter.next();
             if (s.members.isEmpty()) {
+                System.out.println("Species Died Out");
                 iter.remove();
             }
         }
@@ -226,9 +232,10 @@ public class GA {
         int gameIndx = 0;
         int bestGhostIndex = 0;
         int ghostIndx = 0;
+        ArrayList<NeuralNetwork> singleGamePacmanBrains = new ArrayList<>();
         // Evaluate two genomes per game and assign score
         for (int i = 0; i < genomes.size()/2; i++) {
-            int randomPacmanIndex = random.nextInt(pacmanBrains.size());
+            singleGamePacmanBrains.clear();
 
             Genome g1 = genomes.get(ghostIndx);
             Genome g2 = genomes.get(ghostIndx + 1);
@@ -236,8 +243,13 @@ public class GA {
             Species s1 = mappedSpecies.get(g1);		// Get species of the first genome
             Species s2 = mappedSpecies.get(g2);		// Get species of the second genome
 
+            // Add four random pacman brains to be used in each game
+            for (int j = 0; j < 4; j++) {
+                singleGamePacmanBrains.add(pacmanBrains.get(random.nextInt(pacmanBrains.size())));
+            }
+
             // Put a random pacman brain in the game that simulates two ghosts at a time
-            games.add(new PacmanGame(PacmanDataPath, MAX_MOVES, pacmanBrains.get(randomPacmanIndex), g1, g2, GHOST_INPUTS));
+            games.add(new PacmanGame(PacmanDataPath, MAX_MOVES, singleGamePacmanBrains, g1, g2, GHOST_INPUTS));
             games.get(i).simulateGame();
 
             double score1 = games.get(gameIndx).ghostOne.fitness;
@@ -295,6 +307,8 @@ public class GA {
             Collections.sort(s.fitnessPop, fitComp);
             Collections.reverse(s.fitnessPop);
             FitnessGenome fittestInSpecies = s.fitnessPop.get(0);
+            if (s.fitnessPop.get(0).fitness > s.topAdjustedFitness) s.setTopAdjustedFitness(s.fitnessPop.get(0).fitness);
+            s.checkImproved();
             nextGenGenomes.add(fittestInSpecies.genome);
         }
     }
@@ -346,7 +360,7 @@ public class GA {
                 return s;
             }
         }
-        throw new RuntimeException("Couldn't find a species... Number is species in total is "+species.size()+", and the total adjusted fitness is "+completeWeight);
+        throw new RuntimeException("Couldn't find a species... Number is species in total is " + species.size()+", and the total adjusted fitness is "+completeWeight);
     }
 
 

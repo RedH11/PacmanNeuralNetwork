@@ -10,6 +10,8 @@ public class PacmanGame implements Serializable {
     Ghost ghostOne;
     Ghost ghostTwo;
 
+    int brainIndex = 0;
+
     final int MAX_PELLETS = 258;
 
     // 28 rows, 31 columns
@@ -61,25 +63,29 @@ public class PacmanGame implements Serializable {
     private int scaredStart = 0;
     private int MAXMOVES;
 
+    private int pacmanLives = 4;
+
     private GhostInfoStorage is;
     static String PacmanDataPath;
-
+    ArrayList<NeuralNetwork> pacmanBrains;
     private int INPUTS;
 
-    public PacmanGame(String PacmanDataPath, int MAXMOVES, NeuralNetwork pacmanBrain, Genome g1, Genome g2, int INPUTS) {
+    public PacmanGame(String PacmanDataPath, int MAXMOVES, ArrayList<NeuralNetwork> pacmanBrains, Genome g1, Genome g2, int INPUTS) {
         this.MAXMOVES = MAXMOVES;
         this.PacmanDataPath = PacmanDataPath;
         this.INPUTS = INPUTS;
         createMap();
-        pacman = new Pacman(pacmanBrain);
+        this.pacmanBrains = pacmanBrains;
+        pacman = new Pacman(pacmanBrains.get(0));
+
         ghostOne = new Ghost(g1, INPUTS);
         ghostTwo = new Ghost(g2, INPUTS);
-        is = new GhostInfoStorage(MAXMOVES * pacman.lives);
+        is = new GhostInfoStorage(MAXMOVES * 4);
     }
 
     public void simulateGame() {
         gameMoves = 0;
-        while ((gameMoves < MAXMOVES) && pacman.lives > 0) {
+        while ((gameMoves < MAXMOVES) && pacmanLives > 0) {
             // Add all of the game information
             simulateTurn();
             is.addAllCoords(pacman.x, pacman.y, ghostOne.x, ghostOne.y, ghostTwo.x, ghostTwo.y);
@@ -142,9 +148,15 @@ public class PacmanGame implements Serializable {
             } else {
                 ghostOne.addFitness(2000);
                 ghostOne.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
-                pacman.lives--;
+                pacmanLives--;
                 ghostOne.addFitness(MAXMOVES - gameMoves);
                 gameMoves = 0;
+
+                // Change brain every time he dies
+                brainIndex++;
+                if (brainIndex == 4) brainIndex = 0;
+                pacman = new Pacman(pacmanBrains.get(brainIndex));
+
                 pacman.respawn();
                 ghostOne.respawn();
                 ghostTwo.respawn();
@@ -158,15 +170,18 @@ public class PacmanGame implements Serializable {
                 ghostTwo.addFitness(2000);
                 ghostTwo.addFitness(MAXMOVES - gameMoves);
                 gameMoves = 0;
-                //ghostTwo.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
-                pacman.lives--;
+                ghostTwo.addFitness((int)Math.sqrt(Math.pow(gameMoves - MAXMOVES, 2)));
+                pacmanLives--;
+                // Change brain every time he dies
+                brainIndex++;
+                if (brainIndex == 4) brainIndex = 0;
+                pacman = new Pacman(pacmanBrains.get(brainIndex));
                 pacman.respawn();
                 ghostOne.respawn();
                 ghostTwo.respawn();
 
             }
         }
-
     }
 
     public GhostInfoStorage getIs() {
